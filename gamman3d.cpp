@@ -66,13 +66,8 @@ bool gamman3d::initialize()
 
     QWidget *container = QWidget::createWindowContainer(scatter);    
     QWidget *widget = new QWidget;
-    QHBoxLayout *hLayout = new QHBoxLayout(widget);
-    QVBoxLayout *vLayout = new QVBoxLayout();
-    hLayout->addWidget(container, 1);
-    hLayout->addLayout(vLayout);
-
-    QPushButton *btn = new QPushButton("test");
-    vLayout->addWidget(btn);
+    QHBoxLayout *hbox = new QHBoxLayout(widget);
+    hbox->addWidget(container, 1);
 
     setCentralWidget(widget);
     scatter->show();
@@ -84,31 +79,33 @@ void gamman3d::createMenu()
 {
     QMenu *fileMenu = menuBar()->addMenu(tr("&File"));
 
-    QAction *openAct = new QAction("&Open", this);
+    QAction *openAct = new QAction(QIcon(":/res/images/open-32.png"), tr("&Open session"), this);
     openAct->setStatusTip(tr("Open a session"));
     connect(openAct, &QAction::triggered, this, &gamman3d::openSession);
     fileMenu->addAction(openAct);
 
     fileMenu->addSeparator();
 
-    QAction *exitAct = new QAction(tr("E&xit"), this);
+    QAction *exitAct = new QAction(QIcon(":/res/images/exit-32.png"), tr("E&xit"), this);
     exitAct->setShortcuts(QKeySequence::Quit);
     exitAct->setStatusTip(tr("Exit the application"));
     connect(exitAct, &QAction::triggered, this, &QWidget::close);
     fileMenu->addAction(exitAct);
 
     QToolBar *tools = addToolBar("Tools");
-    QAction *openToolAct = tools->addAction(QIcon(":/res/images/open-32.png"), "Open session");
+    tools->setMovable(false);
+    QAction *openToolAct = tools->addAction(QIcon(":/res/images/open-32.png"), tr("&Open session"));
     connect(openToolAct, &QAction::triggered, this, &gamman3d::openSession);
+
+    statusLabel = new QLabel(this);
+    ui->statusBar->addPermanentWidget(statusLabel);
 }
 
 void gamman3d::openSession()
 {
-    QString dir = QFileDialog::getExistingDirectory(
-                this,
-                tr("Open session directory"),
-                "",
-                QFileDialog::ShowDirsOnly | QFileDialog::DontResolveSymlinks);
+    QString dir = QFileDialog::getExistingDirectory(this,
+                                                    tr("Open session directory"), "",
+                                                    QFileDialog::ShowDirsOnly | QFileDialog::DontResolveSymlinks);
     if(!dir.isEmpty())
         populateScene(dir);
 }
@@ -147,6 +144,7 @@ void gamman3d::populateScene(QString dir)
     }
 
     series->dataProxy()->resetArray(dataArray);    
+    statusLabel->setText("Session: " + dir);
 }
 
 void projectGPSToXYZSimplified(double lat, double lon, double &x, double &y, double &z)

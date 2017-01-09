@@ -18,6 +18,7 @@
 #define GAMMAN3D_H
 
 #include <QMainWindow>
+#include <QLabel>
 #include <QtDataVisualization/Q3DScatter>
 #include "session.h"
 
@@ -43,6 +44,7 @@ private:
     QtDataVisualization::Q3DScatter *scatter;
     QtDataVisualization::QScatter3DSeries *series;
     QtDataVisualization::QScatterDataArray *dataArray;
+    QLabel *statusLabel;
 
 
 private slots:
