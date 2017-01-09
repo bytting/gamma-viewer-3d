@@ -18,7 +18,7 @@
 #define GEO_H
 
 #define PI 3.14159265358979323846
-#define DEG_TO_RAD(deg) (deg * PI / 180.0)
+#define DEG_TO_RAD(deg) ((deg) * PI / 180.0)
 
 void geodeticToCartesianSimplified(double lat, double lon, double &x, double &y, double &z);
 void geodeticToCartesian(double lat, double lon, double &x, double &y, double &z);
