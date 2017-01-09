@@ -38,6 +38,22 @@ const SpecList Session::getSpectrums() const
     return mSpecList;
 }
 
+double Session::getMinAltitude() const
+{
+    if(mSpecList.empty())
+        return 0;
+
+    double min = mSpecList[0]->altitudeStart;
+
+    for(const Spectrum *spec : mSpecList)
+    {
+        if(spec->altitudeStart < min)
+            min = spec->altitudeStart;
+    }
+
+    return min;
+}
+
 bool Session::load(QString session_path)
 {
     QDir dir(session_path + QString("/json"));

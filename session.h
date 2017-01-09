@@ -32,6 +32,7 @@ public:
     const Spectrum* getSpectrum(int idx) const;
     const SpecList getSpectrums() const;
     int SpectrumCount() const { return mSpecList.size(); }
+    double getMinAltitude() const;
 
     bool load(QString session_path);
 

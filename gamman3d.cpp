@@ -24,8 +24,8 @@
 
 using namespace QtDataVisualization;
 
-void projectGPSToXYZSimplified(const Spectrum *spec, double &x, double &y, double &z);
-void projectGPSToXYZ(const Spectrum *spec, double &x, double &y, double &z);
+void projectGPSToXYZSimplified(double lat, double lon, double &x, double &y, double &z);
+void projectGPSToXYZ(double lat, double lon, double &x, double &y, double &z);
 
 gamman3d::gamman3d(QWidget *parent) :
     QMainWindow(parent),
@@ -52,7 +52,7 @@ bool gamman3d::initialize()
     scatter->setShadowQuality(QAbstract3DGraph::ShadowQualityNone);
 
     QScatterDataProxy *proxy = new QScatterDataProxy();
-    series = new QScatter3DSeries(proxy);
+    series = new QScatter3DSeries(proxy);    
     scatter->addSeries(series);
     dataArray = new QScatterDataArray();
 
@@ -99,42 +99,53 @@ void gamman3d::populateScene(QString dir)
         return;
     }
 
+    double minAlt = session->getMinAltitude();
+
     dataArray->clear();
     dataArray->resize(session->SpectrumCount());
     QScatterDataItem *p = &dataArray->first();
 
+    double focal_length = 200.0;
+
     for(const Spectrum* spec : session->getSpectrums())
     {
         double x, y, z;
-        projectGPSToXYZSimplified(spec, x, y, z);
-        //projectGPSToXYZ(spec, x, y, z);
-        p->setPosition(QVector3D(x, y, z));
+        projectGPSToXYZSimplified(spec->latitudeStart, spec->longitudeStart, x, y, z);
+        //projectGPSToXYZ(spec->latitudeStart, spec->longitudeStart, x, y, z);
+
+        double projected_x = x * focal_length / (focal_length + z);
+        double projected_y = y * focal_length / (focal_length + z);
+
+        double fake_alt = spec->altitudeStart - minAlt;
+        fake_alt = fake_alt / 100000.0;
+
+        p->setPosition(QVector3D(projected_x, projected_y, -fake_alt));
         p++;
     }
 
     series->dataProxy()->resetArray(dataArray);
-    series->setItemSize(0.15);
+    series->setItemSize(0.10);
     series->setMeshSmooth(true);
 }
 
-void projectGPSToXYZSimplified(const Spectrum *spec, double &x, double &y, double &z)
+void projectGPSToXYZSimplified(double lat, double lon, double &x, double &y, double &z)
 {
-    double cosLat = std::cos(spec->latitudeStart * PI / 180.0);
-    double sinLat = std::sin(spec->latitudeStart * PI / 180.0);
-    double cosLon = std::cos(spec->longitudeStart * PI / 180.0);
-    double sinLon = std::sin(spec->longitudeStart * PI / 180.0);
+    double cosLat = std::cos(lat * PI / 180.0);
+    double sinLat = std::sin(lat * PI / 180.0);
+    double cosLon = std::cos(lon * PI / 180.0);
+    double sinLon = std::sin(lon * PI / 180.0);
     double rad = 500.0;
     x = rad * cosLat * cosLon;
     y = rad * cosLat * sinLon;
     z = rad * sinLat;
 }
 
-void projectGPSToXYZ(const Spectrum *spec, double &x, double &y, double &z)
+void projectGPSToXYZ(double lat, double lon, double &x, double &y, double &z)
 {
-    double cosLat = std::cos(spec->latitudeStart * PI / 180.0);
-    double sinLat = std::sin(spec->latitudeStart * PI / 180.0);
-    double cosLon = std::cos(spec->longitudeStart * PI / 180.0);
-    double sinLon = std::sin(spec->longitudeStart * PI / 180.0);
+    double cosLat = std::cos(lat * PI / 180.0);
+    double sinLat = std::sin(lat * PI / 180.0);
+    double cosLon = std::cos(lon * PI / 180.0);
+    double sinLon = std::sin(lon * PI / 180.0);
     double rad = 6378137.0;
     double f = 1.0 / 298.257224;
     double C = 1.0 / std::sqrt(cosLat * cosLat + (1 - f) * (1 - f) * sinLat * sinLat);
