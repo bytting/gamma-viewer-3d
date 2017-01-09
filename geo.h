@@ -14,44 +14,13 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef GAMMAN3D_H
-#define GAMMAN3D_H
+#ifndef GEO_H
+#define GEO_H
 
-#include <QMainWindow>
-#include <QLabel>
-#include <QtDataVisualization/Q3DScatter>
-#include "session.h"
+#define PI 3.14159265358979323846
+#define DEG_TO_RAD(deg) (deg * PI / 180.0)
 
-namespace Ui {
-class gamman3d;
-}
+void geodeticToCartesianSimplified(double lat, double lon, double &x, double &y, double &z);
+void geodeticToCartesian(double lat, double lon, double &x, double &y, double &z);
 
-class gamman3d : public QMainWindow
-{
-    Q_OBJECT
-
-public:
-    explicit gamman3d(QWidget *parent = 0);
-    ~gamman3d();
-
-    bool initialize();
-    void setupMenu();
-    void setupToolbar();
-    void setupStatus();
-    void setupScene();
-    void populateScene(QString dir);    
-
-private:
-    Ui::gamman3d *ui;
-    Session *session;
-    QtDataVisualization::Q3DScatter *scatter;
-    QtDataVisualization::QScatter3DSeries *series;
-    QtDataVisualization::QScatterDataArray *dataArray;
-    QLabel *statusLabel;
-
-
-private slots:
-    void openSession();
-};
-
-#endif // GAMMAN3D_H
+#endif // GEO_H

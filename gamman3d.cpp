@@ -16,7 +16,7 @@
 
 #include "gamman3d.h"
 #include "ui_gamman3d.h"
-#include <cmath>
+#include "geo.h"
 #include <QMessageBox>
 #include <QFileDialog>
 #include <QHBoxLayout>
@@ -26,28 +26,61 @@
 #include <QAction>
 #include <QIcon>
 
-#define PI 3.14159265358979323846
-
 using namespace QtDataVisualization;
-
-void projectGPSToXYZSimplified(double lat, double lon, double &x, double &y, double &z);
-void projectGPSToXYZ(double lat, double lon, double &x, double &y, double &z);
 
 gamman3d::gamman3d(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::gamman3d)
 {
     ui->setupUi(this);
-    createMenu();
+
+    setupMenu();
+    setupToolbar();
+    setupStatus();
+    setupScene();
 }
 
 gamman3d::~gamman3d()
-{
-    session->clear();
+{    
+    if(session)
+        delete session;
+
     delete ui;
 }
 
-bool gamman3d::initialize()
+void gamman3d::setupMenu()
+{
+    QMenu *fileMenu = menuBar()->addMenu(tr("&File"));
+
+    QAction *openAct = new QAction(QIcon(":/res/images/open-32.png"), tr("&Open session"), this);
+    openAct->setStatusTip(tr("Open a session"));
+    connect(openAct, &QAction::triggered, this, &gamman3d::openSession);
+    fileMenu->addAction(openAct);
+
+    fileMenu->addSeparator();
+
+    QAction *exitAct = new QAction(QIcon(":/res/images/exit-32.png"), tr("E&xit"), this);
+    exitAct->setShortcuts(QKeySequence::Quit);
+    exitAct->setStatusTip(tr("Exit the application"));
+    connect(exitAct, &QAction::triggered, this, &QWidget::close);
+    fileMenu->addAction(exitAct);        
+}
+
+void gamman3d::setupToolbar()
+{
+    QToolBar *tools = addToolBar("Tools");
+    tools->setMovable(false);
+    QAction *openToolAct = tools->addAction(QIcon(":/res/images/open-32.png"), tr("&Open session"));
+    connect(openToolAct, &QAction::triggered, this, &gamman3d::openSession);
+}
+
+void gamman3d::setupStatus()
+{
+    statusLabel = new QLabel(this);
+    ui->statusBar->addPermanentWidget(statusLabel);
+}
+
+void gamman3d::setupScene()
 {
     //setGeometry(0, 0, 800, 600);
 
@@ -64,48 +97,21 @@ bool gamman3d::initialize()
     scatter->addSeries(series);
     dataArray = new QScatterDataArray();
 
-    QWidget *container = QWidget::createWindowContainer(scatter);    
+    QWidget *container = QWidget::createWindowContainer(scatter);
     QWidget *widget = new QWidget;
     QHBoxLayout *hbox = new QHBoxLayout(widget);
     hbox->addWidget(container, 1);
 
     setCentralWidget(widget);
     scatter->show();
-
-    return true;
-}
-
-void gamman3d::createMenu()
-{
-    QMenu *fileMenu = menuBar()->addMenu(tr("&File"));
-
-    QAction *openAct = new QAction(QIcon(":/res/images/open-32.png"), tr("&Open session"), this);
-    openAct->setStatusTip(tr("Open a session"));
-    connect(openAct, &QAction::triggered, this, &gamman3d::openSession);
-    fileMenu->addAction(openAct);
-
-    fileMenu->addSeparator();
-
-    QAction *exitAct = new QAction(QIcon(":/res/images/exit-32.png"), tr("E&xit"), this);
-    exitAct->setShortcuts(QKeySequence::Quit);
-    exitAct->setStatusTip(tr("Exit the application"));
-    connect(exitAct, &QAction::triggered, this, &QWidget::close);
-    fileMenu->addAction(exitAct);
-
-    QToolBar *tools = addToolBar("Tools");
-    tools->setMovable(false);
-    QAction *openToolAct = tools->addAction(QIcon(":/res/images/open-32.png"), tr("&Open session"));
-    connect(openToolAct, &QAction::triggered, this, &gamman3d::openSession);
-
-    statusLabel = new QLabel(this);
-    ui->statusBar->addPermanentWidget(statusLabel);
 }
 
 void gamman3d::openSession()
 {
-    QString dir = QFileDialog::getExistingDirectory(this,
-                                                    tr("Open session directory"), "",
-                                                    QFileDialog::ShowDirsOnly | QFileDialog::DontResolveSymlinks);
+    QString dir = QFileDialog::getExistingDirectory(
+                this,
+                tr("Open session directory"), "",
+                QFileDialog::ShowDirsOnly | QFileDialog::DontResolveSymlinks);
     if(!dir.isEmpty())
         populateScene(dir);
 }
@@ -117,60 +123,30 @@ void gamman3d::populateScene(QString dir)
     {
         QMessageBox::warning(this, tr("Error"), "Failed to open session directory [" + dir + "]");
         return;
-    }
-
-    double minAlt = session->getMinAltitude();
+    }    
 
     dataArray->clear();
     dataArray->resize(session->SpectrumCount());
     QScatterDataItem *p = &dataArray->first();
 
-    double focal_length = 200.0;
+    double minAltitude = session->getMinAltitude();
+    double focalDistance = 200.0;
 
     for(const Spectrum* spec : session->getSpectrums())
     {
         double x, y, z;
-        projectGPSToXYZSimplified(spec->latitudeStart, spec->longitudeStart, x, y, z);
-        //projectGPSToXYZ(spec->latitudeStart, spec->longitudeStart, x, y, z);
+        geodeticToCartesianSimplified(spec->latitudeStart, spec->longitudeStart, x, y, z);
+        //geodeticToCartesian(spec->latitudeStart, spec->longitudeStart, x, y, z);
 
-        double projected_x = x * focal_length / (focal_length + z);
-        double projected_y = y * focal_length / (focal_length + z);
+        double projectedX = x * focalDistance / (focalDistance + z);
+        double projectedY = y * focalDistance / (focalDistance + z);
 
-        double fake_alt = spec->altitudeStart - minAlt;
-        fake_alt = fake_alt / 100000.0;
+        double fakeAltitude = (spec->altitudeStart - minAltitude) / 100000.0;
 
-        p->setPosition(QVector3D(projected_x, projected_y, -fake_alt));
+        p->setPosition(QVector3D(projectedX, projectedY, -fakeAltitude));
         p++;
     }
 
     series->dataProxy()->resetArray(dataArray);    
     statusLabel->setText("Session: " + dir);
-}
-
-void projectGPSToXYZSimplified(double lat, double lon, double &x, double &y, double &z)
-{
-    double cosLat = std::cos(lat * PI / 180.0);
-    double sinLat = std::sin(lat * PI / 180.0);
-    double cosLon = std::cos(lon * PI / 180.0);
-    double sinLon = std::sin(lon * PI / 180.0);
-    double rad = 500.0;
-    x = rad * cosLat * cosLon;
-    y = rad * cosLat * sinLon;
-    z = rad * sinLat;
-}
-
-void projectGPSToXYZ(double lat, double lon, double &x, double &y, double &z)
-{
-    double cosLat = std::cos(lat * PI / 180.0);
-    double sinLat = std::sin(lat * PI / 180.0);
-    double cosLon = std::cos(lon * PI / 180.0);
-    double sinLon = std::sin(lon * PI / 180.0);
-    double rad = 6378137.0;
-    double f = 1.0 / 298.257224;
-    double C = 1.0 / std::sqrt(cosLat * cosLat + (1 - f) * (1 - f) * sinLat * sinLat);
-    double S = (1.0 - f) * (1.0 - f) * C;
-    double h = 0.0;
-    x = (rad * C + h) * cosLat * cosLon;
-    y = (rad * C + h) * cosLat * sinLon;
-    z = (rad * S + h) * sinLat;
 }
