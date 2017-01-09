@@ -19,6 +19,12 @@
 #include <cmath>
 #include <QMessageBox>
 #include <QFileDialog>
+#include <QHBoxLayout>
+#include <QVBoxLayout>
+#include <QPushButton>
+#include <QToolBar>
+#include <QAction>
+#include <QIcon>
 
 #define PI 3.14159265358979323846
 
@@ -48,16 +54,27 @@ bool gamman3d::initialize()
     session = new Session();
 
     scatter = new Q3DScatter();
-    scatter->scene()->activeCamera()->setCameraPreset(Q3DCamera::CameraPresetDirectlyAbove);
+    scatter->scene()->activeCamera()->setCameraPreset(Q3DCamera::CameraPresetFront);
     scatter->setShadowQuality(QAbstract3DGraph::ShadowQualityNone);
 
     QScatterDataProxy *proxy = new QScatterDataProxy();
-    series = new QScatter3DSeries(proxy);    
+    series = new QScatter3DSeries(proxy);
+    series->setItemSize(0.06);
+    series->setMeshSmooth(true);
     scatter->addSeries(series);
     dataArray = new QScatterDataArray();
 
-    QWidget *container = QWidget::createWindowContainer(scatter);
-    setCentralWidget(container);
+    QWidget *container = QWidget::createWindowContainer(scatter);    
+    QWidget *widget = new QWidget;
+    QHBoxLayout *hLayout = new QHBoxLayout(widget);
+    QVBoxLayout *vLayout = new QVBoxLayout();
+    hLayout->addWidget(container, 1);
+    hLayout->addLayout(vLayout);
+
+    QPushButton *btn = new QPushButton("test");
+    vLayout->addWidget(btn);
+
+    setCentralWidget(widget);
     scatter->show();
 
     return true;
@@ -72,11 +89,17 @@ void gamman3d::createMenu()
     connect(openAct, &QAction::triggered, this, &gamman3d::openSession);
     fileMenu->addAction(openAct);
 
+    fileMenu->addSeparator();
+
     QAction *exitAct = new QAction(tr("E&xit"), this);
     exitAct->setShortcuts(QKeySequence::Quit);
     exitAct->setStatusTip(tr("Exit the application"));
     connect(exitAct, &QAction::triggered, this, &QWidget::close);
     fileMenu->addAction(exitAct);
+
+    QToolBar *tools = addToolBar("Tools");
+    QAction *openToolAct = tools->addAction(QIcon(":/res/images/open-32.png"), "Open session");
+    connect(openToolAct, &QAction::triggered, this, &gamman3d::openSession);
 }
 
 void gamman3d::openSession()
@@ -123,9 +146,7 @@ void gamman3d::populateScene(QString dir)
         p++;
     }
 
-    series->dataProxy()->resetArray(dataArray);
-    series->setItemSize(0.10);
-    series->setMeshSmooth(true);
+    series->dataProxy()->resetArray(dataArray);    
 }
 
 void projectGPSToXYZSimplified(double lat, double lon, double &x, double &y, double &z)

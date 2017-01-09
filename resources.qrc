@@ -1,0 +1,5 @@
+<RCC>
+    <qresource prefix="/res">
+        <file>images/open-32.png</file>
+    </qresource>
+</RCC>

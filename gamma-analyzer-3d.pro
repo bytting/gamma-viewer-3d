@@ -33,3 +33,6 @@ HEADERS  += gamman3d.h \
     spectrum.h
 
 FORMS    += gamman3d.ui
+
+RESOURCES += \
+    resources.qrc
