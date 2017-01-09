@@ -17,10 +17,11 @@
 #ifndef GAMMAN3D_H
 #define GAMMAN3D_H
 
+#include "session.h"
+#include <memory>
 #include <QMainWindow>
 #include <QLabel>
 #include <QtDataVisualization/Q3DScatter>
-#include "session.h"
 
 namespace Ui {
 class gamman3d;
@@ -43,7 +44,7 @@ public:
 
 private:
     Ui::gamman3d *ui;
-    Session *session;
+    std::unique_ptr<Session> session;
     QtDataVisualization::Q3DScatter *scatter;
     QtDataVisualization::QScatter3DSeries *series;
     QtDataVisualization::QScatterDataArray *dataArray;

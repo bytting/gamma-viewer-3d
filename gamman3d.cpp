@@ -41,10 +41,7 @@ gamman3d::gamman3d(QWidget *parent) :
 }
 
 gamman3d::~gamman3d()
-{    
-    if(session)
-        delete session;
-
+{
     delete ui;
 }
 
@@ -84,7 +81,7 @@ void gamman3d::setupScene()
 {
     //setGeometry(0, 0, 800, 600);
 
-    session = new Session();
+    session = std::make_unique<Session>();
 
     scatter = new Q3DScatter();
     scatter->scene()->activeCamera()->setCameraPreset(Q3DCamera::CameraPresetFront);

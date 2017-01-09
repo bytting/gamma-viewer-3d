@@ -27,7 +27,8 @@ Spectrum::~Spectrum()
 {
 }
 
-QJsonDocument loadJson(QString fileName) {
+QJsonDocument loadJson(QString fileName)
+{
     QFile jsonFile(fileName);
     jsonFile.open(QFile::ReadOnly);
     return QJsonDocument().fromJson(jsonFile.readAll());
