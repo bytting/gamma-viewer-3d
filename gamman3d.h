@@ -34,11 +34,19 @@ public:
     ~gamman3d();
 
     bool initialize();
+    void createMenu();
+    void populateScene(QString dir);
 
 private:
     Ui::gamman3d *ui;
     Session *session;
     QtDataVisualization::Q3DScatter *scatter;
+    QtDataVisualization::QScatter3DSeries *series;
+    QtDataVisualization::QScatterDataArray *dataArray;
+
+
+private slots:
+    void openSession();
 };
 
 #endif // GAMMAN3D_H

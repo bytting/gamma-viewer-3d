@@ -32,7 +32,4 @@ HEADERS  += gamman3d.h \
     session.h \
     spectrum.h
 
-INCLUDEPATH += C:/SDK/boost_1_63_0/
-LIBS += -LC:/SDK/boost_1_63_0/libs/
-
 FORMS    += gamman3d.ui

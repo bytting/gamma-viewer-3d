@@ -17,6 +17,8 @@
 #include "gamman3d.h"
 #include "ui_gamman3d.h"
 #include <cmath>
+#include <QMessageBox>
+#include <QFileDialog>
 
 #define PI 3.14159
 
@@ -26,7 +28,8 @@ gamman3d::gamman3d(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::gamman3d)
 {
-    ui->setupUi(this);    
+    ui->setupUi(this);
+    createMenu();
 }
 
 gamman3d::~gamman3d()
@@ -40,17 +43,60 @@ bool gamman3d::initialize()
     //setGeometry(0, 0, 800, 600);
 
     session = new Session();
-    session->load("C:\\crash-sessions\\øvelse-NORDUM-06.09.2016\\06092016_155236");
 
     scatter = new Q3DScatter();
     scatter->scene()->activeCamera()->setCameraPreset(Q3DCamera::CameraPresetDirectlyAbove);
     scatter->setShadowQuality(QAbstract3DGraph::ShadowQualityNone);
 
     QScatterDataProxy *proxy = new QScatterDataProxy();
-    QScatter3DSeries *series = new QScatter3DSeries(proxy);
+    series = new QScatter3DSeries(proxy);
     scatter->addSeries(series);
+    dataArray = new QScatterDataArray();
 
-    QScatterDataArray *dataArray = new QScatterDataArray();
+    QWidget *container = QWidget::createWindowContainer(scatter);
+    setCentralWidget(container);
+    scatter->show();
+
+    return true;
+}
+
+void gamman3d::createMenu()
+{
+    QMenu *fileMenu = menuBar()->addMenu(tr("&File"));
+
+    QAction *openAct = new QAction("&Open", this);
+    openAct->setStatusTip(tr("Open a session"));
+    connect(openAct, &QAction::triggered, this, &gamman3d::openSession);
+    fileMenu->addAction(openAct);
+
+    QAction *exitAct = new QAction(tr("E&xit"), this);
+    exitAct->setShortcuts(QKeySequence::Quit);
+    exitAct->setStatusTip(tr("Exit the application"));
+    connect(exitAct, &QAction::triggered, this, &QWidget::close);
+    fileMenu->addAction(exitAct);
+}
+
+void gamman3d::openSession()
+{
+    QString dir = QFileDialog::getExistingDirectory(
+                this,
+                tr("Open session directory"),
+                "",
+                QFileDialog::ShowDirsOnly | QFileDialog::DontResolveSymlinks);
+    if(!dir.isEmpty())
+        populateScene(dir);
+}
+
+void gamman3d::populateScene(QString dir)
+{
+    session->clear();
+    if(!session->load(dir))
+    {
+        QMessageBox::warning(this, tr("Error"), "Failed to open session directory [" + dir + "]");
+        return;
+    }
+
+    dataArray->clear();
     dataArray->resize(session->SpectrumCount());
     QScatterDataItem *p = &dataArray->first();
 
@@ -71,10 +117,4 @@ bool gamman3d::initialize()
     series->dataProxy()->resetArray(dataArray);
     series->setItemSize(0.15);
     series->setMeshSmooth(true);
-
-    QWidget *container = QWidget::createWindowContainer(scatter);
-    setCentralWidget(container);
-    scatter->show();
-
-    return true;
 }
