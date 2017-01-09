@@ -20,9 +20,12 @@
 #include <QMessageBox>
 #include <QFileDialog>
 
-#define PI 3.14159
+#define PI 3.14159265358979323846
 
 using namespace QtDataVisualization;
+
+void projectGPSToXYZSimplified(const Spectrum *spec, double &x, double &y, double &z);
+void projectGPSToXYZ(const Spectrum *spec, double &x, double &y, double &z);
 
 gamman3d::gamman3d(QWidget *parent) :
     QMainWindow(parent),
@@ -102,14 +105,9 @@ void gamman3d::populateScene(QString dir)
 
     for(const Spectrum* spec : session->getSpectrums())
     {
-        double cosLat = std::cos(spec->latitudeStart * PI / 180.0);
-        double sinLat = std::sin(spec->latitudeStart * PI / 180.0);
-        double cosLon = std::cos(spec->longitudeStart * PI / 180.0);
-        double sinLon = std::sin(spec->longitudeStart * PI / 180.0);
-        double rad = 500.0;
-        double x = rad * cosLat * cosLon;
-        double y = rad * cosLat * sinLon;
-        double z = rad * sinLat;
+        double x, y, z;
+        projectGPSToXYZSimplified(spec, x, y, z);
+        //projectGPSToXYZ(spec, x, y, z);
         p->setPosition(QVector3D(x, y, z));
         p++;
     }
@@ -117,4 +115,32 @@ void gamman3d::populateScene(QString dir)
     series->dataProxy()->resetArray(dataArray);
     series->setItemSize(0.15);
     series->setMeshSmooth(true);
+}
+
+void projectGPSToXYZSimplified(const Spectrum *spec, double &x, double &y, double &z)
+{
+    double cosLat = std::cos(spec->latitudeStart * PI / 180.0);
+    double sinLat = std::sin(spec->latitudeStart * PI / 180.0);
+    double cosLon = std::cos(spec->longitudeStart * PI / 180.0);
+    double sinLon = std::sin(spec->longitudeStart * PI / 180.0);
+    double rad = 500.0;
+    x = rad * cosLat * cosLon;
+    y = rad * cosLat * sinLon;
+    z = rad * sinLat;
+}
+
+void projectGPSToXYZ(const Spectrum *spec, double &x, double &y, double &z)
+{
+    double cosLat = std::cos(spec->latitudeStart * PI / 180.0);
+    double sinLat = std::sin(spec->latitudeStart * PI / 180.0);
+    double cosLon = std::cos(spec->longitudeStart * PI / 180.0);
+    double sinLon = std::sin(spec->longitudeStart * PI / 180.0);
+    double rad = 6378137.0;
+    double f = 1.0 / 298.257224;
+    double C = 1.0 / std::sqrt(cosLat * cosLat + (1 - f) * (1 - f) * sinLat * sinLat);
+    double S = (1.0 - f) * (1.0 - f) * C;
+    double h = 0.0;
+    x = (rad * C + h) * cosLat * cosLon;
+    y = (rad * C + h) * cosLat * sinLon;
+    z = (rad * S + h) * sinLat;
 }

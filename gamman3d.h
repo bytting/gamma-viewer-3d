@@ -35,7 +35,7 @@ public:
 
     bool initialize();
     void createMenu();
-    void populateScene(QString dir);
+    void populateScene(QString dir);    
 
 private:
     Ui::gamman3d *ui;
