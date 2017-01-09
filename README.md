@@ -1,2 +1,2 @@
 # gamma-analyzer-3d
-3D view of a gamma-analyzer session
+A 3D view of gamma-analyzer sessions

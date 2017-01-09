@@ -59,7 +59,7 @@ bool gamman3d::initialize()
 
     QScatterDataProxy *proxy = new QScatterDataProxy();
     series = new QScatter3DSeries(proxy);
-    series->setItemSize(0.06);
+    series->setItemSize(0.1);
     series->setMeshSmooth(true);
     scatter->addSeries(series);
     dataArray = new QScatterDataArray();
