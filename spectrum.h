@@ -17,8 +17,9 @@
 #ifndef SPECTRUM_H
 #define SPECTRUM_H
 
-#include <vector>
-#include <string>
+#include <QString>
+#include <QVector>
+#include <QList>
 
 class Spectrum
 {
@@ -26,7 +27,7 @@ public:
     Spectrum();
     ~Spectrum();
 
-    bool load(const std::string &filename);
+    bool load(QString filename);
 
     int sessionIndex;
     double latitudeStart, latitudeStartErr;
@@ -37,11 +38,11 @@ public:
     double altitudeEnd, altitudeEndErr;
     double gpsSpeedStart, gpsSpeedStartErr;
     double gpsSpeedEnd, gpsSpeedEndErr;
-    std::string gpsTimeStart, gpsTimeEnd;
+    QString gpsTimeStart, gpsTimeEnd;
     int realtime, livetime;
     int totalCount;
     int numChannels;
-    std::vector<int> channels;
+    QVector<int> channels;
 
 private:
 };

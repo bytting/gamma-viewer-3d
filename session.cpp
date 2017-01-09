@@ -15,7 +15,9 @@
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "session.h"
-#include <boost/filesystem.hpp>
+#include <QString>
+#include <QDir>
+#include <QFileInfo>
 
 Session::Session()
 {
@@ -36,28 +38,23 @@ const SpecList Session::getSpectrums() const
     return mSpecList;
 }
 
-bool Session::load(const std::string &session_path)
+bool Session::load(QString session_path)
 {
-    namespace fs = boost::filesystem;
+    QDir dir(session_path + QString("/json"));
 
-    fs::path p(session_path);
-    p.append("/json");
-    if(!fs::exists(p) || !fs::is_directory(p))
+    if (!dir.exists())
         return false;
 
-    fs::directory_iterator end_iter;
-    for(fs::directory_iterator di(p); di != end_iter; ++di)
-    {        
-        if (!fs::is_regular_file(di->status()))
-            continue;
-
-        fs::path fp = di->path();
-        if(fp.extension() != ".json")
-            continue;
-
-        Spectrum *spec = new Spectrum();
-        if(spec->load(fp.string()))
-            mSpecList.push_back(spec);
+    foreach(QFileInfo info, dir.entryInfoList(QDir::NoDotAndDotDot | QDir::Files))
+    {
+        QString suffix = info.completeSuffix();
+        if(suffix.toLower() == "json")
+        {
+            Spectrum *spec = new Spectrum();
+            if(spec->load(info.absoluteFilePath()))
+                mSpecList.push_back(spec);
+            else delete spec;
+        }
     }
 
     return true;

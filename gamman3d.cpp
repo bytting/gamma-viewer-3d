@@ -37,10 +37,10 @@ gamman3d::~gamman3d()
 
 bool gamman3d::initialize()
 {
-    setGeometry(0, 0, 800, 600);
+    //setGeometry(0, 0, 800, 600);
 
     session = new Session();
-    session->load("/home/drb/06092016_110323");
+    session->load("C:\\crash-sessions\\øvelse-NORDUM-06.09.2016\\06092016_155236");
 
     scatter = new Q3DScatter();
     scatter->scene()->activeCamera()->setCameraPreset(Q3DCamera::CameraPresetDirectlyAbove);
@@ -64,7 +64,7 @@ bool gamman3d::initialize()
         double x = rad * cosLat * cosLon;
         double y = rad * cosLat * sinLon;
         double z = rad * sinLat;
-        p->setPosition(QVector3D(y, x, z));
+        p->setPosition(QVector3D(x, y, z));
         p++;
     }
 

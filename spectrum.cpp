@@ -15,8 +15,9 @@
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "spectrum.h"
-#include "rapidjson/document.h"
-#include <fstream>
+#include <QJsonDocument>
+#include <QJsonObject>
+#include <QFile>
 
 Spectrum::Spectrum()
 {
@@ -26,30 +27,27 @@ Spectrum::~Spectrum()
 {
 }
 
-bool Spectrum::load(const std::string &filename)
-{
-    namespace rap = rapidjson;
+QJsonDocument loadJson(QString fileName) {
+    QFile jsonFile(fileName);
+    jsonFile.open(QFile::ReadOnly);
+    return QJsonDocument().fromJson(jsonFile.readAll());
+}
 
-    std::ifstream fin(filename.c_str());
-    std::string line, json;
-    while(std::getline(fin, line))
-        json += line;
-
-    rap::Document doc;
-    doc.Parse(json.c_str());
-    if(!doc.HasMember("command"))
+bool Spectrum::load(QString filename)
+{    
+    QJsonDocument doc = loadJson(filename);
+    if(!doc.isObject())
         return false;
 
-    const rap::Value& args = doc["arguments"];
-    if(!args.IsObject())
-        return false;
+    QJsonObject obj = doc.object();
+    QJsonObject args = obj.value("arguments").toObject();
 
-    latitudeStart = args["latitude_start"].GetDouble();
-    latitudeEnd = args["latitude_end"].GetDouble();
-    longitudeStart = args["longitude_start"].GetDouble();
-    longitudeEnd = args["longitude_end"].GetDouble();
-    altitudeStart = args["altitude_start"].GetDouble();
-    altitudeEnd = args["altitude_end"].GetDouble();
+    latitudeStart = args.value("latitude_start").toDouble();
+    latitudeEnd = args.value("latitude_end").toDouble();
+    longitudeStart = args.value("longitude_start").toDouble();
+    longitudeEnd = args.value("longitude_end").toDouble();
+    altitudeStart = args.value("altitude_start").toDouble();
+    altitudeEnd = args.value("altitude_end").toDouble();
 
     return true;
 }

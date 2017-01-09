@@ -18,10 +18,10 @@
 #define SESSION_H
 
 #include "spectrum.h"
-#include <vector>
-#include <string>
+#include <QList>
+#include <QString>
 
-typedef std::vector<Spectrum*> SpecList;
+typedef QList<Spectrum*> SpecList;
 
 class Session
 {
@@ -33,11 +33,11 @@ public:
     const SpecList getSpectrums() const;
     int SpectrumCount() const { return mSpecList.size(); }
 
-    bool load(const std::string &session_path);
+    bool load(QString session_path);
 
     void clear();
 
-    std::string name;
+    QString name;
 
 private:
 
