@@ -22,10 +22,10 @@ namespace geo
 
 void geodeticToCartesianSimplified(double lat, double lon, double &x, double &y, double &z)
 {
-    double cosLat = std::cos(DEG_TO_RAD(lat));
-    double sinLat = std::sin(DEG_TO_RAD(lat));
-    double cosLon = std::cos(DEG_TO_RAD(lon));
-    double sinLon = std::sin(DEG_TO_RAD(lon));
+    double cosLat = std::cos(degToRad(lat));
+    double sinLat = std::sin(degToRad(lat));
+    double cosLon = std::cos(degToRad(lon));
+    double sinLon = std::sin(degToRad(lon));
     double rad = 500.0;
     x = rad * cosLat * cosLon;
     y = rad * cosLat * sinLon;
@@ -34,10 +34,10 @@ void geodeticToCartesianSimplified(double lat, double lon, double &x, double &y,
 
 void geodeticToCartesian(double lat, double lon, double &x, double &y, double &z)
 {
-    double cosLat = std::cos(DEG_TO_RAD(lat));
-    double sinLat = std::sin(DEG_TO_RAD(lat));
-    double cosLon = std::cos(DEG_TO_RAD(lon));
-    double sinLon = std::sin(DEG_TO_RAD(lon));
+    double cosLat = std::cos(degToRad(lat));
+    double sinLat = std::sin(degToRad(lat));
+    double cosLon = std::cos(degToRad(lon));
+    double sinLon = std::sin(degToRad(lon));
     double rad = 6378137.0;
     double f = 1.0 / 298.257224;
     double C = 1.0 / std::sqrt(cosLat * cosLat + (1 - f) * (1 - f) * sinLat * sinLat);

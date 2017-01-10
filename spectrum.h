@@ -27,10 +27,9 @@ namespace gamma
 class Spectrum
 {
 public:
-    Spectrum();
-    ~Spectrum();
 
-    bool load(QString filename);
+    Spectrum(QString filename);
+    virtual ~Spectrum();
 
     int sessionIndex;
     double latitudeStart, latitudeStartErr;
@@ -46,6 +45,10 @@ public:
     int totalCount;
     int numChannels;
     QVector<int> channels;
+
+private:
+
+    void load(QString filename);
 };
 
 } // namespace gamma

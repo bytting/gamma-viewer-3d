@@ -29,12 +29,11 @@
 using namespace QtDataVisualization;
 
 gamman3d::gamman3d(QWidget *parent) :
-    QMainWindow(parent),
-    ui(new Ui::gamman3d)
+    QMainWindow(parent),    
+    ui(std::make_unique<Ui::gamman3d>()),
+    session(std::make_unique<gamma::Session>())
 {
-    ui->setupUi(this);
-
-    session = std::make_unique<gamma::Session>();
+    ui->setupUi(this);    
 
     setupMenu();
     setupToolbar();
@@ -44,8 +43,7 @@ gamman3d::gamman3d(QWidget *parent) :
 }
 
 gamman3d::~gamman3d()
-{
-    delete ui;
+{    
 }
 
 void gamman3d::setupMenu()
@@ -147,10 +145,14 @@ void gamman3d::closeSession()
 
 void gamman3d::populateScene(QString dir)
 {
-    session->clear();
-    if(!session->load(dir))
+    try
     {
-        QMessageBox::warning(this, tr("Error"), "Failed to open session directory [" + dir + "]");
+        session->clear();
+        session->load(dir);
+    }
+    catch(std::exception &e)
+    {
+        QMessageBox::warning(this, tr("Error"), e.what());
         return;
     }    
 
@@ -161,7 +163,7 @@ void gamman3d::populateScene(QString dir)
     double minAltitude = session->getMinAltitude();
     double focalDistance = 200.0;    
 
-    for(const gamma::Spectrum* spec : session->getSpectrums())
+    for(const auto& spec : session->getSpectrums())
     {
         double x, y, z;
         geo::geodeticToCartesianSimplified(spec->latitudeStart, spec->longitudeStart, x, y, z);

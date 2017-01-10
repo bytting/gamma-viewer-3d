@@ -18,6 +18,7 @@
 #define SESSION_H
 
 #include "spectrum.h"
+#include <memory>
 #include <QList>
 #include <QString>
 
@@ -29,19 +30,21 @@ typedef QList<Spectrum*> SpecList;
 class Session
 {
 public:
+
     Session();
     ~Session();
 
     const Spectrum* getSpectrum(int idx) const;
-    const SpecList getSpectrums() const;
+
+    const SpecList& getSpectrums() const;
+
     int SpectrumCount() const { return mSpecList.size(); }
+
     double getMinAltitude() const;
 
-    bool load(QString session_path);
+    void load(QString session_path);
 
-    void clear();
-
-    QString name;
+    void clear();    
 
 private:
 

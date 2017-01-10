@@ -15,6 +15,8 @@
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "session.h"
+#include <stdexcept>
+#include <memory>
 #include <QString>
 #include <QDir>
 #include <QFileInfo>
@@ -36,7 +38,7 @@ const Spectrum* Session::getSpectrum(int idx) const
     return mSpecList[idx];
 }
 
-const SpecList Session::getSpectrums() const
+const SpecList& Session::getSpectrums() const
 {
     return mSpecList;
 }
@@ -48,7 +50,7 @@ double Session::getMinAltitude() const
 
     double min = mSpecList[0]->altitudeStart;
 
-    for(const Spectrum *spec : mSpecList)
+    for(const auto& spec : mSpecList)
     {
         if(spec->altitudeStart < min)
             min = spec->altitudeStart;
@@ -57,32 +59,29 @@ double Session::getMinAltitude() const
     return min;
 }
 
-bool Session::load(QString session_path)
+void Session::load(QString session_path)
 {
     QDir dir(session_path + QString("/json"));
 
     if (!dir.exists())
-        return false;
+        throw std::runtime_error("Directory does not exist " + dir.absolutePath().toStdString());
 
     foreach(QFileInfo info, dir.entryInfoList(QDir::NoDotAndDotDot | QDir::Files))
     {
         QString suffix = info.completeSuffix();
         if(suffix.toLower() == "json")
         {
-            Spectrum *spec = new Spectrum();
-            if(spec->load(info.absoluteFilePath()))
-                mSpecList.push_back(spec);
-            else delete spec;
+            Spectrum* spec = new Spectrum(info.absoluteFilePath());
+            mSpecList.push_back(spec);
         }
-    }
-
-    return true;
+    }    
 }
 
 void Session::clear()
 {
-    for(SpecList::iterator it = mSpecList.begin(); it != mSpecList.end(); ++it)
-        delete *it;
+    for(auto& spec : mSpecList)
+        delete spec;
+
     mSpecList.clear();
 }
 

@@ -15,6 +15,7 @@
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "spectrum.h"
+#include <stdexcept>
 #include <QJsonDocument>
 #include <QJsonObject>
 #include <QFile>
@@ -22,26 +23,27 @@
 namespace gamma
 {
 
-Spectrum::Spectrum()
+Spectrum::Spectrum(QString filename)
 {
+    load(filename);
 }
 
 Spectrum::~Spectrum()
 {
 }
 
-QJsonDocument loadJson(QString fileName)
+static QJsonDocument loadJson(QString fileName)
 {
     QFile jsonFile(fileName);
     jsonFile.open(QFile::ReadOnly);
     return QJsonDocument().fromJson(jsonFile.readAll());
 }
 
-bool Spectrum::load(QString filename)
+void Spectrum::load(QString filename)
 {    
     QJsonDocument doc = loadJson(filename);
     if(!doc.isObject())
-        return false;
+        throw std::runtime_error("Unable to load json document " + filename.toStdString());
 
     QJsonObject obj = doc.object();
     QJsonObject args = obj.value("arguments").toObject();
@@ -51,9 +53,7 @@ bool Spectrum::load(QString filename)
     longitudeStart = args.value("longitude_start").toDouble();
     longitudeEnd = args.value("longitude_end").toDouble();
     altitudeStart = args.value("altitude_start").toDouble();
-    altitudeEnd = args.value("altitude_end").toDouble();
-
-    return true;
+    altitudeEnd = args.value("altitude_end").toDouble();    
 }
 
 } // namespace gamma
