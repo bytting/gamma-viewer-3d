@@ -50,27 +50,32 @@ gamman3d::~gamman3d()
 
 void gamman3d::setupMenu()
 {
-    QMenu *fileMenu = menuBar()->addMenu(tr("&File"));
+    QMenu *fileMenu = ui->menuBar->addMenu(tr("&File"));
 
-    QAction *openAct = new QAction(QIcon(":/res/images/open-32.png"), tr("&Open session"), this);
-    openAct->setStatusTip(tr("Open a session"));
-    connect(openAct, &QAction::triggered, this, &gamman3d::openSession);
-    fileMenu->addAction(openAct);
+    QAction *openAction = new QAction(QIcon(":/res/images/open-32.png"), tr("&Open session"), this);
+    openAction->setStatusTip(tr("Open a session"));
+    connect(openAction, &QAction::triggered, this, &gamman3d::openSession);
+    fileMenu->addAction(openAction);
+
+    QAction *closeAction = new QAction(QIcon(":/res/images/close-32.png"), tr("&Close session"), this);
+    closeAction->setStatusTip(tr("Close current session"));
+    connect(closeAction, &QAction::triggered, this, &gamman3d::closeSession);
+    fileMenu->addAction(closeAction);
 
     fileMenu->addSeparator();
 
-    QAction *exitAct = new QAction(QIcon(":/res/images/exit-32.png"), tr("E&xit"), this);
-    exitAct->setShortcuts(QKeySequence::Quit);
-    exitAct->setStatusTip(tr("Exit the application"));
-    connect(exitAct, &QAction::triggered, this, &QWidget::close);
-    fileMenu->addAction(exitAct);        
+    QAction *exitAction = new QAction(QIcon(":/res/images/exit-32.png"), tr("E&xit"), this);
+    exitAction->setShortcuts(QKeySequence::Quit);
+    exitAction->setStatusTip(tr("Exit the application"));
+    connect(exitAction, &QAction::triggered, this, &QWidget::close);
+    fileMenu->addAction(exitAction);
 }
 
 void gamman3d::setupToolbar()
 {        
-    ui->mainToolBar->setMovable(false);
-    QAction *openToolAct = ui->mainToolBar->addAction(QIcon(":/res/images/open-32.png"), tr("&Open session"));
-    connect(openToolAct, &QAction::triggered, this, &gamman3d::openSession);
+    ui->toolBar->setMovable(false);
+    QAction *openToolAction = ui->toolBar->addAction(QIcon(":/res/images/open-32.png"), tr("&Open session"));
+    connect(openToolAction, &QAction::triggered, this, &gamman3d::openSession);
 }
 
 void gamman3d::setupStatus()
@@ -126,6 +131,14 @@ void gamman3d::openSession()
                 QFileDialog::ShowDirsOnly | QFileDialog::DontResolveSymlinks);
     if(!dir.isEmpty())
         populateScene(dir);
+}
+
+void gamman3d::closeSession()
+{
+    session->clear();
+    dataArray->clear();
+    series->dataProxy()->resetArray(dataArray);
+    statusLabel->setText("");
 }
 
 void gamman3d::populateScene(QString dir)

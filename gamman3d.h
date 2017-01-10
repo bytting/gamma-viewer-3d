@@ -58,6 +58,7 @@ private:
 private slots:
 
     void openSession();
+    void closeSession();
 };
 
 #endif // GAMMAN3D_H

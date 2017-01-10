@@ -1,7 +1,8 @@
 <RCC>
     <qresource prefix="/res">
-        <file>images/open-32.png</file>
         <file>images/exit-32.png</file>
         <file>images/crash.ico</file>
+        <file>images/close-32.png</file>
+        <file>images/open-32.png</file>
     </qresource>
 </RCC>
