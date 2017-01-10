@@ -34,6 +34,8 @@ gamman3d::gamman3d(QWidget *parent) :
 {
     ui->setupUi(this);
 
+    session = std::make_unique<Session>();
+
     setupMenu();
     setupToolbar();
     setupStatus();
@@ -79,6 +81,10 @@ void gamman3d::setupStatus()
 
 void gamman3d::setupControls()
 {
+    setWindowTitle(applicationName);
+    setWindowIcon(QIcon(":/res/images/crash.ico"));
+    //setGeometry(0, 0, 800, 600);
+
     scatter = new Q3DScatter();
 
     QWidget *container = QWidget::createWindowContainer(scatter);
@@ -99,11 +105,7 @@ void gamman3d::setupControls()
 }
 
 void gamman3d::setupScene()
-{
-    //setGeometry(0, 0, 800, 600);
-
-    session = std::make_unique<Session>();
-
+{    
     scatter->scene()->activeCamera()->setCameraPreset(Q3DCamera::CameraPresetFront);
     scatter->setShadowQuality(QAbstract3DGraph::ShadowQualityNone);
 
@@ -112,6 +114,7 @@ void gamman3d::setupScene()
     series->setItemSize(0.1);
     series->setMeshSmooth(true);
     scatter->addSeries(series);
+
     dataArray = new QScatterDataArray();
 }
 

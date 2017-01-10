@@ -32,10 +32,10 @@ class gamman3d : public QMainWindow
     Q_OBJECT
 
 public:
+
     explicit gamman3d(QWidget *parent = 0);
     ~gamman3d();
 
-    bool initialize();
     void setupMenu();
     void setupToolbar();
     void setupStatus();
@@ -44,6 +44,7 @@ public:
     void populateScene(QString dir);    
 
 private:
+
     Ui::gamman3d *ui;
     std::unique_ptr<Session> session;
     QtDataVisualization::Q3DScatter *scatter;
@@ -51,8 +52,11 @@ private:
     QtDataVisualization::QScatterDataArray *dataArray;
     QLabel *statusLabel;
 
+    const QString applicationName = "Gamma Analyzer 3D";
+
 
 private slots:
+
     void openSession();
 };
 
