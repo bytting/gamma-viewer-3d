@@ -19,6 +19,9 @@
 #include <QJsonObject>
 #include <QFile>
 
+namespace gamma
+{
+
 Spectrum::Spectrum()
 {
 }
@@ -52,3 +55,5 @@ bool Spectrum::load(QString filename)
 
     return true;
 }
+
+} // namespace gamma

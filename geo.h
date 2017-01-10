@@ -17,10 +17,18 @@
 #ifndef GEO_H
 #define GEO_H
 
-#define PI 3.14159265358979323846
-#define DEG_TO_RAD(deg) ((deg) * PI / 180.0)
+namespace geo
+{
+
+//#define PI 3.14159265358979323846
+constexpr double PI = 3.14159265358979323846;
+
+//#define DEG_TO_RAD(deg) ((deg) * PI / 180.0)
+constexpr double DEG_TO_RAD(double deg) { return deg * PI / 180.0; }
 
 void geodeticToCartesianSimplified(double lat, double lon, double &x, double &y, double &z);
 void geodeticToCartesian(double lat, double lon, double &x, double &y, double &z);
+
+} // namespace geo
 
 #endif // GEO_H

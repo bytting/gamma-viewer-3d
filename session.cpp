@@ -19,6 +19,9 @@
 #include <QDir>
 #include <QFileInfo>
 
+namespace gamma
+{
+
 Session::Session()
 {
 }
@@ -82,3 +85,5 @@ void Session::clear()
         delete *it;
     mSpecList.clear();
 }
+
+} // namespace gamma

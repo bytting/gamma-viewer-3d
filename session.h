@@ -21,6 +21,9 @@
 #include <QList>
 #include <QString>
 
+namespace gamma
+{
+
 typedef QList<Spectrum*> SpecList;
 
 class Session
@@ -44,5 +47,7 @@ private:
 
     SpecList mSpecList;
 };
+
+} // namespace gamma
 
 #endif // SESSION_H

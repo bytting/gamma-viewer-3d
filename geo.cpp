@@ -17,6 +17,9 @@
 #include "geo.h"
 #include <cmath>
 
+namespace geo
+{
+
 void geodeticToCartesianSimplified(double lat, double lon, double &x, double &y, double &z)
 {
     double cosLat = std::cos(DEG_TO_RAD(lat));
@@ -44,3 +47,5 @@ void geodeticToCartesian(double lat, double lon, double &x, double &y, double &z
     y = (rad * C + h) * cosLat * sinLon;
     z = (rad * S + h) * sinLat;
 }
+
+} // namespace geo

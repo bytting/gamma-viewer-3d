@@ -34,7 +34,7 @@ gamman3d::gamman3d(QWidget *parent) :
 {
     ui->setupUi(this);
 
-    session = std::make_unique<Session>();
+    session = std::make_unique<gamma::Session>();
 
     setupMenu();
     setupToolbar();
@@ -74,8 +74,12 @@ void gamman3d::setupMenu()
 void gamman3d::setupToolbar()
 {        
     ui->toolBar->setMovable(false);
+
     QAction *openToolAction = ui->toolBar->addAction(QIcon(":/res/images/open-32.png"), tr("&Open session"));
     connect(openToolAction, &QAction::triggered, this, &gamman3d::openSession);
+
+    QAction *closeToolAction = ui->toolBar->addAction(QIcon(":/res/images/close-32.png"), tr("&Close current session"));
+    connect(closeToolAction, &QAction::triggered, this, &gamman3d::closeSession);
 }
 
 void gamman3d::setupStatus()
@@ -155,13 +159,13 @@ void gamman3d::populateScene(QString dir)
     QScatterDataItem *p = &dataArray->first();
 
     double minAltitude = session->getMinAltitude();
-    double focalDistance = 200.0;
+    double focalDistance = 200.0;    
 
-    for(const Spectrum* spec : session->getSpectrums())
+    for(const gamma::Spectrum* spec : session->getSpectrums())
     {
         double x, y, z;
-        geodeticToCartesianSimplified(spec->latitudeStart, spec->longitudeStart, x, y, z);
-        //geodeticToCartesian(spec->latitudeStart, spec->longitudeStart, x, y, z);
+        geo::geodeticToCartesianSimplified(spec->latitudeStart, spec->longitudeStart, x, y, z);
+        //geo::geodeticToCartesian(spec->latitudeStart, spec->longitudeStart, x, y, z);
 
         double projectedX = x * focalDistance / (focalDistance + z);
         double projectedY = y * focalDistance / (focalDistance + z);

@@ -21,6 +21,9 @@
 #include <QVector>
 #include <QList>
 
+namespace gamma
+{
+
 class Spectrum
 {
 public:
@@ -43,8 +46,8 @@ public:
     int totalCount;
     int numChannels;
     QVector<int> channels;
-
-private:
 };
+
+} // namespace gamma
 
 #endif // SPECTRUM_H

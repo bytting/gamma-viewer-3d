@@ -46,7 +46,7 @@ public:
 private:
 
     Ui::gamman3d *ui;
-    std::unique_ptr<Session> session;
+    std::unique_ptr<gamma::Session> session;
     QtDataVisualization::Q3DScatter *scatter;
     QtDataVisualization::QScatter3DSeries *series;
     QtDataVisualization::QScatterDataArray *dataArray;
