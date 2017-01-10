@@ -39,6 +39,7 @@ public:
     void setupMenu();
     void setupToolbar();
     void setupStatus();
+    void setupControls();
     void setupScene();
     void populateScene(QString dir);    
 

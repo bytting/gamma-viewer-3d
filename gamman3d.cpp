@@ -37,6 +37,7 @@ gamman3d::gamman3d(QWidget *parent) :
     setupMenu();
     setupToolbar();
     setupStatus();
+    setupControls();
     setupScene();
 }
 
@@ -64,10 +65,9 @@ void gamman3d::setupMenu()
 }
 
 void gamman3d::setupToolbar()
-{
-    QToolBar *tools = addToolBar("Tools");
-    tools->setMovable(false);
-    QAction *openToolAct = tools->addAction(QIcon(":/res/images/open-32.png"), tr("&Open session"));
+{        
+    ui->mainToolBar->setMovable(false);
+    QAction *openToolAct = ui->mainToolBar->addAction(QIcon(":/res/images/open-32.png"), tr("&Open session"));
     connect(openToolAct, &QAction::triggered, this, &gamman3d::openSession);
 }
 
@@ -77,13 +77,33 @@ void gamman3d::setupStatus()
     ui->statusBar->addPermanentWidget(statusLabel);
 }
 
+void gamman3d::setupControls()
+{
+    scatter = new Q3DScatter();
+
+    QWidget *container = QWidget::createWindowContainer(scatter);
+    QWidget *widget = new QWidget;
+    QHBoxLayout *hbox = new QHBoxLayout(widget);
+    hbox->setMargin(0);
+    QVBoxLayout *vbox = new QVBoxLayout();
+    hbox->addWidget(container, 1);
+    hbox->addLayout(vbox);
+
+    QPushButton *btn = new QPushButton("Test");
+    vbox->addWidget(btn);
+    vbox->addStretch(1);
+    vbox->setMargin(5);
+
+    setCentralWidget(widget);
+    scatter->show();
+}
+
 void gamman3d::setupScene()
 {
     //setGeometry(0, 0, 800, 600);
 
     session = std::make_unique<Session>();
 
-    scatter = new Q3DScatter();
     scatter->scene()->activeCamera()->setCameraPreset(Q3DCamera::CameraPresetFront);
     scatter->setShadowQuality(QAbstract3DGraph::ShadowQualityNone);
 
@@ -93,14 +113,6 @@ void gamman3d::setupScene()
     series->setMeshSmooth(true);
     scatter->addSeries(series);
     dataArray = new QScatterDataArray();
-
-    QWidget *container = QWidget::createWindowContainer(scatter);
-    QWidget *widget = new QWidget;
-    QHBoxLayout *hbox = new QHBoxLayout(widget);
-    hbox->addWidget(container, 1);
-
-    setCentralWidget(widget);
-    scatter->show();
 }
 
 void gamman3d::openSession()
