@@ -51,16 +51,15 @@ void gamman3d::setupMenu()
     QMenu *fileMenu = ui->menuBar->addMenu(tr("&File"));
 
     QAction *openAction = new QAction(
-                QIcon(":/res/images/open-32.png"),
-                tr("&Open session"),
-                this);
+                QIcon(QStringLiteral(":/res/images/open-32.png")),
+                tr("&Open session"), this);
     openAction->setStatusTip(tr("Open a session"));    
     connect(openAction, &QAction::triggered,
             this, &gamman3d::openSession);
     fileMenu->addAction(openAction);
 
     QAction *closeAction = new QAction(
-                QIcon(":/res/images/close-32.png"),
+                QIcon(QStringLiteral(":/res/images/close-32.png")),
                 tr("&Close session"),
                 this);
     closeAction->setStatusTip(tr("Close current session"));
@@ -71,9 +70,8 @@ void gamman3d::setupMenu()
     fileMenu->addSeparator();
 
     QAction *exitAction = new QAction(
-                QIcon(":/res/images/exit-32.png"),
-                tr("E&xit"),
-                this);
+                QIcon(QStringLiteral(":/res/images/exit-32.png")),
+                tr("E&xit"), this);
     exitAction->setShortcuts(QKeySequence::Quit);
     exitAction->setStatusTip(tr("Exit the application"));
     connect(exitAction, &QAction::triggered,
@@ -86,14 +84,14 @@ void gamman3d::setupToolbar()
     ui->toolBar->setMovable(false);
 
     QAction *openToolAction = ui->toolBar->addAction(
-                QIcon(":/res/images/open-32.png"),
+                QIcon(QStringLiteral(":/res/images/open-32.png")),
                 tr("&Open session"));
 
     connect(openToolAction, &QAction::triggered,
             this, &gamman3d::openSession);
 
     QAction *closeToolAction = ui->toolBar->addAction(
-                QIcon(":/res/images/close-32.png"),
+                QIcon(QStringLiteral(":/res/images/close-32.png")),
                 tr("&Close current session"));
 
     connect(closeToolAction, &QAction::triggered,
@@ -109,7 +107,7 @@ void gamman3d::setupStatus()
 void gamman3d::setupControls()
 {
     setWindowTitle(applicationName);
-    setWindowIcon(QIcon(":/res/images/crash.ico"));
+    setWindowIcon(QIcon(QStringLiteral(":/res/images/crash.ico")));
     setMinimumSize(640, 480);
 
     scatter = new Q3DScatter();
@@ -124,25 +122,27 @@ void gamman3d::setupControls()
     hbox->addWidget(container, 1);
     hbox->addLayout(vbox);
 
-    QLabel *lblSceneTheme = new QLabel("Theme");
+    QLabel *lblSceneTheme = new QLabel(QStringLiteral("Theme"));
     vbox->addWidget(lblSceneTheme);
 
-    cboxSceneTheme = new QComboBox();
-    cboxSceneTheme->addItem("Army Blue");
-    cboxSceneTheme->addItem("Digia");
-    cboxSceneTheme->addItem("Ebony");
-    cboxSceneTheme->addItem("Primary Colors");
-    cboxSceneTheme->addItem("Qt");
-    cboxSceneTheme->addItem("Retro");
-    cboxSceneTheme->addItem("Stone Moss");
-    cboxSceneTheme->setCurrentText("Qt");
+    cboxSceneTheme = new QComboBox(widget);
+    cboxSceneTheme->addItem(QStringLiteral("Qt"));
+    cboxSceneTheme->addItem(QStringLiteral("Primary Colors"));
+    cboxSceneTheme->addItem(QStringLiteral("Digia"));
+    cboxSceneTheme->addItem(QStringLiteral("Stone Moss"));
+    cboxSceneTheme->addItem(QStringLiteral("Army Blue"));
+    cboxSceneTheme->addItem(QStringLiteral("Retro"));
+    cboxSceneTheme->addItem(QStringLiteral("Ebony"));
+    cboxSceneTheme->addItem(QStringLiteral("Isabelle"));
+    cboxSceneTheme->setCurrentIndex(0);
     cboxSceneTheme->setEditable(false);
-    connect(cboxSceneTheme,
-            static_cast<void(QComboBox::*)(int)>(&QComboBox::currentIndexChanged),
-            this, &gamman3d::changeSceneTheme);
+
+    QObject::connect(cboxSceneTheme, SIGNAL(currentIndexChanged(int)),
+                     this, SLOT(changeSceneTheme(int)));
+
     vbox->addWidget(cboxSceneTheme);
 
-    QLabel *lblSceneNodeSize = new QLabel("Node size");
+    QLabel *lblSceneNodeSize = new QLabel(QStringLiteral("Node size"));
     vbox->addWidget(lblSceneNodeSize);
 
     slSceneNodeSize = new QSlider(Qt::Orientation::Horizontal);
@@ -151,7 +151,7 @@ void gamman3d::setupControls()
     slSceneNodeSize->setMinimum(1);
     slSceneNodeSize->setMaximum(20);
     slSceneNodeSize->setValue(2);
-    connect(slSceneNodeSize, &QSlider::valueChanged,
+    QObject::connect(slSceneNodeSize, &QSlider::valueChanged,
             this, &gamman3d::resizeSceneNode);
     vbox->addWidget(slSceneNodeSize);
 
@@ -185,7 +185,7 @@ void gamman3d::openSession()
     QString dir = QFileDialog::getExistingDirectory(
                 this,
                 tr("Open session directory"),
-                "",
+                QStringLiteral(""),
                 QFileDialog::ShowDirsOnly |
                 QFileDialog::DontResolveSymlinks);
 
@@ -197,23 +197,23 @@ void gamman3d::openSession()
         case Session::LoadResult::DirDoesNotExist:
             QMessageBox::information(
                         this, tr("Information"),
-                        "Directory does not exist");
+                        QStringLiteral("Directory does not exist"));
             return;
 
         case Session::LoadResult::DirNotASession:
             QMessageBox::information(
                         this, tr("Information"),
-                        "Directory does not appear to be a valid session");
+                        QStringLiteral("Directory does not appear to be a valid session"));
             return;
 
         case Session::LoadResult::InvalidSpectrumFound:
             QMessageBox::information(
                         this, tr("Information"),
-                        "Session contains invalid spectrums");
+                        QStringLiteral("Session contains invalid spectrums"));
         }
 
         populateScene();
-        statusLabel->setText("Session: " + dir);
+        statusLabel->setText(QStringLiteral("Session: ") + dir);
     }
     catch(std::exception &e)
     {
@@ -271,23 +271,8 @@ void gamman3d::resizeSceneNode(int val)
     series->setItemSize(size);
 }
 
-void gamman3d::changeSceneTheme(int idx)
+void gamman3d::changeSceneTheme(int theme)
 {
-    QString themeName = cboxSceneTheme->itemText(idx);
-    if(themeName == "Army Blue")
-        scatter->activeTheme()->setType(Q3DTheme::ThemeArmyBlue);
-    else if(themeName == "Digia")
-        scatter->activeTheme()->setType(Q3DTheme::ThemeDigia);
-    else if(themeName == "Ebony")
-        scatter->activeTheme()->setType(Q3DTheme::ThemeEbony);
-    else if(themeName == "Isabelle")
-        scatter->activeTheme()->setType(Q3DTheme::ThemeIsabelle);
-    else if(themeName == "Primary Colors")
-        scatter->activeTheme()->setType(Q3DTheme::ThemePrimaryColors);
-    else if(themeName == "Qt")
-        scatter->activeTheme()->setType(Q3DTheme::ThemeQt);
-    else if(themeName == "Retro")
-        scatter->activeTheme()->setType(Q3DTheme::ThemeRetro);
-    else if(themeName == "Stone Moss")
-        scatter->activeTheme()->setType(Q3DTheme::ThemeStoneMoss);
+    Q3DTheme *currentTheme = scatter->activeTheme();
+    currentTheme->setType(Q3DTheme::Theme(theme));
 }

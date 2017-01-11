@@ -63,19 +63,19 @@ Session::LoadResult Session::load(QString sessionPath)
 {
     Session::LoadResult res = Session::LoadResult::Success;
 
-    QDir dir(sessionPath + QString("/json"));
+    QDir dir(sessionPath + QStringLiteral("/json"));
 
     if (!dir.exists())
         return Session::LoadResult::DirNotASession;
 
-    if(!QFile::exists(sessionPath + QString("/session.json")))
+    if(!QFile::exists(sessionPath + QStringLiteral("/session.json")))
         return Session::LoadResult::DirNotASession;
 
     foreach(QFileInfo info, dir.entryInfoList(
                 QDir::NoDotAndDotDot | QDir::Files))
     {
         QString suffix = info.completeSuffix();
-        if(suffix.toLower() == "json")
+        if(suffix.toLower() == QStringLiteral("json"))
         {
             try
             {

@@ -66,7 +66,7 @@ private slots:
     void openSession();
     void closeSession();
     void resizeSceneNode(int val);
-    void changeSceneTheme(int idx);
+    void changeSceneTheme(int theme);
 };
 
 #endif // GAMMAN3D_H
