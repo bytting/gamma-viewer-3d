@@ -20,11 +20,13 @@
 namespace geo
 {
 
-constexpr double pi = 3.14159265358979323846;
+template<typename T>
+const T pi = 3.14159265358979323846;
 
-constexpr double degToRad(double deg)
+template<typename T>
+T degToRad(T deg)
 {
-    return deg * pi / 180.0;
+    return deg * pi<T> / static_cast<T>(180);
 }
 
 void geodeticToCartesianSimplified(

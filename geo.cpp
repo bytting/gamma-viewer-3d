@@ -27,10 +27,10 @@ void geodeticToCartesianSimplified(
         double &y,
         double &z)
 {
-    double cosLat = std::cos(degToRad(lat));
-    double sinLat = std::sin(degToRad(lat));
-    double cosLon = std::cos(degToRad(lon));
-    double sinLon = std::sin(degToRad(lon));
+    double cosLat = std::cos(degToRad<double>(lat));
+    double sinLat = std::sin(degToRad<double>(lat));
+    double cosLon = std::cos(degToRad<double>(lon));
+    double sinLon = std::sin(degToRad<double>(lon));
     const double rad = 500.0;
     x = rad * cosLat * cosLon;
     y = rad * cosLat * sinLon;
@@ -44,10 +44,10 @@ void geodeticToCartesian(
         double &y,
         double &z)
 {
-    double cosLat = std::cos(degToRad(lat));
-    double sinLat = std::sin(degToRad(lat));
-    double cosLon = std::cos(degToRad(lon));
-    double sinLon = std::sin(degToRad(lon));
+    double cosLat = std::cos(degToRad<double>(lat));
+    double sinLat = std::sin(degToRad<double>(lat));
+    double cosLon = std::cos(degToRad<double>(lon));
+    double sinLon = std::sin(degToRad<double>(lon));
     const double rad = 6378137.0;
     const double f = 1.0 / 298.257224;
     const double C = 1.0 / std::sqrt(

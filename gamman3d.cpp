@@ -137,8 +137,8 @@ void gamman3d::setupControls()
     cboxSceneTheme->setCurrentIndex(0);
     cboxSceneTheme->setEditable(false);
 
-    QObject::connect(cboxSceneTheme, SIGNAL(currentIndexChanged(int)),
-                     this, SLOT(changeSceneTheme(int)));
+    connect(cboxSceneTheme, SIGNAL(currentIndexChanged(int)),
+            this, SLOT(changeSceneTheme(int)));
 
     vbox->addWidget(cboxSceneTheme);
 
@@ -151,7 +151,7 @@ void gamman3d::setupControls()
     slSceneNodeSize->setMinimum(1);
     slSceneNodeSize->setMaximum(20);
     slSceneNodeSize->setValue(2);
-    QObject::connect(slSceneNodeSize, &QSlider::valueChanged,
+    connect(slSceneNodeSize, &QSlider::valueChanged,
             this, &gamman3d::resizeSceneNode);
     vbox->addWidget(slSceneNodeSize);
 
