@@ -19,13 +19,14 @@
 
 #include "spectrum.h"
 #include <memory>
+#include <vector>
 #include <QString>
-#include <QList>
+//#include <QList>
 
 namespace gamma
 {
 
-typedef QList<Spectrum*> SpecList;
+typedef std::vector<Spectrum*> SpecList;
 
 class Session
 {
@@ -34,7 +35,7 @@ public:
     Session();
     ~Session();
 
-    const Spectrum* getSpectrum(int idx) const;
+    const Spectrum* getSpectrum(unsigned idx) const;
 
     const SpecList& getSpectrums() const;
 

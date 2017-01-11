@@ -33,8 +33,11 @@ Session::~Session()
     clear();
 }
 
-const Spectrum* Session::getSpectrum(int idx) const
+const Spectrum* Session::getSpectrum(unsigned idx) const
 {
+    if(idx >= mSpecList.size())
+        throw std::runtime_error("Session::getSpectrum: Index out of bounds");
+
     return mSpecList[idx];
 }
 
@@ -71,8 +74,9 @@ Session::LoadResult Session::load(QString sessionPath)
     if(!QFile::exists(sessionPath + QStringLiteral("/session.json")))
         return Session::LoadResult::DirNotASession;
 
-    foreach(QFileInfo info, dir.entryInfoList(
-                QDir::NoDotAndDotDot | QDir::Files))
+    const auto entryInfoList = dir.entryInfoList(
+                QDir::NoDotAndDotDot | QDir::Files);
+    for(const QFileInfo &info : entryInfoList)
     {
         QString suffix = info.completeSuffix();
         if(suffix.toLower() == QStringLiteral("json"))
