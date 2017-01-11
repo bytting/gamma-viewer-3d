@@ -45,18 +45,19 @@ public:
     void setupStatus();
     void setupControls();
     void setupScene();
+
     void populateScene();
 
 private:
 
     std::unique_ptr<Ui::gamman3d> ui;
     std::unique_ptr<gamma::Session> session;
-    QtDataVisualization::Q3DScatter *scatter;
-    QtDataVisualization::QScatter3DSeries *series;
-    QtDataVisualization::QScatterDataArray *dataArray;
-    QLabel* statusLabel;
-    QSlider* slSceneNodeSize;
-    QComboBox *cboxSceneTheme;
+    QtDataVisualization::Q3DScatter* scatter;
+    QtDataVisualization::QScatter3DSeries* scatterSeries;
+    QtDataVisualization::QScatterDataArray* scatterData;
+    QLabel* labelStatus;
+    QSlider* sliderSceneNodeSize;
+    QComboBox* comboSceneTheme;
 
     const QString applicationName = "Gamma Analyzer 3D";
 

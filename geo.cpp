@@ -50,10 +50,9 @@ void geodeticToCartesian(
     double sinLon = std::sin(degToRad<double>(lon));
     const double rad = 6378137.0;
     const double f = 1.0 / 298.257224;
-    const double C = 1.0 / std::sqrt(
-                cosLat * cosLat + (1 - f) * (1 - f) *
-                sinLat * sinLat);
-    const double S = (1.0 - f) * (1.0 - f) * C;
+    double C = 1.0 / std::sqrt(
+                cosLat * cosLat + (1 - f) * (1 - f) * sinLat * sinLat);
+    double S = (1.0 - f) * (1.0 - f) * C;
     const double h = 0.0;
     x = (rad * C + h) * cosLat * cosLon;
     y = (rad * C + h) * cosLat * sinLon;

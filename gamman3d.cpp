@@ -100,8 +100,8 @@ void gamman3d::setupToolbar()
 
 void gamman3d::setupStatus()
 {
-    statusLabel = new QLabel(this);
-    ui->statusBar->addPermanentWidget(statusLabel);
+    labelStatus = new QLabel(this);
+    ui->statusBar->addPermanentWidget(labelStatus);
 }
 
 void gamman3d::setupControls()
@@ -125,33 +125,33 @@ void gamman3d::setupControls()
     QLabel *lblSceneTheme = new QLabel(QStringLiteral("Theme"));
     vbox->addWidget(lblSceneTheme);
 
-    cboxSceneTheme = new QComboBox();
-    cboxSceneTheme->addItem(QStringLiteral("Qt"));
-    cboxSceneTheme->addItem(QStringLiteral("Primary Colors"));
-    cboxSceneTheme->addItem(QStringLiteral("Digia"));
-    cboxSceneTheme->addItem(QStringLiteral("Stone Moss"));
-    cboxSceneTheme->addItem(QStringLiteral("Army Blue"));
-    cboxSceneTheme->addItem(QStringLiteral("Retro"));
-    cboxSceneTheme->addItem(QStringLiteral("Ebony"));
-    cboxSceneTheme->addItem(QStringLiteral("Isabelle"));
-    cboxSceneTheme->setCurrentIndex(0);
-    cboxSceneTheme->setEditable(false);
-    connect(cboxSceneTheme, SIGNAL(currentIndexChanged(int)),
+    comboSceneTheme = new QComboBox();
+    comboSceneTheme->addItem(QStringLiteral("Qt"));
+    comboSceneTheme->addItem(QStringLiteral("Primary Colors"));
+    comboSceneTheme->addItem(QStringLiteral("Digia"));
+    comboSceneTheme->addItem(QStringLiteral("Stone Moss"));
+    comboSceneTheme->addItem(QStringLiteral("Army Blue"));
+    comboSceneTheme->addItem(QStringLiteral("Retro"));
+    comboSceneTheme->addItem(QStringLiteral("Ebony"));
+    comboSceneTheme->addItem(QStringLiteral("Isabelle"));
+    comboSceneTheme->setCurrentIndex(0);
+    comboSceneTheme->setEditable(false);
+    connect(comboSceneTheme, SIGNAL(currentIndexChanged(int)),
             this, SLOT(changeSceneTheme(int)));
-    vbox->addWidget(cboxSceneTheme);
+    vbox->addWidget(comboSceneTheme);
 
     QLabel *lblSceneNodeSize = new QLabel(QStringLiteral("Node size"));
     vbox->addWidget(lblSceneNodeSize);
 
-    slSceneNodeSize = new QSlider(Qt::Orientation::Horizontal);
-    slSceneNodeSize->setMinimumSize(200, 0);
-    slSceneNodeSize->setTickInterval(1);
-    slSceneNodeSize->setMinimum(1);
-    slSceneNodeSize->setMaximum(20);
-    slSceneNodeSize->setValue(2);
-    connect(slSceneNodeSize, &QSlider::valueChanged,
+    sliderSceneNodeSize = new QSlider(Qt::Orientation::Horizontal);
+    sliderSceneNodeSize->setMinimumSize(200, 0);
+    sliderSceneNodeSize->setTickInterval(1);
+    sliderSceneNodeSize->setMinimum(1);
+    sliderSceneNodeSize->setMaximum(20);
+    sliderSceneNodeSize->setValue(2);
+    connect(sliderSceneNodeSize, &QSlider::valueChanged,
             this, &gamman3d::resizeSceneNode);
-    vbox->addWidget(slSceneNodeSize);
+    vbox->addWidget(sliderSceneNodeSize);
 
     vbox->addStretch(1);
 
@@ -168,12 +168,12 @@ void gamman3d::setupScene()
     scatter->activeTheme()->setType(Q3DTheme::ThemeQt);
 
     QScatterDataProxy *proxy = new QScatterDataProxy();
-    series = new QScatter3DSeries(proxy);
-    series->setItemSize(0.1);
-    series->setMeshSmooth(true);
-    scatter->addSeries(series);
+    scatterSeries = new QScatter3DSeries(proxy);
+    scatterSeries->setItemSize(0.1);
+    scatterSeries->setMeshSmooth(true);
+    scatter->addSeries(scatterSeries);
 
-    dataArray = new QScatterDataArray();
+    scatterData = new QScatterDataArray();
 }
 
 void gamman3d::openSession()
@@ -210,12 +210,14 @@ void gamman3d::openSession()
             QMessageBox::information(
                         this, tr("Information"),
                         QStringLiteral("Session contains invalid spectrums"));
+            break;
+
         default:
             break;
         }
 
         populateScene();
-        statusLabel->setText(QStringLiteral("Session: ") + dir);
+        labelStatus->setText(QStringLiteral("Session: ") + dir);
     }
     catch(std::exception &e)
     {
@@ -227,19 +229,19 @@ void gamman3d::openSession()
 void gamman3d::closeSession()
 {
     session->clear();
-    dataArray->clear();
-    series->dataProxy()->resetArray(dataArray);
-    statusLabel->setText("");
+    scatterData->clear();
+    scatterSeries->dataProxy()->resetArray(scatterData);
+    labelStatus->setText("");
 }
 
 void gamman3d::populateScene()
 {        
-    dataArray->clear();
-    dataArray->resize(session->SpectrumCount());
-    QScatterDataItem *p = &dataArray->first();
+    scatterData->clear();
+    scatterData->resize(session->SpectrumCount());
+    QScatterDataItem *p = &scatterData->first();
 
     double minAltitude = session->getMinAltitude();
-    double focalDistance = 200.0;    
+    const double focalDistance = 200.0;
 
     double x, y, z, projectedX, projectedY, deltaAltitude;
 
@@ -264,17 +266,15 @@ void gamman3d::populateScene()
         p++;
     }
 
-    series->dataProxy()->resetArray(dataArray);        
+    scatterSeries->dataProxy()->resetArray(scatterData);
 }
 
 void gamman3d::resizeSceneNode(int val)
 {
-    double size = (double)val / 20.0;
-    series->setItemSize(size);
+    scatterSeries->setItemSize((double)val / 20.0);
 }
 
 void gamman3d::changeSceneTheme(int theme)
 {
-    Q3DTheme *currentTheme = scatter->activeTheme();
-    currentTheme->setType(Q3DTheme::Theme(theme));
+    scatter->activeTheme()->setType(Q3DTheme::Theme(theme));
 }
