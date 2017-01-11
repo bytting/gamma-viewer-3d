@@ -21,10 +21,10 @@
 #include <QFileDialog>
 #include <QHBoxLayout>
 #include <QVBoxLayout>
-#include <QPushButton>
 #include <QToolBar>
 #include <QAction>
 #include <QIcon>
+#include <QPushButton>
 
 using namespace QtDataVisualization;
 
@@ -50,22 +50,34 @@ void gamman3d::setupMenu()
 {
     QMenu *fileMenu = ui->menuBar->addMenu(tr("&File"));
 
-    QAction *openAction = new QAction(QIcon(":/res/images/open-32.png"), tr("&Open session"), this);
-    openAction->setStatusTip(tr("Open a session"));
-    connect(openAction, &QAction::triggered, this, &gamman3d::openSession);
+    QAction *openAction = new QAction(
+                QIcon(":/res/images/open-32.png"),
+                tr("&Open session"),
+                this);
+    openAction->setStatusTip(tr("Open a session"));    
+    connect(openAction, &QAction::triggered,
+            this, &gamman3d::openSession);
     fileMenu->addAction(openAction);
 
-    QAction *closeAction = new QAction(QIcon(":/res/images/close-32.png"), tr("&Close session"), this);
+    QAction *closeAction = new QAction(
+                QIcon(":/res/images/close-32.png"),
+                tr("&Close session"),
+                this);
     closeAction->setStatusTip(tr("Close current session"));
-    connect(closeAction, &QAction::triggered, this, &gamman3d::closeSession);
+    connect(closeAction, &QAction::triggered,
+            this, &gamman3d::closeSession);
     fileMenu->addAction(closeAction);
 
     fileMenu->addSeparator();
 
-    QAction *exitAction = new QAction(QIcon(":/res/images/exit-32.png"), tr("E&xit"), this);
+    QAction *exitAction = new QAction(
+                QIcon(":/res/images/exit-32.png"),
+                tr("E&xit"),
+                this);
     exitAction->setShortcuts(QKeySequence::Quit);
     exitAction->setStatusTip(tr("Exit the application"));
-    connect(exitAction, &QAction::triggered, this, &QWidget::close);
+    connect(exitAction, &QAction::triggered,
+            this, &QWidget::close);
     fileMenu->addAction(exitAction);
 }
 
@@ -73,11 +85,19 @@ void gamman3d::setupToolbar()
 {        
     ui->toolBar->setMovable(false);
 
-    QAction *openToolAction = ui->toolBar->addAction(QIcon(":/res/images/open-32.png"), tr("&Open session"));
-    connect(openToolAction, &QAction::triggered, this, &gamman3d::openSession);
+    QAction *openToolAction = ui->toolBar->addAction(
+                QIcon(":/res/images/open-32.png"),
+                tr("&Open session"));
 
-    QAction *closeToolAction = ui->toolBar->addAction(QIcon(":/res/images/close-32.png"), tr("&Close current session"));
-    connect(closeToolAction, &QAction::triggered, this, &gamman3d::closeSession);
+    connect(openToolAction, &QAction::triggered,
+            this, &gamman3d::openSession);
+
+    QAction *closeToolAction = ui->toolBar->addAction(
+                QIcon(":/res/images/close-32.png"),
+                tr("&Close current session"));
+
+    connect(closeToolAction, &QAction::triggered,
+            this, &gamman3d::closeSession);
 }
 
 void gamman3d::setupStatus()
@@ -90,7 +110,7 @@ void gamman3d::setupControls()
 {
     setWindowTitle(applicationName);
     setWindowIcon(QIcon(":/res/images/crash.ico"));
-    //setGeometry(0, 0, 800, 600);
+    setMinimumSize(640, 480);
 
     scatter = new Q3DScatter();
 
@@ -99,13 +119,25 @@ void gamman3d::setupControls()
     QHBoxLayout *hbox = new QHBoxLayout(widget);
     hbox->setMargin(0);
     QVBoxLayout *vbox = new QVBoxLayout();
+    vbox->setMargin(5);
+
     hbox->addWidget(container, 1);
     hbox->addLayout(vbox);
 
-    QPushButton *btn = new QPushButton("Test");
-    vbox->addWidget(btn);
+    QLabel *lblSceneNodeSize = new QLabel("Node size");
+    vbox->addWidget(lblSceneNodeSize);
+
+    slSceneNodeSize = new QSlider(Qt::Orientation::Horizontal);
+    slSceneNodeSize->setMinimumSize(200, 0);
+    slSceneNodeSize->setTickInterval(1);
+    slSceneNodeSize->setMinimum(1);
+    slSceneNodeSize->setMaximum(20);
+    slSceneNodeSize->setValue(2);
+    connect(slSceneNodeSize, &QSlider::valueChanged,
+            this, &gamman3d::resizeSceneNode);
+    vbox->addWidget(slSceneNodeSize);
+
     vbox->addStretch(1);
-    vbox->setMargin(5);
 
     setCentralWidget(widget);
     scatter->show();
@@ -113,8 +145,10 @@ void gamman3d::setupControls()
 
 void gamman3d::setupScene()
 {    
-    scatter->scene()->activeCamera()->setCameraPreset(Q3DCamera::CameraPresetFront);
-    scatter->setShadowQuality(QAbstract3DGraph::ShadowQualityNone);
+    scatter->scene()->activeCamera()->setCameraPreset(
+                Q3DCamera::CameraPresetFront);
+    scatter->setShadowQuality(
+                QAbstract3DGraph::ShadowQualityNone);
 
     QScatterDataProxy *proxy = new QScatterDataProxy();
     series = new QScatter3DSeries(proxy);
@@ -129,10 +163,26 @@ void gamman3d::openSession()
 {
     QString dir = QFileDialog::getExistingDirectory(
                 this,
-                tr("Open session directory"), "",
-                QFileDialog::ShowDirsOnly | QFileDialog::DontResolveSymlinks);
+                tr("Open session directory"),
+                "",
+                QFileDialog::ShowDirsOnly |
+                QFileDialog::DontResolveSymlinks);
+
     if(!dir.isEmpty())
-        populateScene(dir);
+    {
+        try
+        {
+            session->clear();
+            session->load(dir);
+            populateScene();
+            statusLabel->setText("Session: " + dir);
+        }
+        catch(std::exception &e)
+        {
+            QMessageBox::warning(this, tr("Error"), e.what());
+            return;
+        }
+    }
 }
 
 void gamman3d::closeSession()
@@ -143,19 +193,8 @@ void gamman3d::closeSession()
     statusLabel->setText("");
 }
 
-void gamman3d::populateScene(QString dir)
-{
-    try
-    {
-        session->clear();
-        session->load(dir);
-    }
-    catch(std::exception &e)
-    {
-        QMessageBox::warning(this, tr("Error"), e.what());
-        return;
-    }    
-
+void gamman3d::populateScene()
+{        
     dataArray->clear();
     dataArray->resize(session->SpectrumCount());
     QScatterDataItem *p = &dataArray->first();
@@ -163,21 +202,34 @@ void gamman3d::populateScene(QString dir)
     double minAltitude = session->getMinAltitude();
     double focalDistance = 200.0;    
 
+    double x, y, z, projectedX, projectedY, fakeAltitude;
+
     for(const auto& spec : session->getSpectrums())
-    {
-        double x, y, z;
-        geo::geodeticToCartesianSimplified(spec->latitudeStart, spec->longitudeStart, x, y, z);
-        //geo::geodeticToCartesian(spec->latitudeStart, spec->longitudeStart, x, y, z);
+    {        
+        geo::geodeticToCartesianSimplified(
+                    spec->latitudeStart,
+                    spec->longitudeStart,
+                    x, y, z);
 
-        double projectedX = x * focalDistance / (focalDistance + z);
-        double projectedY = y * focalDistance / (focalDistance + z);
+        /*geo::geodeticToCartesian(
+                    spec->latitudeStart,
+                    spec->longitudeStart,
+                    x, y, z);*/
 
-        double fakeAltitude = (spec->altitudeStart - minAltitude) / 100000.0;
+        projectedX = x * focalDistance / (focalDistance + z);
+        projectedY = y * focalDistance / (focalDistance + z);
+
+        fakeAltitude = (spec->altitudeStart - minAltitude) / 100000.0;
 
         p->setPosition(QVector3D(projectedX, projectedY, -fakeAltitude));
         p++;
     }
 
-    series->dataProxy()->resetArray(dataArray);    
-    statusLabel->setText("Session: " + dir);
+    series->dataProxy()->resetArray(dataArray);        
+}
+
+void gamman3d::resizeSceneNode(int val)
+{
+    double size = (double)val / 20.0;
+    series->setItemSize(size);
 }

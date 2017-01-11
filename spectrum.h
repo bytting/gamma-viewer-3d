@@ -19,7 +19,6 @@
 
 #include <QString>
 #include <QVector>
-#include <QList>
 
 namespace gamma
 {

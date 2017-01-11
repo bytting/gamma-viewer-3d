@@ -20,29 +20,41 @@
 namespace geo
 {
 
-void geodeticToCartesianSimplified(double lat, double lon, double &x, double &y, double &z)
+void geodeticToCartesianSimplified(
+        double lat,
+        double lon,
+        double &x,
+        double &y,
+        double &z)
 {
     double cosLat = std::cos(degToRad(lat));
     double sinLat = std::sin(degToRad(lat));
     double cosLon = std::cos(degToRad(lon));
     double sinLon = std::sin(degToRad(lon));
-    double rad = 500.0;
+    const double rad = 500.0;
     x = rad * cosLat * cosLon;
     y = rad * cosLat * sinLon;
     z = rad * sinLat;
 }
 
-void geodeticToCartesian(double lat, double lon, double &x, double &y, double &z)
+void geodeticToCartesian(
+        double lat,
+        double lon,
+        double &x,
+        double &y,
+        double &z)
 {
     double cosLat = std::cos(degToRad(lat));
     double sinLat = std::sin(degToRad(lat));
     double cosLon = std::cos(degToRad(lon));
     double sinLon = std::sin(degToRad(lon));
-    double rad = 6378137.0;
-    double f = 1.0 / 298.257224;
-    double C = 1.0 / std::sqrt(cosLat * cosLat + (1 - f) * (1 - f) * sinLat * sinLat);
-    double S = (1.0 - f) * (1.0 - f) * C;
-    double h = 0.0;
+    const double rad = 6378137.0;
+    const double f = 1.0 / 298.257224;
+    const double C = 1.0 / std::sqrt(
+                cosLat * cosLat + (1 - f) * (1 - f) *
+                sinLat * sinLat);
+    const double S = (1.0 - f) * (1.0 - f) * C;
+    const double h = 0.0;
     x = (rad * C + h) * cosLat * cosLon;
     y = (rad * C + h) * cosLat * sinLon;
     z = (rad * S + h) * sinLat;

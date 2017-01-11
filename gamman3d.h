@@ -20,8 +20,11 @@
 #include "session.h"
 #include <memory>
 #include <QMainWindow>
+#include <QString>
 #include <QLabel>
+#include <QSlider>
 #include <QtDataVisualization/Q3DScatter>
+#include <QtDataVisualization/QScatter3DSeries>
 
 namespace Ui {
 class gamman3d;
@@ -41,7 +44,7 @@ public:
     void setupStatus();
     void setupControls();
     void setupScene();
-    void populateScene(QString dir);    
+    void populateScene();
 
 private:
 
@@ -50,7 +53,8 @@ private:
     QtDataVisualization::Q3DScatter *scatter;
     QtDataVisualization::QScatter3DSeries *series;
     QtDataVisualization::QScatterDataArray *dataArray;
-    QLabel *statusLabel;
+    QLabel* statusLabel;
+    QSlider* slSceneNodeSize;
 
     const QString applicationName = "Gamma Analyzer 3D";
 
@@ -59,6 +63,7 @@ private slots:
 
     void openSession();
     void closeSession();
+    void resizeSceneNode(int val);
 };
 
 #endif // GAMMAN3D_H

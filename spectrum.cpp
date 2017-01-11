@@ -43,7 +43,9 @@ void Spectrum::load(QString filename)
 {    
     QJsonDocument doc = loadJson(filename);
     if(!doc.isObject())
-        throw std::runtime_error("Unable to load json document " + filename.toStdString());
+        throw std::runtime_error(
+                "Unable to load json document " +
+                filename.toStdString());
 
     QJsonObject obj = doc.object();
     QJsonObject args = obj.value("arguments").toObject();

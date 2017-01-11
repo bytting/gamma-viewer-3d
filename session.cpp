@@ -64,9 +64,12 @@ void Session::load(QString session_path)
     QDir dir(session_path + QString("/json"));
 
     if (!dir.exists())
-        throw std::runtime_error("Directory does not exist " + dir.absolutePath().toStdString());
+        throw std::runtime_error(
+                "Directory does not exist " +
+                dir.absolutePath().toStdString());
 
-    foreach(QFileInfo info, dir.entryInfoList(QDir::NoDotAndDotDot | QDir::Files))
+    foreach(QFileInfo info, dir.entryInfoList(
+                QDir::NoDotAndDotDot | QDir::Files))
     {
         QString suffix = info.completeSuffix();
         if(suffix.toLower() == "json")

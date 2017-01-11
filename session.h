@@ -19,8 +19,8 @@
 
 #include "spectrum.h"
 #include <memory>
-#include <QList>
 #include <QString>
+#include <QList>
 
 namespace gamma
 {
@@ -38,7 +38,10 @@ public:
 
     const SpecList& getSpectrums() const;
 
-    int SpectrumCount() const { return mSpecList.size(); }
+    int SpectrumCount() const
+    {
+        return mSpecList.size();
+    }
 
     double getMinAltitude() const;
 

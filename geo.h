@@ -22,10 +22,24 @@ namespace geo
 
 constexpr double pi = 3.14159265358979323846;
 
-constexpr double degToRad(double deg) { return deg * pi / 180.0; }
+constexpr double degToRad(double deg)
+{
+    return deg * pi / 180.0;
+}
 
-void geodeticToCartesianSimplified(double lat, double lon, double &x, double &y, double &z);
-void geodeticToCartesian(double lat, double lon, double &x, double &y, double &z);
+void geodeticToCartesianSimplified(
+        double lat,
+        double lon,
+        double &x,
+        double &y,
+        double &z);
+
+void geodeticToCartesian(
+        double lat,
+        double lon,
+        double &x,
+        double &y,
+        double &z);
 
 } // namespace geo
 
