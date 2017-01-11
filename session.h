@@ -21,7 +21,6 @@
 #include <memory>
 #include <vector>
 #include <QString>
-//#include <QList>
 
 namespace gamma
 {

@@ -17,8 +17,8 @@
 #ifndef SPECTRUM_H
 #define SPECTRUM_H
 
+#include <vector>
 #include <QString>
-#include <QVector>
 
 namespace gamma
 {
@@ -43,7 +43,7 @@ public:
     int realtime, livetime;
     int totalCount;
     int numChannels;
-    QVector<int> channels;
+    std::vector<int> channels;
 
 private:
 
