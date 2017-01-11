@@ -76,6 +76,7 @@ Session::LoadResult Session::load(QString sessionPath)
 
     const auto entryInfoList = dir.entryInfoList(
                 QDir::NoDotAndDotDot | QDir::Files);
+
     for(const QFileInfo &info : entryInfoList)
     {
         QString suffix = info.completeSuffix();

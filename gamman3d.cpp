@@ -113,10 +113,10 @@ void gamman3d::setupControls()
     scatter = new Q3DScatter();
 
     QWidget *container = QWidget::createWindowContainer(scatter);
-    QWidget *widget = new QWidget;
+    QWidget *widget = new QWidget(this);
     QHBoxLayout *hbox = new QHBoxLayout(widget);
     hbox->setMargin(0);
-    QVBoxLayout *vbox = new QVBoxLayout();
+    QVBoxLayout *vbox = new QVBoxLayout(widget);
     vbox->setMargin(5);
 
     hbox->addWidget(container, 1);
@@ -125,7 +125,7 @@ void gamman3d::setupControls()
     QLabel *lblSceneTheme = new QLabel(QStringLiteral("Theme"));
     vbox->addWidget(lblSceneTheme);
 
-    cboxSceneTheme = new QComboBox(widget);
+    cboxSceneTheme = new QComboBox();
     cboxSceneTheme->addItem(QStringLiteral("Qt"));
     cboxSceneTheme->addItem(QStringLiteral("Primary Colors"));
     cboxSceneTheme->addItem(QStringLiteral("Digia"));
@@ -136,10 +136,8 @@ void gamman3d::setupControls()
     cboxSceneTheme->addItem(QStringLiteral("Isabelle"));
     cboxSceneTheme->setCurrentIndex(0);
     cboxSceneTheme->setEditable(false);
-
     connect(cboxSceneTheme, SIGNAL(currentIndexChanged(int)),
             this, SLOT(changeSceneTheme(int)));
-
     vbox->addWidget(cboxSceneTheme);
 
     QLabel *lblSceneNodeSize = new QLabel(QStringLiteral("Node size"));
@@ -182,12 +180,14 @@ void gamman3d::openSession()
 {
     using namespace gamma;
 
-    QString dir = QFileDialog::getExistingDirectory(
+    QString dir = QDir::toNativeSeparators(QFileDialog::getExistingDirectory(
                 this,
                 tr("Open session directory"),
                 QStringLiteral(""),
                 QFileDialog::ShowDirsOnly |
-                QFileDialog::DontResolveSymlinks);
+                QFileDialog::DontResolveSymlinks));
+    if(dir.isEmpty())
+        return;
 
     try
     {
@@ -210,6 +210,8 @@ void gamman3d::openSession()
             QMessageBox::information(
                         this, tr("Information"),
                         QStringLiteral("Session contains invalid spectrums"));
+        default:
+            break;
         }
 
         populateScene();
@@ -239,7 +241,7 @@ void gamman3d::populateScene()
     double minAltitude = session->getMinAltitude();
     double focalDistance = 200.0;    
 
-    double x, y, z, projectedX, projectedY, fakeAltitude;
+    double x, y, z, projectedX, projectedY, deltaAltitude;
 
     for(const auto& spec : session->getSpectrums())
     {        
@@ -256,9 +258,9 @@ void gamman3d::populateScene()
         projectedX = x * focalDistance / (focalDistance + z);
         projectedY = y * focalDistance / (focalDistance + z);
 
-        fakeAltitude = (spec->altitudeStart - minAltitude) / 100000.0;
+        deltaAltitude = (spec->altitudeStart - minAltitude);
 
-        p->setPosition(QVector3D(projectedX, projectedY, -fakeAltitude));
+        p->setPosition(QVector3D(projectedX, deltaAltitude, projectedY));
         p++;
     }
 

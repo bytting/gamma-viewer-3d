@@ -60,7 +60,6 @@ private:
 
     const QString applicationName = "Gamma Analyzer 3D";
 
-
 private slots:
 
     void openSession();
