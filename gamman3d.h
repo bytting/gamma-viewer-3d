@@ -23,6 +23,7 @@
 #include <QString>
 #include <QLabel>
 #include <QSlider>
+#include <QComboBox>
 #include <QtDataVisualization/Q3DScatter>
 #include <QtDataVisualization/QScatter3DSeries>
 
@@ -55,6 +56,7 @@ private:
     QtDataVisualization::QScatterDataArray *dataArray;
     QLabel* statusLabel;
     QSlider* slSceneNodeSize;
+    QComboBox *cboxSceneTheme;
 
     const QString applicationName = "Gamma Analyzer 3D";
 
@@ -64,6 +66,7 @@ private slots:
     void openSession();
     void closeSession();
     void resizeSceneNode(int val);
+    void changeSceneTheme(int idx);
 };
 
 #endif // GAMMAN3D_H

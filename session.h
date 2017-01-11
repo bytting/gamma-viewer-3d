@@ -45,7 +45,15 @@ public:
 
     double getMinAltitude() const;
 
-    void load(QString session_path);
+    enum LoadResult
+    {
+        Success,
+        DirDoesNotExist,
+        DirNotASession,
+        InvalidSpectrumFound
+    };
+
+    LoadResult load(QString sessionPath);
 
     void clear();    
 

@@ -59,14 +59,17 @@ double Session::getMinAltitude() const
     return min;
 }
 
-void Session::load(QString session_path)
+Session::LoadResult Session::load(QString sessionPath)
 {
-    QDir dir(session_path + QString("/json"));
+    Session::LoadResult res = Session::LoadResult::Success;
+
+    QDir dir(sessionPath + QString("/json"));
 
     if (!dir.exists())
-        throw std::runtime_error(
-                "Directory does not exist " +
-                dir.absolutePath().toStdString());
+        return Session::LoadResult::DirNotASession;
+
+    if(!QFile::exists(sessionPath + QString("/session.json")))
+        return Session::LoadResult::DirNotASession;
 
     foreach(QFileInfo info, dir.entryInfoList(
                 QDir::NoDotAndDotDot | QDir::Files))
@@ -74,10 +77,19 @@ void Session::load(QString session_path)
         QString suffix = info.completeSuffix();
         if(suffix.toLower() == "json")
         {
-            Spectrum* spec = new Spectrum(info.absoluteFilePath());
-            mSpecList.push_back(spec);
+            try
+            {
+                Spectrum* spec = new Spectrum(info.absoluteFilePath());
+                mSpecList.push_back(spec);
+            }
+            catch(std::exception &e)
+            {
+                res = Session::LoadResult::InvalidSpectrumFound;
+            }
         }
-    }    
+    }
+
+    return res;
 }
 
 void Session::clear()

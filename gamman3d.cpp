@@ -124,6 +124,24 @@ void gamman3d::setupControls()
     hbox->addWidget(container, 1);
     hbox->addLayout(vbox);
 
+    QLabel *lblSceneTheme = new QLabel("Theme");
+    vbox->addWidget(lblSceneTheme);
+
+    cboxSceneTheme = new QComboBox();
+    cboxSceneTheme->addItem("Army Blue");
+    cboxSceneTheme->addItem("Digia");
+    cboxSceneTheme->addItem("Ebony");
+    cboxSceneTheme->addItem("Primary Colors");
+    cboxSceneTheme->addItem("Qt");
+    cboxSceneTheme->addItem("Retro");
+    cboxSceneTheme->addItem("Stone Moss");
+    cboxSceneTheme->setCurrentText("Qt");
+    cboxSceneTheme->setEditable(false);
+    connect(cboxSceneTheme,
+            static_cast<void(QComboBox::*)(int)>(&QComboBox::currentIndexChanged),
+            this, &gamman3d::changeSceneTheme);
+    vbox->addWidget(cboxSceneTheme);
+
     QLabel *lblSceneNodeSize = new QLabel("Node size");
     vbox->addWidget(lblSceneNodeSize);
 
@@ -149,6 +167,7 @@ void gamman3d::setupScene()
                 Q3DCamera::CameraPresetFront);
     scatter->setShadowQuality(
                 QAbstract3DGraph::ShadowQualityNone);
+    scatter->activeTheme()->setType(Q3DTheme::ThemeQt);
 
     QScatterDataProxy *proxy = new QScatterDataProxy();
     series = new QScatter3DSeries(proxy);
@@ -161,6 +180,8 @@ void gamman3d::setupScene()
 
 void gamman3d::openSession()
 {
+    using namespace gamma;
+
     QString dir = QFileDialog::getExistingDirectory(
                 this,
                 tr("Open session directory"),
@@ -168,20 +189,36 @@ void gamman3d::openSession()
                 QFileDialog::ShowDirsOnly |
                 QFileDialog::DontResolveSymlinks);
 
-    if(!dir.isEmpty())
+    try
     {
-        try
+        session->clear();
+        switch(session->load(dir))
         {
-            session->clear();
-            session->load(dir);
-            populateScene();
-            statusLabel->setText("Session: " + dir);
-        }
-        catch(std::exception &e)
-        {
-            QMessageBox::warning(this, tr("Error"), e.what());
+        case Session::LoadResult::DirDoesNotExist:
+            QMessageBox::information(
+                        this, tr("Information"),
+                        "Directory does not exist");
             return;
+
+        case Session::LoadResult::DirNotASession:
+            QMessageBox::information(
+                        this, tr("Information"),
+                        "Directory does not appear to be a valid session");
+            return;
+
+        case Session::LoadResult::InvalidSpectrumFound:
+            QMessageBox::information(
+                        this, tr("Information"),
+                        "Session contains invalid spectrums");
         }
+
+        populateScene();
+        statusLabel->setText("Session: " + dir);
+    }
+    catch(std::exception &e)
+    {
+        QMessageBox::warning(this, tr("Error"), e.what());
+        return;
     }
 }
 
@@ -232,4 +269,25 @@ void gamman3d::resizeSceneNode(int val)
 {
     double size = (double)val / 20.0;
     series->setItemSize(size);
+}
+
+void gamman3d::changeSceneTheme(int idx)
+{
+    QString themeName = cboxSceneTheme->itemText(idx);
+    if(themeName == "Army Blue")
+        scatter->activeTheme()->setType(Q3DTheme::ThemeArmyBlue);
+    else if(themeName == "Digia")
+        scatter->activeTheme()->setType(Q3DTheme::ThemeDigia);
+    else if(themeName == "Ebony")
+        scatter->activeTheme()->setType(Q3DTheme::ThemeEbony);
+    else if(themeName == "Isabelle")
+        scatter->activeTheme()->setType(Q3DTheme::ThemeIsabelle);
+    else if(themeName == "Primary Colors")
+        scatter->activeTheme()->setType(Q3DTheme::ThemePrimaryColors);
+    else if(themeName == "Qt")
+        scatter->activeTheme()->setType(Q3DTheme::ThemeQt);
+    else if(themeName == "Retro")
+        scatter->activeTheme()->setType(Q3DTheme::ThemeRetro);
+    else if(themeName == "Stone Moss")
+        scatter->activeTheme()->setType(Q3DTheme::ThemeStoneMoss);
 }
