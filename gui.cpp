@@ -16,6 +16,7 @@
 
 #include "gui.h"
 #include "gamman3d.h"
+#include <QObject>
 #include <QWidget>
 #include <QMenuBar>
 #include <QMenu>
@@ -26,6 +27,7 @@
 #include <QStackedWidget>
 #include <QToolBox>
 #include <QLabel>
+#include <QSplitter>
 
 Gui::Gui()
 {
@@ -40,18 +42,21 @@ void Gui::setup(gamman3d* g)
     // === MAIN MENU ===
     QMenuBar* menu = new QMenuBar(g);
     g->setMenuBar(menu);
-    QMenu* fileMenu = menu->addMenu("&File");
+    QMenu* fileMenu = menu->addMenu(QObject::tr("&File"));
 
     actionOpenSession = fileMenu->addAction(
-                QIcon(":/res/images/open-32.png"), "Open session");
+                QIcon(QStringLiteral(":/res/images/open-32.png")),
+                QObject::tr("Open session"));
 
     actionCloseSession = fileMenu->addAction(
-                QIcon(":/res/images/close-32.png"), "Close session");
+                QIcon(QStringLiteral(":/res/images/close-32.png")),
+                QObject::tr("Close session"));
 
     fileMenu->addSeparator();
 
     actionExit = fileMenu->addAction(
-                QIcon(":/res/images/exit-32.png"), "Exit");
+                QIcon(QStringLiteral(":/res/images/exit-32.png")),
+                QObject::tr("Exit"));
 
     // === TOOL BAR ===
     QToolBar* tools = new QToolBar(g);
@@ -77,35 +82,30 @@ void Gui::setup(gamman3d* g)
     QStackedWidget* pages = new QStackedWidget(g);
     widgetLayout->addWidget(pages);
 
-    QWidget* pageScatter = new QWidget(g);
-    pageScatter->setLayout(new QHBoxLayout);
-    pageScatter->layout()->setContentsMargins(0, 0, 0, 0);
-    pages->addWidget(pageScatter);
+    QSplitter* splitterScatter = new QSplitter(Qt::Horizontal, g);
+    splitterScatter->setStretchFactor(1, 1);
+    pages->addWidget(splitterScatter);
 
-    QWidget* pageSurface = new QWidget(g);
-    pageSurface->setLayout(new QHBoxLayout());
-    pageSurface->layout()->setContentsMargins(0, 0, 0, 0);
-    pages->addWidget(pageSurface);
+    QSplitter* splitterSurface = new QSplitter(Qt::Horizontal, g);
+    splitterSurface->setStretchFactor(1, 1);
+    pages->addWidget(splitterSurface);
 
     // === SCATTER TOOLBOX ===
-    QToolBox* toolsScatter = new QToolBox(pageScatter);
-    toolsScatter->setMinimumWidth(200);
-    toolsScatter->setMaximumWidth(200);
-    pageScatter->layout()->addWidget(toolsScatter);
+    QToolBox* toolsScatter = new QToolBox(splitterScatter);
+    toolsScatter->setMaximumWidth(400);
+    splitterScatter->addWidget(toolsScatter);
 
     QWidget* toolsScatterControls = new QWidget(toolsScatter);
     toolsScatterControls->setLayout(new QVBoxLayout());
     toolsScatterControls->layout()->setAlignment(Qt::AlignTop);
-    toolsScatter->addItem(toolsScatterControls, "Controls");
+    toolsScatter->addItem(toolsScatterControls, QObject::tr("Controls"));
 
     QWidget* toolsScatterSpectrum = new QWidget(toolsScatter);
     toolsScatterSpectrum->setLayout(new QVBoxLayout());
     toolsScatterSpectrum->layout()->setAlignment(Qt::AlignTop);
-    toolsScatter->addItem(toolsScatterSpectrum, "Spectrum");
+    toolsScatter->addItem(toolsScatterSpectrum, QObject::tr("Spectrum"));
 
-    QLabel* labelScatterTheme = new QLabel(
-                QStringLiteral("Theme"),
-                toolsScatterControls);
+    QLabel* labelScatterTheme = new QLabel(QObject::tr("Theme"));
     toolsScatterControls->layout()->addWidget(labelScatterTheme);
 
     comboScatterTheme = new QComboBox(toolsScatterControls);
@@ -121,9 +121,7 @@ void Gui::setup(gamman3d* g)
 
     toolsScatterControls->layout()->addWidget(comboScatterTheme);
 
-    QLabel* labelScatterNodeSize = new QLabel(
-                QStringLiteral("Node size"),
-                toolsScatterControls);
+    QLabel* labelScatterNodeSize = new QLabel(QObject::tr("Node size"));
     toolsScatterControls->layout()->addWidget(labelScatterNodeSize);
 
     sliderScatterNodeSize = new QSlider(toolsScatterControls);
@@ -133,7 +131,7 @@ void Gui::setup(gamman3d* g)
     sliderScatterNodeSize->setOrientation(Qt::Horizontal);
     toolsScatterControls->layout()->addWidget(sliderScatterNodeSize);
 
-    pages->setCurrentWidget(pageScatter);
+    pages->setCurrentWidget(splitterScatter);
 
     // === SCENE ===
     using namespace QtDataVisualization;
@@ -141,9 +139,8 @@ void Gui::setup(gamman3d* g)
     scatter = new Q3DScatter();
     QWidget *widgetScene = QWidget::createWindowContainer(scatter);
     widgetScene->setContentsMargins(0, 0, 0, 0);
-    widgetScene->sizePolicy().setHorizontalStretch(1);
-    widgetScene->sizePolicy().setVerticalStretch(1);
-    pageScatter->layout()->addWidget(widgetScene);
+    widgetScene->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+    splitterScatter->addWidget(widgetScene);
 
     scatter->scene()->activeCamera()->setCameraPreset(
                 Q3DCamera::CameraPresetFront);
@@ -154,7 +151,9 @@ void Gui::setup(gamman3d* g)
 
     QScatterDataProxy *proxy = new QScatterDataProxy();
     scatterSeries = new QScatter3DSeries(proxy);
-    scatterSeries->setItemSize(0.1);
+    scatterSeries->setItemSize(0.1f);
+    //scatterSeries->setMesh(QAbstract3DSeries::MeshUserDefined);
+    //scatterSeries->setUserDefinedMesh(QStringLiteral(":/mesh/arrow.obj"));
     scatterSeries->setMeshSmooth(true);
     scatter->addSeries(scatterSeries);
 

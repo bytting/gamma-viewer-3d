@@ -4,5 +4,6 @@
         <file>images/crash.ico</file>
         <file>images/close-32.png</file>
         <file>images/open-32.png</file>
+        <file>mesh/arrow.obj</file>
     </qresource>
 </RCC>
