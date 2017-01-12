@@ -14,43 +14,37 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef GAMMAN3D_H
-#define GAMMAN3D_H
+#ifndef GUI_H
+#define GUI_H
 
-#include "gui.h"
-#include "session.h"
-#include <memory>
-#include <QMainWindow>
-#include <QString>
-//#include <QLabel>
-//#include <QSlider>
-//#include <QComboBox>
-//#include <QProgressBar>
+#include <QLabel>
+#include <QAction>
+#include <QComboBox>
+#include <QSlider>
+#include <QtDataVisualization/Q3DScatter>
+#include <QtDataVisualization/QScatter3DSeries>
 
-class gamman3d : public QMainWindow
+class gamman3d;
+
+class Gui
 {
-    Q_OBJECT
-
 public:
 
-    explicit gamman3d(QWidget *parent = 0);
-    ~gamman3d();
+    explicit Gui();
 
-    void setupSignals();
+    void setup(gamman3d* g);
 
-    void populateScene();
+    QLabel* labelStatus;
+    QComboBox* comboScatterTheme;
+    QSlider* sliderScatterNodeSize;
 
-private:
+    QAction* actionOpenSession;
+    QAction* actionCloseSession;
+    QAction* actionExit;
 
-    Gui* gui;
-    gamma::Session* session;
-
-private slots:
-
-    void openSession();
-    void closeSession();    
-    void resizeSceneNode(int val);
-    void changeSceneTheme(int theme);    
+    QtDataVisualization::Q3DScatter* scatter;
+    QtDataVisualization::QScatter3DSeries* scatterSeries;
+    QtDataVisualization::QScatterDataArray* scatterData;
 };
 
-#endif // GAMMAN3D_H
+#endif // GUI_H

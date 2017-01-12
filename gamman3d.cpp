@@ -15,7 +15,6 @@
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "gamman3d.h"
-#include "ui_gamman3d.h"
 #include "geo.h"
 #include <QMessageBox>
 #include <QFileDialog>
@@ -31,93 +30,36 @@
 using namespace QtDataVisualization;
 
 gamman3d::gamman3d(QWidget *parent) :
-    QMainWindow(parent),    
-    ui(new Ui::gamman3d),
-    session(std::make_unique<gamma::Session>())
-{
-    ui->setupUi(this);    
-
-    setupMenu();    
-    setupStatus();
-    setupTools();
-    setupScene();
+    QMainWindow(parent),
+    gui(new Gui()),
+    session(new gamma::Session())
+{        
+    gui->setup(this);
+    setupSignals();
 }
 
 gamman3d::~gamman3d()
-{    
-    delete ui;
+{
+    delete session;
+    delete gui;
 }
 
-void gamman3d::setupMenu()
+void gamman3d::setupSignals()
 {    
-    QObject::connect(ui->actionOpenSession, &QAction::triggered,
+    QObject::connect(gui->actionOpenSession, &QAction::triggered,
             this, &gamman3d::openSession);
 
-    QObject::connect(ui->actionCloseSession, &QAction::triggered,
+    QObject::connect(gui->actionCloseSession, &QAction::triggered,
             this, &gamman3d::closeSession);        
 
-    QObject::connect(ui->actionExit, &QAction::triggered,
+    QObject::connect(gui->actionExit, &QAction::triggered,
             this, &QWidget::close);    
-}
 
-void gamman3d::setupStatus()
-{    
-    QStatusBar* status = ui->statusBar;
-
-    labelStatus = new QLabel(this);        
-    status->addPermanentWidget(labelStatus, 1);
-
-    progressBar = new QProgressBar(this);
-    progressBar->setMinimumWidth(200);
-    progressBar->setTextVisible(false);
-    progressBar->setVisible(false);
-    status->addPermanentWidget(progressBar);
-}
-
-void gamman3d::setupTools()
-{
-    setWindowIcon(QIcon(QStringLiteral(":/res/images/crash.ico")));        
-
-    ui->comboScatterTheme->addItem(QStringLiteral("Qt"));
-    ui->comboScatterTheme->addItem(QStringLiteral("Primary Colors"));
-    ui->comboScatterTheme->addItem(QStringLiteral("Digia"));
-    ui->comboScatterTheme->addItem(QStringLiteral("Stone Moss"));
-    ui->comboScatterTheme->addItem(QStringLiteral("Army Blue"));
-    ui->comboScatterTheme->addItem(QStringLiteral("Retro"));
-    ui->comboScatterTheme->addItem(QStringLiteral("Ebony"));
-    ui->comboScatterTheme->addItem(QStringLiteral("Isabelle"));
-    ui->comboScatterTheme->setCurrentIndex(0);
-
-    QObject::connect(ui->comboScatterTheme, SIGNAL(currentIndexChanged(int)),
+    QObject::connect(gui->comboScatterTheme, SIGNAL(currentIndexChanged(int)),
             this, SLOT(changeSceneTheme(int)));
 
-    QObject::connect(ui->sliderScatterNodeSize, &QSlider::valueChanged,
+    QObject::connect(gui->sliderScatterNodeSize, &QSlider::valueChanged,
             this, &gamman3d::resizeSceneNode);
-}
-
-void gamman3d::setupScene()
-{    
-    scatter = new Q3DScatter();
-    QWidget *widgetScene = QWidget::createWindowContainer(scatter);
-    widgetScene->setContentsMargins(0, 0, 0, 0);
-    widgetScene->sizePolicy().setHorizontalStretch(1);
-    widgetScene->sizePolicy().setVerticalStretch(1);
-    ui->layoutScatter->addWidget(widgetScene, 1);
-
-    scatter->scene()->activeCamera()->setCameraPreset(
-                Q3DCamera::CameraPresetFront);
-    scatter->setShadowQuality(
-                QAbstract3DGraph::ShadowQualityNone);
-    scatter->activeTheme()->setType(Q3DTheme::ThemeQt);
-    scatter->show();
-
-    QScatterDataProxy *proxy = new QScatterDataProxy();
-    scatterSeries = new QScatter3DSeries(proxy);
-    scatterSeries->setItemSize(0.1);
-    scatterSeries->setMeshSmooth(true);
-    scatter->addSeries(scatterSeries);
-
-    scatterData = new QScatterDataArray();
 }
 
 void gamman3d::openSession()
@@ -161,7 +103,7 @@ void gamman3d::openSession()
         }
 
         populateScene();
-        labelStatus->setText(QStringLiteral("Session: ") + dir);        
+        gui->labelStatus->setText(QStringLiteral("Session: ") + dir);
     }
     catch(std::exception &e)
     {
@@ -173,16 +115,16 @@ void gamman3d::openSession()
 void gamman3d::closeSession()
 {
     session->clear();
-    scatterData->clear();
-    scatterSeries->dataProxy()->resetArray(scatterData);
-    labelStatus->setText("");
+    gui->scatterData->clear();
+    gui->scatterSeries->dataProxy()->resetArray(gui->scatterData);
+    gui->labelStatus->setText("");
 }
 
 void gamman3d::populateScene()
 {        
-    scatterData->clear();
-    scatterData->resize(session->SpectrumCount());
-    QScatterDataItem *p = &scatterData->first();
+    gui->scatterData->clear();
+    gui->scatterData->resize(session->SpectrumCount());
+    QScatterDataItem *p = &gui->scatterData->first();
 
     double minAltitude = session->getMinAltitude();
     const double focalDistance = 200.0;
@@ -194,12 +136,7 @@ void gamman3d::populateScene()
         geo::geodeticToCartesianSimplified(
                     spec->latitudeStart,
                     spec->longitudeStart,
-                    x, y, z);
-
-        /*geo::geodeticToCartesian(
-                    spec->latitudeStart,
-                    spec->longitudeStart,
-                    x, y, z);*/
+                    x, y, z);        
 
         projectedX = x * focalDistance / (focalDistance + z);
         projectedY = y * focalDistance / (focalDistance + z);
@@ -210,15 +147,15 @@ void gamman3d::populateScene()
         p++;
     }
 
-    scatterSeries->dataProxy()->resetArray(scatterData);
+    gui->scatterSeries->dataProxy()->resetArray(gui->scatterData);
 }
 
 void gamman3d::resizeSceneNode(int val)
 {
-    scatterSeries->setItemSize((double)val / 20.0);
+    gui->scatterSeries->setItemSize((double)val / 20.0);
 }
 
 void gamman3d::changeSceneTheme(int theme)
 {
-    scatter->activeTheme()->setType(Q3DTheme::Theme(theme));
+    gui->scatter->activeTheme()->setType(Q3DTheme::Theme(theme));
 }

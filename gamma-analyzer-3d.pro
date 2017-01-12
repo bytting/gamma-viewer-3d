@@ -15,16 +15,17 @@ SOURCES += \
     gamman3d.cpp \
     spectrum.cpp \
     session.cpp \
-    geo.cpp
+    geo.cpp \
+    gui.cpp
 
 HEADERS += \
     gamman3d.h \
     session.h \
     spectrum.h \
-    geo.h
+    geo.h \
+    gui.h
 
-FORMS += \
-    gamman3d.ui
+FORMS +=
 
 RESOURCES += \
     resources.qrc
