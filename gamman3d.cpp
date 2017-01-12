@@ -18,14 +18,7 @@
 #include "geo.h"
 #include <QMessageBox>
 #include <QFileDialog>
-#include <QHBoxLayout>
-#include <QVBoxLayout>
-#include <QDockWidget>
-#include <QToolBar>
-#include <QStatusBar>
-#include <QAction>
 #include <QIcon>
-#include <QPushButton>
 
 using namespace QtDataVisualization;
 

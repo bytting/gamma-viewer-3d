@@ -19,13 +19,7 @@
 
 #include "gui.h"
 #include "session.h"
-#include <memory>
 #include <QMainWindow>
-#include <QString>
-//#include <QLabel>
-//#include <QSlider>
-//#include <QComboBox>
-//#include <QProgressBar>
 
 class gamman3d : public QMainWindow
 {
