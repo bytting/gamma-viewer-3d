@@ -21,7 +21,9 @@
 #include <QFileDialog>
 #include <QHBoxLayout>
 #include <QVBoxLayout>
+#include <QDockWidget>
 #include <QToolBar>
+#include <QStatusBar>
 #include <QAction>
 #include <QIcon>
 #include <QPushButton>
@@ -30,142 +32,84 @@ using namespace QtDataVisualization;
 
 gamman3d::gamman3d(QWidget *parent) :
     QMainWindow(parent),    
-    ui(std::make_unique<Ui::gamman3d>()),
+    ui(new Ui::gamman3d),
     session(std::make_unique<gamma::Session>())
 {
     ui->setupUi(this);    
 
-    setupMenu();
-    setupToolbar();
+    setupMenu();    
     setupStatus();
-    setupControls();
+    setupTools();
     setupScene();
 }
 
 gamman3d::~gamman3d()
 {    
+    delete ui;
 }
 
 void gamman3d::setupMenu()
-{
-    QMenu *fileMenu = ui->menuBar->addMenu(tr("&File"));
-
-    QAction *openAction = new QAction(
-                QIcon(QStringLiteral(":/res/images/open-32.png")),
-                tr("&Open session"), this);
-    openAction->setStatusTip(tr("Open a session"));    
-    connect(openAction, &QAction::triggered,
-            this, &gamman3d::openSession);
-    fileMenu->addAction(openAction);
-
-    QAction *closeAction = new QAction(
-                QIcon(QStringLiteral(":/res/images/close-32.png")),
-                tr("&Close session"),
-                this);
-    closeAction->setStatusTip(tr("Close current session"));
-    connect(closeAction, &QAction::triggered,
-            this, &gamman3d::closeSession);
-    fileMenu->addAction(closeAction);
-
-    fileMenu->addSeparator();
-
-    QAction *exitAction = new QAction(
-                QIcon(QStringLiteral(":/res/images/exit-32.png")),
-                tr("E&xit"), this);
-    exitAction->setShortcuts(QKeySequence::Quit);
-    exitAction->setStatusTip(tr("Exit the application"));
-    connect(exitAction, &QAction::triggered,
-            this, &QWidget::close);
-    fileMenu->addAction(exitAction);
-}
-
-void gamman3d::setupToolbar()
-{        
-    ui->toolBar->setMovable(false);
-
-    QAction *openToolAction = ui->toolBar->addAction(
-                QIcon(QStringLiteral(":/res/images/open-32.png")),
-                tr("&Open session"));
-
-    connect(openToolAction, &QAction::triggered,
+{    
+    QObject::connect(ui->actionOpenSession, &QAction::triggered,
             this, &gamman3d::openSession);
 
-    QAction *closeToolAction = ui->toolBar->addAction(
-                QIcon(QStringLiteral(":/res/images/close-32.png")),
-                tr("&Close current session"));
+    QObject::connect(ui->actionCloseSession, &QAction::triggered,
+            this, &gamman3d::closeSession);        
 
-    connect(closeToolAction, &QAction::triggered,
-            this, &gamman3d::closeSession);
+    QObject::connect(ui->actionExit, &QAction::triggered,
+            this, &QWidget::close);    
 }
 
 void gamman3d::setupStatus()
-{
-    labelStatus = new QLabel(this);
-    ui->statusBar->addPermanentWidget(labelStatus);
+{    
+    QStatusBar* status = ui->statusBar;
+
+    labelStatus = new QLabel(this);        
+    status->addPermanentWidget(labelStatus, 1);
+
+    progressBar = new QProgressBar(this);
+    progressBar->setMinimumWidth(200);
+    progressBar->setTextVisible(false);
+    progressBar->setVisible(false);
+    status->addPermanentWidget(progressBar);
 }
 
-void gamman3d::setupControls()
+void gamman3d::setupTools()
 {
-    setWindowTitle(applicationName);
-    setWindowIcon(QIcon(QStringLiteral(":/res/images/crash.ico")));
-    setMinimumSize(640, 480);
+    setWindowIcon(QIcon(QStringLiteral(":/res/images/crash.ico")));        
 
-    scatter = new Q3DScatter();
+    ui->comboScatterTheme->addItem(QStringLiteral("Qt"));
+    ui->comboScatterTheme->addItem(QStringLiteral("Primary Colors"));
+    ui->comboScatterTheme->addItem(QStringLiteral("Digia"));
+    ui->comboScatterTheme->addItem(QStringLiteral("Stone Moss"));
+    ui->comboScatterTheme->addItem(QStringLiteral("Army Blue"));
+    ui->comboScatterTheme->addItem(QStringLiteral("Retro"));
+    ui->comboScatterTheme->addItem(QStringLiteral("Ebony"));
+    ui->comboScatterTheme->addItem(QStringLiteral("Isabelle"));
+    ui->comboScatterTheme->setCurrentIndex(0);
 
-    QWidget *container = QWidget::createWindowContainer(scatter);
-    QWidget *widget = new QWidget(this);
-    QHBoxLayout *hbox = new QHBoxLayout(widget);
-    hbox->setMargin(0);
-    QVBoxLayout *vbox = new QVBoxLayout(widget);
-    vbox->setMargin(5);
-
-    hbox->addWidget(container, 1);
-    hbox->addLayout(vbox);
-
-    QLabel *lblSceneTheme = new QLabel(QStringLiteral("Theme"));
-    vbox->addWidget(lblSceneTheme);
-
-    comboSceneTheme = new QComboBox();
-    comboSceneTheme->addItem(QStringLiteral("Qt"));
-    comboSceneTheme->addItem(QStringLiteral("Primary Colors"));
-    comboSceneTheme->addItem(QStringLiteral("Digia"));
-    comboSceneTheme->addItem(QStringLiteral("Stone Moss"));
-    comboSceneTheme->addItem(QStringLiteral("Army Blue"));
-    comboSceneTheme->addItem(QStringLiteral("Retro"));
-    comboSceneTheme->addItem(QStringLiteral("Ebony"));
-    comboSceneTheme->addItem(QStringLiteral("Isabelle"));
-    comboSceneTheme->setCurrentIndex(0);
-    comboSceneTheme->setEditable(false);
-    connect(comboSceneTheme, SIGNAL(currentIndexChanged(int)),
+    QObject::connect(ui->comboScatterTheme, SIGNAL(currentIndexChanged(int)),
             this, SLOT(changeSceneTheme(int)));
-    vbox->addWidget(comboSceneTheme);
 
-    QLabel *lblSceneNodeSize = new QLabel(QStringLiteral("Node size"));
-    vbox->addWidget(lblSceneNodeSize);
-
-    sliderSceneNodeSize = new QSlider(Qt::Orientation::Horizontal);
-    sliderSceneNodeSize->setMinimumSize(200, 0);
-    sliderSceneNodeSize->setTickInterval(1);
-    sliderSceneNodeSize->setMinimum(1);
-    sliderSceneNodeSize->setMaximum(20);
-    sliderSceneNodeSize->setValue(2);
-    connect(sliderSceneNodeSize, &QSlider::valueChanged,
+    QObject::connect(ui->sliderScatterNodeSize, &QSlider::valueChanged,
             this, &gamman3d::resizeSceneNode);
-    vbox->addWidget(sliderSceneNodeSize);
-
-    vbox->addStretch(1);
-
-    setCentralWidget(widget);
-    scatter->show();
 }
 
 void gamman3d::setupScene()
 {    
+    scatter = new Q3DScatter();
+    QWidget *widgetScene = QWidget::createWindowContainer(scatter);
+    widgetScene->setContentsMargins(0, 0, 0, 0);
+    widgetScene->sizePolicy().setHorizontalStretch(1);
+    widgetScene->sizePolicy().setVerticalStretch(1);
+    ui->layoutScatter->addWidget(widgetScene, 1);
+
     scatter->scene()->activeCamera()->setCameraPreset(
                 Q3DCamera::CameraPresetFront);
     scatter->setShadowQuality(
                 QAbstract3DGraph::ShadowQualityNone);
     scatter->activeTheme()->setType(Q3DTheme::ThemeQt);
+    scatter->show();
 
     QScatterDataProxy *proxy = new QScatterDataProxy();
     scatterSeries = new QScatter3DSeries(proxy);
@@ -217,7 +161,7 @@ void gamman3d::openSession()
         }
 
         populateScene();
-        labelStatus->setText(QStringLiteral("Session: ") + dir);
+        labelStatus->setText(QStringLiteral("Session: ") + dir);        
     }
     catch(std::exception &e)
     {

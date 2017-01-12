@@ -24,6 +24,7 @@
 #include <QLabel>
 #include <QSlider>
 #include <QComboBox>
+#include <QProgressBar>
 #include <QtDataVisualization/Q3DScatter>
 #include <QtDataVisualization/QScatter3DSeries>
 
@@ -40,26 +41,22 @@ public:
     explicit gamman3d(QWidget *parent = 0);
     ~gamman3d();
 
-    void setupMenu();
-    void setupToolbar();
+    void setupMenu();    
     void setupStatus();
-    void setupControls();
+    void setupTools();
     void setupScene();
 
     void populateScene();
 
 private:
 
-    std::unique_ptr<Ui::gamman3d> ui;
+    Ui::gamman3d* ui;
     std::unique_ptr<gamma::Session> session;
     QtDataVisualization::Q3DScatter* scatter;
     QtDataVisualization::QScatter3DSeries* scatterSeries;
     QtDataVisualization::QScatterDataArray* scatterData;
-    QLabel* labelStatus;
-    QSlider* sliderSceneNodeSize;
-    QComboBox* comboSceneTheme;
-
-    const QString applicationName = "Gamma Analyzer 3D";
+    QLabel* labelStatus;        
+    QProgressBar* progressBar;
 
 private slots:
 
