@@ -28,7 +28,7 @@ gamman3d::gamman3d(QWidget *parent) :
     session(new gamma::Session())
 {        
     gui->setup(this);
-    setupSignals();
+    setupSignals();    
 }
 
 gamman3d::~gamman3d()
@@ -53,6 +53,9 @@ void gamman3d::setupSignals()
 
     QObject::connect(gui->sliderScatterNodeSize, &QSlider::valueChanged,
             this, &gamman3d::resizeSceneNode);
+
+    QObject::connect(gui->scatterSeries, &QScatter3DSeries::selectedItemChanged,
+            this, &gamman3d::sceneNodeSelected);
 }
 
 void gamman3d::openSession()
@@ -151,4 +154,21 @@ void gamman3d::resizeSceneNode(int val)
 void gamman3d::changeSceneTheme(int theme)
 {
     gui->scatter->activeTheme()->setType(Q3DTheme::Theme(theme));
+}
+
+void gamman3d::sceneNodeSelected(int idx)
+{
+    if(idx == -1)
+    {
+        gui->labelSurfaceLatitude->setText("");
+        gui->labelSurfaceLongitude->setText("");
+        return;
+    }
+
+    if(idx >= session->getSpectrums().size())
+        return;
+
+    const gamma::Spectrum* spec = session->getSpectrum(idx);
+    gui->labelSurfaceLatitude->setText(QString::number(spec->latitudeStart));
+    gui->labelSurfaceLongitude->setText(QString::number(spec->longitudeStart));
 }

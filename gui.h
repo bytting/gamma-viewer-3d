@@ -34,13 +34,15 @@ public:
 
     void setup(gamman3d* g);
 
-    QLabel* labelStatus;
-    QComboBox* comboScatterTheme;
-    QSlider* sliderScatterNodeSize;
-
     QAction* actionOpenSession;
     QAction* actionCloseSession;
     QAction* actionExit;
+
+    QLabel* labelStatus;
+    QComboBox* comboScatterTheme;
+    QSlider* sliderScatterNodeSize;
+    QLabel* labelSurfaceLatitude;
+    QLabel* labelSurfaceLongitude;
 
     QtDataVisualization::Q3DScatter* scatter;
     QtDataVisualization::QScatter3DSeries* scatterSeries;

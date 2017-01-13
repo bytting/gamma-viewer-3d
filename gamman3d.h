@@ -36,6 +36,7 @@ public:
 
 private:
 
+    // FIXME: Use smart pointers (qtcreator doesn't complete them atm)
     Gui* gui;
     gamma::Session* session;
 
@@ -44,7 +45,8 @@ private slots:
     void openSession();
     void closeSession();    
     void resizeSceneNode(int val);
-    void changeSceneTheme(int theme);    
+    void changeSceneTheme(int theme);
+    void sceneNodeSelected(int idx);
 };
 
 #endif // GAMMAN3D_H

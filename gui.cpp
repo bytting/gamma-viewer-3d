@@ -46,23 +46,50 @@ void Gui::setup(gamman3d* g)
 
     actionOpenSession = fileMenu->addAction(
                 QIcon(QStringLiteral(":/res/images/open-32.png")),
-                QObject::tr("Open session"));
+                QObject::tr("&Open session"));
 
     actionCloseSession = fileMenu->addAction(
                 QIcon(QStringLiteral(":/res/images/close-32.png")),
-                QObject::tr("Close session"));
+                QObject::tr("&Close session"));
 
     fileMenu->addSeparator();
 
     actionExit = fileMenu->addAction(
                 QIcon(QStringLiteral(":/res/images/exit-32.png")),
-                QObject::tr("Exit"));
+                QObject::tr("E&xit"));
 
     // === TOOL BAR ===
     QToolBar* tools = new QToolBar(g);
     g->addToolBar(tools);
     tools->addAction(actionOpenSession);
     tools->addAction(actionCloseSession);
+    tools->addSeparator();
+
+    QLabel* labelScatterTheme = new QLabel(QObject::tr(" Theme "));
+    tools->addWidget(labelScatterTheme);
+
+    comboScatterTheme = new QComboBox(tools);
+    comboScatterTheme->addItem(QStringLiteral("Qt"));
+    comboScatterTheme->addItem(QStringLiteral("Primary Colors"));
+    comboScatterTheme->addItem(QStringLiteral("Digia"));
+    comboScatterTheme->addItem(QStringLiteral("Stone Moss"));
+    comboScatterTheme->addItem(QStringLiteral("Army Blue"));
+    comboScatterTheme->addItem(QStringLiteral("Retro"));
+    comboScatterTheme->addItem(QStringLiteral("Ebony"));
+    comboScatterTheme->addItem(QStringLiteral("Isabelle"));
+    comboScatterTheme->setCurrentIndex(0);
+    tools->addWidget(comboScatterTheme);
+
+    QLabel* labelScatterNodeSize = new QLabel(QObject::tr(" Node size "));
+    tools->addWidget(labelScatterNodeSize);
+
+    sliderScatterNodeSize = new QSlider(tools);
+    sliderScatterNodeSize->setMaximumWidth(200);
+    sliderScatterNodeSize->setMinimum(1);
+    sliderScatterNodeSize->setMaximum(20);
+    sliderScatterNodeSize->setValue(2);
+    sliderScatterNodeSize->setOrientation(Qt::Horizontal);
+    tools->addWidget(sliderScatterNodeSize);
 
     // === STATUS BAR ===
     QStatusBar* status = new QStatusBar(g);
@@ -80,7 +107,7 @@ void Gui::setup(gamman3d* g)
 
     // === STACKED WIDGET ===
     QStackedWidget* pages = new QStackedWidget(g);
-    widgetLayout->addWidget(pages);
+    widgetLayout->addWidget(pages);    
 
     QSplitter* splitterScatter = new QSplitter(Qt::Horizontal, g);
     splitterScatter->setStretchFactor(1, 1);
@@ -90,46 +117,16 @@ void Gui::setup(gamman3d* g)
     splitterSurface->setStretchFactor(1, 1);
     pages->addWidget(splitterSurface);
 
-    // === SCATTER TOOLBOX ===
-    QToolBox* toolsScatter = new QToolBox(splitterScatter);
-    toolsScatter->setMaximumWidth(400);
-    splitterScatter->addWidget(toolsScatter);
+    // === SPECTRUM INFO ===
+    QWidget* widSpectrumInfo = new QWidget(splitterScatter);
+    widSpectrumInfo->setLayout(new QVBoxLayout());
+    widSpectrumInfo->layout()->setAlignment(Qt::AlignTop);
+    splitterScatter->addWidget(widSpectrumInfo);
 
-    QWidget* toolsScatterControls = new QWidget(toolsScatter);
-    toolsScatterControls->setLayout(new QVBoxLayout());
-    toolsScatterControls->layout()->setAlignment(Qt::AlignTop);
-    toolsScatter->addItem(toolsScatterControls, QObject::tr("Controls"));
-
-    QWidget* toolsScatterSpectrum = new QWidget(toolsScatter);
-    toolsScatterSpectrum->setLayout(new QVBoxLayout());
-    toolsScatterSpectrum->layout()->setAlignment(Qt::AlignTop);
-    toolsScatter->addItem(toolsScatterSpectrum, QObject::tr("Spectrum"));
-
-    QLabel* labelScatterTheme = new QLabel(QObject::tr("Theme"));
-    toolsScatterControls->layout()->addWidget(labelScatterTheme);
-
-    comboScatterTheme = new QComboBox(toolsScatterControls);
-    comboScatterTheme->addItem(QStringLiteral("Qt"));
-    comboScatterTheme->addItem(QStringLiteral("Primary Colors"));
-    comboScatterTheme->addItem(QStringLiteral("Digia"));
-    comboScatterTheme->addItem(QStringLiteral("Stone Moss"));
-    comboScatterTheme->addItem(QStringLiteral("Army Blue"));
-    comboScatterTheme->addItem(QStringLiteral("Retro"));
-    comboScatterTheme->addItem(QStringLiteral("Ebony"));
-    comboScatterTheme->addItem(QStringLiteral("Isabelle"));
-    comboScatterTheme->setCurrentIndex(0);
-
-    toolsScatterControls->layout()->addWidget(comboScatterTheme);
-
-    QLabel* labelScatterNodeSize = new QLabel(QObject::tr("Node size"));
-    toolsScatterControls->layout()->addWidget(labelScatterNodeSize);
-
-    sliderScatterNodeSize = new QSlider(toolsScatterControls);
-    sliderScatterNodeSize->setMinimum(1);
-    sliderScatterNodeSize->setMaximum(20);
-    sliderScatterNodeSize->setValue(2);
-    sliderScatterNodeSize->setOrientation(Qt::Horizontal);
-    toolsScatterControls->layout()->addWidget(sliderScatterNodeSize);
+    labelSurfaceLatitude = new QLabel();
+    widSpectrumInfo->layout()->addWidget(labelSurfaceLatitude);
+    labelSurfaceLongitude = new QLabel();
+    widSpectrumInfo->layout()->addWidget(labelSurfaceLongitude);
 
     pages->setCurrentWidget(splitterScatter);
 
