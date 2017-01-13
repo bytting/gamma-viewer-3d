@@ -149,15 +149,15 @@ void gamman3d::changeSceneTheme(int theme)
 
 void gamman3d::sceneNodeSelected(int idx)
 {
-    if(idx == -1)
+    if(idx < 0)
     {
         gui->labelSurfaceLatitude->setText("");
         gui->labelSurfaceLongitude->setText("");
         return;
     }
 
-    if(idx >= session->getSpectrums().size())
-        return;
+    if((unsigned int)idx >= session->getSpectrums().size())
+        return; // FIXME: report error
 
     const gamma::Spectrum* spec = session->getSpectrum(idx);
     gui->labelSurfaceLatitude->setText(QString::number(spec->latitudeStart));

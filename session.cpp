@@ -30,7 +30,11 @@ Session::Session()
 
 Session::~Session()
 {
-    clear();
+    try
+    {
+        clear();
+    }
+    catch(...) {}
 }
 
 const Spectrum* Session::getSpectrum(unsigned idx) const
@@ -71,7 +75,7 @@ Session::LoadResult Session::load(QString sessionPath)
                 Spectrum* spec = new Spectrum(info.absoluteFilePath());
                 mSpecList.push_back(spec);
             }
-            catch(std::exception &e)
+            catch(...)
             {
                 res = Session::LoadResult::InvalidSpectrumFound;
             }

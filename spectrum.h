@@ -28,7 +28,7 @@ class Spectrum
 public:
 
     Spectrum(QString filename);
-    virtual ~Spectrum();
+    virtual ~Spectrum() {}
 
     int sessionIndex;
     double latitudeStart, latitudeStartErr;

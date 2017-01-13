@@ -28,10 +28,6 @@ Spectrum::Spectrum(QString filename)
     load(filename);
 }
 
-Spectrum::~Spectrum()
-{
-}
-
 static QJsonDocument loadJson(QString fileName)
 {
     QFile jsonFile(fileName);
