@@ -41,9 +41,7 @@ public:
     int SpectrumCount() const
     {
         return mSpecList.size();
-    }
-
-    double getMinAltitude() const;
+    }    
 
     enum LoadResult
     {

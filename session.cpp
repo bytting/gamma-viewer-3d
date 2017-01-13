@@ -46,22 +46,6 @@ const SpecList& Session::getSpectrums() const
     return mSpecList;
 }
 
-double Session::getMinAltitude() const
-{
-    if(mSpecList.empty())
-        return 0;
-
-    double min = mSpecList[0]->altitudeStart;
-
-    for(const auto& spec : mSpecList)
-    {
-        if(spec->altitudeStart < min)
-            min = spec->altitudeStart;
-    }
-
-    return min;
-}
-
 Session::LoadResult Session::load(QString sessionPath)
 {
     Session::LoadResult res = Session::LoadResult::Success;

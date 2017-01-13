@@ -150,7 +150,7 @@ void Gui::setup(gamman3d* g)
     scatterSeries = new QScatter3DSeries(proxy);
     scatterSeries->setItemSize(0.1f);
     //scatterSeries->setMesh(QAbstract3DSeries::MeshUserDefined);
-    //scatterSeries->setUserDefinedMesh(QStringLiteral(":/mesh/arrow.obj"));
+    //scatterSeries->setUserDefinedMesh(QStringLiteral(":/res/mesh/arrow.obj"));
     scatterSeries->setMeshSmooth(true);
     scatter->addSeries(scatterSeries);
 

@@ -121,25 +121,16 @@ void gamman3d::populateScene()
     gui->scatterData->clear();
     gui->scatterData->resize(session->SpectrumCount());
     QScatterDataItem *p = &gui->scatterData->first();
-
-    double minAltitude = session->getMinAltitude();
-    const double focalDistance = 200.0;
-
-    double x, y, z, projectedX, projectedY, deltaAltitude;
+    double x, y, z;
 
     for(const auto& spec : session->getSpectrums())
     {        
         geo::geodeticToCartesianSimplified(
                     spec->latitudeStart,
                     spec->longitudeStart,
-                    x, y, z);        
+                    x, y, z);                
 
-        projectedX = x * focalDistance / (focalDistance + z);
-        projectedY = y * focalDistance / (focalDistance + z);
-
-        deltaAltitude = (spec->altitudeStart - minAltitude);
-
-        p->setPosition(QVector3D(projectedX, deltaAltitude, projectedY));
+        p->setPosition(QVector3D(x, spec->altitudeStart, y));
         p++;
     }
 
