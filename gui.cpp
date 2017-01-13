@@ -24,10 +24,8 @@
 #include <QStatusBar>
 #include <QHBoxLayout>
 #include <QVBoxLayout>
-#include <QStackedWidget>
 #include <QToolBox>
 #include <QLabel>
-#include <QSplitter>
 
 Gui::Gui()
 {
@@ -35,6 +33,8 @@ Gui::Gui()
 
 void Gui::setup(gamman3d* g)
 {
+    using namespace QtDataVisualization;
+
     // === MAIN WINDOW ===
     g->setMinimumSize(640, 480);
     g->setWindowIcon(QIcon(QStringLiteral(":/res/images/crash.ico")));
@@ -58,11 +58,24 @@ void Gui::setup(gamman3d* g)
                 QIcon(QStringLiteral(":/res/images/exit-32.png")),
                 QObject::tr("E&xit"));
 
+    QMenu* viewMenu = menu->addMenu(QObject::tr("&View"));
+
+    actionShowScatter = viewMenu->addAction(
+                QIcon(QStringLiteral(":/res/images/scatter-32.png")),
+                QObject::tr("Show scatter"));
+
+    actionShowSurface = viewMenu->addAction(
+                QIcon(QStringLiteral(":/res/images/chart-32.png")),
+                QObject::tr("Show surface"));
+
     // === TOOL BAR ===
     QToolBar* tools = new QToolBar(g);
     g->addToolBar(tools);
     tools->addAction(actionOpenSession);
     tools->addAction(actionCloseSession);
+    tools->addSeparator();
+    tools->addAction(actionShowScatter);
+    tools->addAction(actionShowSurface);
     tools->addSeparator();
 
     QLabel* labelScatterTheme = new QLabel(QObject::tr(" Theme "));
@@ -106,16 +119,41 @@ void Gui::setup(gamman3d* g)
     widgetLayout->setContentsMargins(0, 0, 0, 0);
 
     // === STACKED WIDGET ===
-    QStackedWidget* pages = new QStackedWidget(g);
+    pages = new QStackedWidget(g);
     widgetLayout->addWidget(pages);    
 
-    QSplitter* splitterScatter = new QSplitter(Qt::Horizontal, g);
+    splitterScatter = new QSplitter(Qt::Horizontal, g);
     splitterScatter->setStretchFactor(1, 1);
     pages->addWidget(splitterScatter);
 
-    QSplitter* splitterSurface = new QSplitter(Qt::Horizontal, g);
+    splitterSurface = new QSplitter(Qt::Horizontal, g);
     splitterSurface->setStretchFactor(1, 1);
     pages->addWidget(splitterSurface);
+
+    pages->setCurrentWidget(splitterScatter);
+
+    // === SCATTER ===
+    scatter = new Q3DScatter();
+    QWidget* widgetScatter = QWidget::createWindowContainer(scatter);
+    widgetScatter->setContentsMargins(0, 0, 0, 0);
+    widgetScatter->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+    splitterScatter->addWidget(widgetScatter);
+
+    scatter->scene()->activeCamera()->setCameraPreset(
+                Q3DCamera::CameraPresetFront);
+    scatter->setShadowQuality(
+                QAbstract3DGraph::ShadowQualityNone);
+    scatter->activeTheme()->setType(Q3DTheme::ThemeQt);
+    scatter->show();
+
+    QScatterDataProxy *scatterProxy = new QScatterDataProxy();
+    scatterSeries = new QScatter3DSeries(scatterProxy);
+    scatterSeries->setItemSize(0.1f);
+    //scatterSeries->setMesh(QAbstract3DSeries::MeshUserDefined);
+    //scatterSeries->setUserDefinedMesh(QStringLiteral(":/res/mesh/arrow.obj"));
+    scatterSeries->setMeshSmooth(true);
+    scatter->addSeries(scatterSeries);
+    scatterData = new QScatterDataArray();    
 
     // === SPECTRUM INFO ===
     QWidget* widSpectrumInfo = new QWidget(splitterScatter);
@@ -127,32 +165,4 @@ void Gui::setup(gamman3d* g)
     widSpectrumInfo->layout()->addWidget(labelSurfaceLatitude);
     labelSurfaceLongitude = new QLabel();
     widSpectrumInfo->layout()->addWidget(labelSurfaceLongitude);
-
-    pages->setCurrentWidget(splitterScatter);
-
-    // === SCENE ===
-    using namespace QtDataVisualization;
-
-    scatter = new Q3DScatter();
-    QWidget *widgetScene = QWidget::createWindowContainer(scatter);
-    widgetScene->setContentsMargins(0, 0, 0, 0);
-    widgetScene->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
-    splitterScatter->addWidget(widgetScene);
-
-    scatter->scene()->activeCamera()->setCameraPreset(
-                Q3DCamera::CameraPresetFront);
-    scatter->setShadowQuality(
-                QAbstract3DGraph::ShadowQualityNone);
-    scatter->activeTheme()->setType(Q3DTheme::ThemeQt);
-    scatter->show();
-
-    QScatterDataProxy *proxy = new QScatterDataProxy();
-    scatterSeries = new QScatter3DSeries(proxy);
-    scatterSeries->setItemSize(0.1f);
-    //scatterSeries->setMesh(QAbstract3DSeries::MeshUserDefined);
-    //scatterSeries->setUserDefinedMesh(QStringLiteral(":/res/mesh/arrow.obj"));
-    scatterSeries->setMeshSmooth(true);
-    scatter->addSeries(scatterSeries);
-
-    scatterData = new QScatterDataArray();
 }

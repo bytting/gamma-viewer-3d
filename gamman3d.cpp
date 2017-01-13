@@ -55,7 +55,13 @@ void gamman3d::setupSignals()
             this, &gamman3d::closeSession);        
 
     QObject::connect(gui->actionExit, &QAction::triggered,
-            this, &QWidget::close);    
+            this, &QWidget::close);
+
+    QObject::connect(gui->actionShowScatter, &QAction::triggered,
+            this, &gamman3d::showScatter);
+
+    QObject::connect(gui->actionShowSurface, &QAction::triggered,
+            this, &gamman3d::showSurface);
 
     QObject::connect(gui->comboScatterTheme, SIGNAL(currentIndexChanged(int)),
             this, SLOT(changeSceneTheme(int)));
@@ -69,6 +75,8 @@ void gamman3d::setupSignals()
 
 void gamman3d::openSession()
 {    
+    using namespace gamma;
+
     try
     {
         QString dir = QDir::toNativeSeparators(QFileDialog::getExistingDirectory(
@@ -79,8 +87,6 @@ void gamman3d::openSession()
                     QFileDialog::DontResolveSymlinks));
         if(dir.isEmpty())
             return;
-
-        using namespace gamma;
 
         session->clear();
         switch(session->load(dir))
@@ -134,6 +140,7 @@ void gamman3d::closeSession()
 
 void gamman3d::populateScene()
 {        
+    // Draw scatter
     gui->scatterData->clear();
     gui->scatterData->resize(session->SpectrumCount());
     QScatterDataItem *p = &gui->scatterData->first();
@@ -144,13 +151,13 @@ void gamman3d::populateScene()
         geo::geodeticToCartesianSimplified(
                     spec->latitudeStart,
                     spec->longitudeStart,
-                    x, y, z);                
+                    x, y, z);
 
         p->setPosition(QVector3D(x, spec->altitudeStart, y));
         p++;
     }
 
-    gui->scatterSeries->dataProxy()->resetArray(gui->scatterData);
+    gui->scatterSeries->dataProxy()->resetArray(gui->scatterData);    
 }
 
 void gamman3d::resizeSceneNode(int val)
@@ -173,9 +180,22 @@ void gamman3d::sceneNodeSelected(int idx)
     }
 
     if((unsigned int)idx >= session->getSpectrums().size())
-        return; // FIXME: report error
+    {
+        qDebug() << "gamman3d::sceneNodeSelected: Index out of bounds";
+        return;
+    }
 
     const gamma::Spectrum* spec = session->getSpectrum(idx);
     gui->labelSurfaceLatitude->setText(QString::number(spec->latitudeStart));
     gui->labelSurfaceLongitude->setText(QString::number(spec->longitudeStart));
+}
+
+void gamman3d::showScatter()
+{
+    gui->pages->setCurrentWidget(gui->splitterScatter);
+}
+
+void gamman3d::showSurface()
+{
+    gui->pages->setCurrentWidget(gui->splitterSurface);
 }

@@ -43,10 +43,12 @@ private:
 private slots:
 
     void openSession();
-    void closeSession();    
+    void closeSession();
     void resizeSceneNode(int val);
     void changeSceneTheme(int theme);
     void sceneNodeSelected(int idx);
+    void showScatter();
+    void showSurface();
 };
 
 #endif // GAMMAN3D_H

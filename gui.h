@@ -17,6 +17,8 @@
 #ifndef GUI_H
 #define GUI_H
 
+#include <QStackedWidget>
+#include <QSplitter>
 #include <QLabel>
 #include <QAction>
 #include <QComboBox>
@@ -37,7 +39,12 @@ public:
     QAction* actionOpenSession;
     QAction* actionCloseSession;
     QAction* actionExit;
+    QAction* actionShowScatter;
+    QAction* actionShowSurface;
 
+    QStackedWidget* pages;
+    QSplitter* splitterScatter;
+    QSplitter* splitterSurface;
     QLabel* labelStatus;
     QComboBox* comboScatterTheme;
     QSlider* sliderScatterNodeSize;
@@ -46,7 +53,7 @@ public:
 
     QtDataVisualization::Q3DScatter* scatter;
     QtDataVisualization::QScatter3DSeries* scatterSeries;
-    QtDataVisualization::QScatterDataArray* scatterData;
+    QtDataVisualization::QScatterDataArray* scatterData;    
 };
 
 #endif // GUI_H

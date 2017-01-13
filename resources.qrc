@@ -5,5 +5,7 @@
         <file>images/close-32.png</file>
         <file>images/open-32.png</file>
         <file>mesh/arrow.obj</file>
+        <file>images/scatter-32.png</file>
+        <file>images/chart-32.png</file>
     </qresource>
 </RCC>
