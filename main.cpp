@@ -28,9 +28,9 @@ int main(int argc, char* argv[])
         w.show();
         return a.exec();
     }
-    catch(const std::exception& ex)
+    catch(const std::exception& e)
     {
-        qDebug() << "Error: " << ex.what();
+        qDebug() << e.what();
         return 1;
     }
 }

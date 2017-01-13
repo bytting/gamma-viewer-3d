@@ -20,6 +20,7 @@
 #include <QString>
 #include <QDir>
 #include <QFileInfo>
+#include <QDebug>
 
 namespace gamma
 {
@@ -34,7 +35,10 @@ Session::~Session()
     {
         clear();
     }
-    catch(...) {}
+    catch(const std::exception& e)
+    {
+        qDebug() << e.what();
+    }
 }
 
 const Spectrum* Session::getSpectrum(unsigned idx) const
@@ -75,8 +79,9 @@ Session::LoadResult Session::load(QString sessionPath)
                 Spectrum* spec = new Spectrum(info.absoluteFilePath());
                 mSpecList.push_back(spec);
             }
-            catch(...)
+            catch(const std::exception& e)
             {
+                qDebug() << e.what();
                 res = Session::LoadResult::InvalidSpectrumFound;
             }
         }

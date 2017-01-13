@@ -16,9 +16,11 @@
 
 #include "gamman3d.h"
 #include "geo.h"
+#include <stdexcept>
 #include <QMessageBox>
 #include <QFileDialog>
 #include <QIcon>
+#include <QDebug>
 
 using namespace QtDataVisualization;
 
@@ -33,8 +35,15 @@ gamman3d::gamman3d(QWidget *parent) :
 
 gamman3d::~gamman3d()
 {
-    delete session;
-    delete gui;
+    try
+    {
+        delete session;
+        delete gui;
+    }
+    catch(const std::exception& e)
+    {
+        qDebug() << e.what();
+    }
 }
 
 void gamman3d::setupSignals()
@@ -59,20 +68,20 @@ void gamman3d::setupSignals()
 }
 
 void gamman3d::openSession()
-{
-    using namespace gamma;
-
-    QString dir = QDir::toNativeSeparators(QFileDialog::getExistingDirectory(
-                this,
-                tr("Open session directory"),
-                QStringLiteral(""),
-                QFileDialog::ShowDirsOnly |
-                QFileDialog::DontResolveSymlinks));
-    if(dir.isEmpty())
-        return;
-
+{    
     try
     {
+        QString dir = QDir::toNativeSeparators(QFileDialog::getExistingDirectory(
+                    this,
+                    tr("Open session directory"),
+                    QStringLiteral(""),
+                    QFileDialog::ShowDirsOnly |
+                    QFileDialog::DontResolveSymlinks));
+        if(dir.isEmpty())
+            return;
+
+        using namespace gamma;
+
         session->clear();
         switch(session->load(dir))
         {
@@ -110,10 +119,17 @@ void gamman3d::openSession()
 
 void gamman3d::closeSession()
 {
-    session->clear();
-    gui->scatterData->clear();
-    gui->scatterSeries->dataProxy()->resetArray(gui->scatterData);
-    gui->labelStatus->setText("");
+    try
+    {
+        session->clear();
+        gui->scatterData->clear();
+        gui->scatterSeries->dataProxy()->resetArray(gui->scatterData);
+        gui->labelStatus->setText("");
+    }
+    catch(const std::exception& e)
+    {
+        qDebug() << e.what();
+    }
 }
 
 void gamman3d::populateScene()
