@@ -120,9 +120,10 @@ void Gui::setup(gamman3d* g)
 
     // === STACKED WIDGET ===
     pages = new QStackedWidget(g);
-    widgetLayout->addWidget(pages);    
+    widgetLayout->addWidget(pages);
 
     splitterScatter = new QSplitter(Qt::Horizontal, g);
+    splitterScatter->setHandleWidth(16);
     splitterScatter->setStretchFactor(1, 1);
     pages->addWidget(splitterScatter);
 
@@ -149,11 +150,12 @@ void Gui::setup(gamman3d* g)
     QScatterDataProxy *scatterProxy = new QScatterDataProxy();
     scatterSeries = new QScatter3DSeries(scatterProxy);
     scatterSeries->setItemSize(0.1f);
+    scatterSeries->setItemLabelVisible(false);
     //scatterSeries->setMesh(QAbstract3DSeries::MeshUserDefined);
     //scatterSeries->setUserDefinedMesh(QStringLiteral(":/res/mesh/arrow.obj"));
     scatterSeries->setMeshSmooth(true);
     scatter->addSeries(scatterSeries);
-    scatterData = new QScatterDataArray();    
+    scatterData = new QScatterDataArray();
 
     // === SPECTRUM INFO ===
     QWidget* widSpectrumInfo = new QWidget(splitterScatter);
@@ -161,8 +163,17 @@ void Gui::setup(gamman3d* g)
     widSpectrumInfo->layout()->setAlignment(Qt::AlignTop);
     splitterScatter->addWidget(widSpectrumInfo);
 
-    labelSurfaceLatitude = new QLabel();
-    widSpectrumInfo->layout()->addWidget(labelSurfaceLatitude);
-    labelSurfaceLongitude = new QLabel();
-    widSpectrumInfo->layout()->addWidget(labelSurfaceLongitude);
+    QLabel* labelScatterSpectrumHeader = new QLabel(
+                QObject::tr("Spectrum info"));
+    labelScatterSpectrumHeader->setFont(
+                QFont(QStringLiteral("Monospace"), 16, 8, true));
+    widSpectrumInfo->layout()->addWidget(labelScatterSpectrumHeader);
+    labelScatterIndex = new QLabel();
+    widSpectrumInfo->layout()->addWidget(labelScatterIndex);
+    labelScatterLatitude = new QLabel();
+    widSpectrumInfo->layout()->addWidget(labelScatterLatitude);
+    labelScatterLongitude = new QLabel();
+    widSpectrumInfo->layout()->addWidget(labelScatterLongitude);
+    labelScatterAltitude = new QLabel();
+    widSpectrumInfo->layout()->addWidget(labelScatterAltitude);
 }

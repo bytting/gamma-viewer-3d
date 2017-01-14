@@ -67,6 +67,7 @@ Session::LoadResult Session::load(QString sessionPath)
         return Session::LoadResult::DirNotASession;
 
     const auto entryInfoList = dir.entryInfoList(
+                QStringList() << "*.json",
                 QDir::NoDotAndDotDot | QDir::Files);
 
     for(const QFileInfo &info : entryInfoList)

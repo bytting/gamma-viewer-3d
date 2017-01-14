@@ -48,12 +48,14 @@ public:
     QLabel* labelStatus;
     QComboBox* comboScatterTheme;
     QSlider* sliderScatterNodeSize;
-    QLabel* labelSurfaceLatitude;
-    QLabel* labelSurfaceLongitude;
+    QLabel* labelScatterIndex;
+    QLabel* labelScatterLatitude;
+    QLabel* labelScatterLongitude;
+    QLabel* labelScatterAltitude;
 
     QtDataVisualization::Q3DScatter* scatter;
     QtDataVisualization::QScatter3DSeries* scatterSeries;
-    QtDataVisualization::QScatterDataArray* scatterData;    
+    QtDataVisualization::QScatterDataArray* scatterData;
 };
 
 #endif // GUI_H
