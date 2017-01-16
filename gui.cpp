@@ -78,7 +78,8 @@ void Gui::setup(gamman3d* g)
     tools->addAction(actionShowSurface);
     tools->addSeparator();
 
-    QLabel* labelScatterTheme = new QLabel(QObject::tr(" Theme "));
+    QLabel* labelScatterTheme = new QLabel(
+                QObject::tr(" Theme "));
     tools->addWidget(labelScatterTheme);
 
     comboScatterTheme = new QComboBox(tools);
@@ -93,7 +94,8 @@ void Gui::setup(gamman3d* g)
     comboScatterTheme->setCurrentIndex(0);
     tools->addWidget(comboScatterTheme);
 
-    QLabel* labelScatterNodeSize = new QLabel(QObject::tr(" Node size "));
+    QLabel* labelScatterNodeSize = new QLabel(
+                QObject::tr(" Node size "));
     tools->addWidget(labelScatterNodeSize);
 
     sliderScatterNodeSize = new QSlider(tools);
@@ -137,7 +139,8 @@ void Gui::setup(gamman3d* g)
     scatter = new Q3DScatter();
     QWidget* widgetScatter = QWidget::createWindowContainer(scatter);
     widgetScatter->setContentsMargins(0, 0, 0, 0);
-    widgetScatter->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+    widgetScatter->setSizePolicy(
+                QSizePolicy::Expanding, QSizePolicy::Expanding);
     splitterScatter->addWidget(widgetScatter);
 
     scatter->scene()->activeCamera()->setCameraPreset(

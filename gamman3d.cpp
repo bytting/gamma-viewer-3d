@@ -34,59 +34,60 @@ gamman3d::gamman3d(QWidget *parent) :
 }
 
 gamman3d::~gamman3d()
-{
-    try
-    {
-        delete session;
-        delete gui;
-    }
-    catch(const std::exception& e)
-    {
-        qDebug() << e.what();
-    }
+{    
+    delete session;
+    delete gui;
 }
 
 void gamman3d::setupSignals()
 {
-    QObject::connect(gui->actionOpenSession,
-                     &QAction::triggered,
-                     this,
-                     &gamman3d::openSession);
+    QObject::connect(
+                gui->actionOpenSession,
+                &QAction::triggered,
+                this,
+                &gamman3d::openSession);
 
-    QObject::connect(gui->actionCloseSession,
-                     &QAction::triggered,
-                     this,
-                     &gamman3d::closeSession);
+    QObject::connect(
+                gui->actionCloseSession,
+                &QAction::triggered,
+                this,
+                &gamman3d::closeSession);
 
-    QObject::connect(gui->actionExit,
-                     &QAction::triggered,
-                     this,
-                     &QWidget::close);
+    QObject::connect(
+                gui->actionExit,
+                &QAction::triggered,
+                this,
+                &QWidget::close);
 
-    QObject::connect(gui->actionShowScatter,
-                     &QAction::triggered,
-                     this,
-                     &gamman3d::showScatter);
+    QObject::connect(
+                gui->actionShowScatter,
+                &QAction::triggered,
+                this,
+                &gamman3d::showScatter);
 
-    QObject::connect(gui->actionShowSurface,
-                     &QAction::triggered,
-                     this,
-                     &gamman3d::showSurface);
+    QObject::connect(
+                gui->actionShowSurface,
+                &QAction::triggered,
+                this,
+                &gamman3d::showSurface);
 
-    QObject::connect(gui->comboScatterTheme,
-                     SIGNAL(currentIndexChanged(int)),
-                     this,
-                     SLOT(changeSceneTheme(int)));
+    QObject::connect(
+                gui->comboScatterTheme,
+                SIGNAL(currentIndexChanged(int)),
+                this,
+                SLOT(changeSceneTheme(int)));
 
-    QObject::connect(gui->sliderScatterNodeSize,
-                     &QSlider::valueChanged,
-                     this,
-                     &gamman3d::resizeSceneNode);
+    QObject::connect(
+                gui->sliderScatterNodeSize,
+                &QSlider::valueChanged,
+                this,
+                &gamman3d::resizeSceneNode);
 
-    QObject::connect(gui->scatterSeries,
-                     &QScatter3DSeries::selectedItemChanged,
-                     this,
-                     &gamman3d::sceneNodeSelected);
+    QObject::connect(
+                gui->scatterSeries,
+                &QScatter3DSeries::selectedItemChanged,
+                this,
+                &gamman3d::sceneNodeSelected);
 }
 
 void gamman3d::openSession()
@@ -105,7 +106,6 @@ void gamman3d::openSession()
         if(dir.isEmpty())
             return;
 
-        session->clear();
         switch(session->load(dir))
         {
         case Session::LoadResult::DirDoesNotExist:
@@ -193,31 +193,45 @@ void gamman3d::changeSceneTheme(int theme)
 
 void gamman3d::sceneNodeSelected(int idx)
 {
-    if(idx < 0)
+    try
     {
-        gui->labelScatterIndex->setText("");
-        gui->labelScatterLatitude->setText("");
-        gui->labelScatterLongitude->setText("");
-        gui->labelScatterAltitude->setText("");
-        return;
-    }
+        if(idx < 0)
+        {
+            gui->labelScatterIndex->setText("");
+            gui->labelScatterLatitude->setText("");
+            gui->labelScatterLongitude->setText("");
+            gui->labelScatterAltitude->setText("");
+            return;
+        }
 
-    if((unsigned int)idx >= session->getSpectrums().size())
+        if((unsigned int)idx >= session->getSpectrums().size())
+        {
+            qDebug() << "gamman3d::sceneNodeSelected: Index out of bounds";
+            return;
+        }
+
+        const gamma::Spectrum* spec = session->getSpectrum(idx);
+
+        gui->labelScatterIndex->setText(
+                    QStringLiteral("Index: ") +
+                    QString::number(idx));
+
+        gui->labelScatterLatitude->setText(
+                    QStringLiteral("Latitude: ") +
+                    QString::number(spec->latitudeStart));
+
+        gui->labelScatterLongitude->setText(
+                    QStringLiteral("Longitude: ") +
+                    QString::number(spec->longitudeStart));
+
+        gui->labelScatterAltitude->setText(
+                    QStringLiteral("Altitude: ") +
+                    QString::number(spec->altitudeStart));
+    }
+    catch(const std::exception& e)
     {
-        qDebug() << "gamman3d::sceneNodeSelected: Index out of bounds";
-        return;
+        qDebug() << e.what();
     }
-
-    const gamma::Spectrum* spec = session->getSpectrum(idx);
-
-    gui->labelScatterIndex->setText(QStringLiteral("Index: ") +
-                                    QString::number(idx));
-    gui->labelScatterLatitude->setText(QStringLiteral("Latitude: ") +
-                                       QString::number(spec->latitudeStart));
-    gui->labelScatterLongitude->setText(QStringLiteral("Longitude: ") +
-                                        QString::number(spec->longitudeStart));
-    gui->labelScatterAltitude->setText(QStringLiteral("Altitude: ") +
-                                        QString::number(spec->altitudeStart));
 }
 
 void gamman3d::showScatter()

@@ -44,7 +44,8 @@ Session::~Session()
 const Spectrum* Session::getSpectrum(unsigned idx) const
 {
     if(idx >= mSpecList.size())
-        throw std::runtime_error("Session::getSpectrum: Index out of bounds");
+        throw std::runtime_error(
+                "Session::getSpectrum: Index out of bounds");
 
     return mSpecList[idx];
 }
@@ -55,8 +56,10 @@ const SpecList& Session::getSpectrums() const
 }
 
 Session::LoadResult Session::load(QString sessionPath)
-{
+{    
     Session::LoadResult res = Session::LoadResult::Success;
+
+    clear();
 
     QDir dir(sessionPath + QStringLiteral("/json"));
 
