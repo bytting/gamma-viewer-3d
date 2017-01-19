@@ -40,9 +40,9 @@ void Gui::setup(gamman3d* g)
     g->setWindowIcon(QIcon(QStringLiteral(":/res/images/crash.ico")));
 
     // === MAIN MENU ===
-    QMenuBar* menu = new QMenuBar(g);
+    auto menu = new QMenuBar(g);
     g->setMenuBar(menu);
-    QMenu* fileMenu = menu->addMenu(QObject::tr("&File"));
+    auto fileMenu = menu->addMenu(QObject::tr("&File"));
 
     actionOpenSession = fileMenu->addAction(
                 QIcon(QStringLiteral(":/res/images/open-32.png")),
@@ -58,7 +58,7 @@ void Gui::setup(gamman3d* g)
                 QIcon(QStringLiteral(":/res/images/exit-32.png")),
                 QObject::tr("E&xit"));
 
-    QMenu* viewMenu = menu->addMenu(QObject::tr("&View"));
+    auto viewMenu = menu->addMenu(QObject::tr("&View"));
 
     actionShowScatter = viewMenu->addAction(
                 QIcon(QStringLiteral(":/res/images/scatter-32.png")),
@@ -69,7 +69,7 @@ void Gui::setup(gamman3d* g)
                 QObject::tr("Show surface"));
 
     // === TOOL BAR ===
-    QToolBar* tools = new QToolBar(g);
+    auto tools = new QToolBar(g);
     g->addToolBar(tools);
     tools->addAction(actionOpenSession);
     tools->addAction(actionCloseSession);
@@ -78,8 +78,7 @@ void Gui::setup(gamman3d* g)
     tools->addAction(actionShowSurface);
     tools->addSeparator();
 
-    QLabel* labelScatterTheme = new QLabel(
-                QObject::tr(" Theme "));
+    auto labelScatterTheme = new QLabel(QObject::tr(" Theme "));
     tools->addWidget(labelScatterTheme);
 
     comboScatterTheme = new QComboBox(tools);
@@ -94,8 +93,7 @@ void Gui::setup(gamman3d* g)
     comboScatterTheme->setCurrentIndex(0);
     tools->addWidget(comboScatterTheme);
 
-    QLabel* labelScatterNodeSize = new QLabel(
-                QObject::tr(" Node size "));
+    auto labelScatterNodeSize = new QLabel(QObject::tr(" Node size "));
     tools->addWidget(labelScatterNodeSize);
 
     sliderScatterNodeSize = new QSlider(tools);
@@ -107,17 +105,17 @@ void Gui::setup(gamman3d* g)
     tools->addWidget(sliderScatterNodeSize);
 
     // === STATUS BAR ===
-    QStatusBar* status = new QStatusBar(g);
+    auto status = new QStatusBar(g);
     g->setStatusBar(status);
 
     labelStatus = new QLabel(status);
     status->addWidget(labelStatus);
 
     // === CENTRAL WIDGET ===
-    QWidget* widget = new QWidget();
+    auto widget = new QWidget();
     g->setCentralWidget(widget);
 
-    QHBoxLayout* widgetLayout = new QHBoxLayout(widget);
+    auto widgetLayout = new QHBoxLayout(widget);
     widgetLayout->setContentsMargins(0, 0, 0, 0);
 
     // === STACKED WIDGET ===
@@ -137,7 +135,7 @@ void Gui::setup(gamman3d* g)
 
     // === SCATTER ===
     scatter = new Q3DScatter();
-    QWidget* widgetScatter = QWidget::createWindowContainer(scatter);
+    auto widgetScatter = QWidget::createWindowContainer(scatter);
     widgetScatter->setContentsMargins(0, 0, 0, 0);
     widgetScatter->setSizePolicy(
                 QSizePolicy::Expanding, QSizePolicy::Expanding);
@@ -150,7 +148,7 @@ void Gui::setup(gamman3d* g)
     scatter->activeTheme()->setType(Q3DTheme::ThemeQt);
     scatter->show();
 
-    QScatterDataProxy *scatterProxy = new QScatterDataProxy();
+    auto scatterProxy = new QScatterDataProxy();
     scatterSeries = new QScatter3DSeries(scatterProxy);
     scatterSeries->setItemSize(0.1f);
     scatterSeries->setItemLabelVisible(false);
@@ -161,12 +159,12 @@ void Gui::setup(gamman3d* g)
     scatterData = new QScatterDataArray();
 
     // === SPECTRUM INFO ===
-    QWidget* widSpectrumInfo = new QWidget(splitterScatter);
+    auto widSpectrumInfo = new QWidget(splitterScatter);
     widSpectrumInfo->setLayout(new QVBoxLayout());
     widSpectrumInfo->layout()->setAlignment(Qt::AlignTop);
     splitterScatter->addWidget(widSpectrumInfo);
 
-    QLabel* labelScatterSpectrumHeader = new QLabel(
+    auto labelScatterSpectrumHeader = new QLabel(
                 QObject::tr("Spectrum info"));
     labelScatterSpectrumHeader->setFont(
                 QFont(QStringLiteral("Monospace"), 16, 8, true));

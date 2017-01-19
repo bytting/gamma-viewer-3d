@@ -57,7 +57,7 @@ const SpecList& Session::getSpectrums() const
 
 Session::LoadResult Session::load(QString sessionPath)
 {    
-    LoadResult res = LoadResult::Success;
+    auto res = LoadResult::Success;
 
     clear();
 
@@ -73,21 +73,17 @@ Session::LoadResult Session::load(QString sessionPath)
                 QStringList() << "*.json",
                 QDir::NoDotAndDotDot | QDir::Files);
 
-    for(const QFileInfo &info : entryInfoList)
-    {
-        QString suffix = info.completeSuffix();
-        if(suffix.toLower() == QStringLiteral("json"))
+    for(const auto& info : entryInfoList)
+    {        
+        try
         {
-            try
-            {
-                Spectrum* spec = new Spectrum(info.absoluteFilePath());
-                mSpecList.push_back(spec);
-            }
-            catch(const std::exception& e)
-            {
-                qDebug() << e.what();
-                res = LoadResult::InvalidSpectrumFound;
-            }
+            auto spec = new Spectrum(info.absoluteFilePath());
+            mSpecList.push_back(spec);
+        }
+        catch(const std::exception& e)
+        {
+            qDebug() << e.what();
+            res = LoadResult::InvalidSpectrumFound;
         }
     }
 

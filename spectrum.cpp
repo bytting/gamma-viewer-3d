@@ -37,19 +37,19 @@ static QJsonDocument loadJson(QString fileName)
 
 void Spectrum::load(QString filename)
 {    
-    QJsonDocument doc = loadJson(filename);
+    auto doc = loadJson(filename);
     if(!doc.isObject())
         throw std::runtime_error(
                 "Spectrum::load: Unable to load json document " +
                 filename.toStdString());
 
-    QJsonObject obj = doc.object();
+    auto obj = doc.object();
     if(!obj.contains("arguments"))
         throw std::runtime_error(
                 "Spectrum::load: Not a valid spectrum " +
                 filename.toStdString());
 
-    QJsonObject args = obj.value("arguments").toObject();
+    auto args = obj.value("arguments").toObject();
 
     latitudeStart = args.value("latitude_start").toDouble();
     latitudeEnd = args.value("latitude_end").toDouble();
