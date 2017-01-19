@@ -41,13 +41,13 @@ Session::~Session()
     }
 }
 
-const Spectrum* Session::getSpectrum(unsigned idx) const
+const Spectrum& Session::getSpectrum(unsigned int index) const
 {
-    if(idx >= mSpecList.size())
+    if(index >= mSpecList.size())
         throw std::runtime_error(
                 "Session::getSpectrum: Index out of bounds");
 
-    return mSpecList[idx];
+    return *mSpecList[index];
 }
 
 const SpecList& Session::getSpectrums() const

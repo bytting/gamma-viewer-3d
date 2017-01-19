@@ -31,14 +31,14 @@ class Session
 {
 public:
 
-    Session();
-    ~Session();
+    explicit Session();
+    ~Session();    
 
-    const Spectrum* getSpectrum(unsigned idx) const;
+    const Spectrum& getSpectrum(unsigned int index) const;
 
     const SpecList& getSpectrums() const;
 
-    int SpectrumCount() const
+    unsigned int SpectrumCount() const
     {
         return mSpecList.size();
     }    
