@@ -45,13 +45,13 @@ void gamman3d::setupSignals()
                 gui->actionOpenSession,
                 &QAction::triggered,
                 this,
-                &gamman3d::openSession);
+                &gamman3d::onOpenSession);
 
     QObject::connect(
                 gui->actionCloseSession,
                 &QAction::triggered,
                 this,
-                &gamman3d::closeSession);
+                &gamman3d::onCloseSession);
 
     QObject::connect(
                 gui->actionExit,
@@ -63,37 +63,57 @@ void gamman3d::setupSignals()
                 gui->actionShowScatter,
                 &QAction::triggered,
                 this,
-                &gamman3d::showScatter);
+                &gamman3d::onShowScatter);
 
     QObject::connect(
                 gui->actionShowSurface,
                 &QAction::triggered,
                 this,
-                &gamman3d::showSurface);
+                &gamman3d::onShowSurface);
 
     QObject::connect(
                 gui->comboScatterTheme,
                 SIGNAL(currentIndexChanged(int)),
                 this,
-                SLOT(changeSceneTheme(int)));
+                SLOT(onChangeSceneTheme(int)));
 
     QObject::connect(
                 gui->sliderScatterNodeSize,
                 &QSlider::valueChanged,
                 this,
-                &gamman3d::resizeSceneNode);
+                &gamman3d::onResizeSceneNode);
 
     QObject::connect(
                 gui->scatterSeries,
                 &QScatter3DSeries::selectedItemChanged,
                 this,
-                &gamman3d::sceneNodeSelected);
+                &gamman3d::onSceneNodeSelected);
 }
 
-void gamman3d::openSession()
+void gamman3d::populateScene()
 {
-    using namespace gamma;
+    // Draw scatter
+    gui->scatterData->clear();
+    gui->scatterData->resize(session->SpectrumCount());
+    QScatterDataItem *p = &gui->scatterData->first();
+    double x, y, z;
 
+    for(const auto& spec : session->getSpectrums())
+    {
+        geo::geodeticToCartesianSimplified(
+                    spec->latitudeStart,
+                    spec->longitudeStart,
+                    x, y, z);
+
+        p->setPosition(QVector3D(x, spec->altitudeStart, y));
+        p++;
+    }
+
+    gui->scatterSeries->dataProxy()->resetArray(gui->scatterData);
+}
+
+void gamman3d::onOpenSession()
+{
     try
     {
         QString dir = QDir::toNativeSeparators(
@@ -105,6 +125,8 @@ void gamman3d::openSession()
                         QFileDialog::DontResolveSymlinks));
         if(dir.isEmpty())
             return;
+
+        using namespace gamma;
 
         switch(session->load(dir))
         {
@@ -144,7 +166,7 @@ void gamman3d::openSession()
     }
 }
 
-void gamman3d::closeSession()
+void gamman3d::onCloseSession()
 {
     try
     {
@@ -159,39 +181,31 @@ void gamman3d::closeSession()
     }
 }
 
-void gamman3d::populateScene()
+void gamman3d::onResizeSceneNode(int val)
 {
-    // Draw scatter
-    gui->scatterData->clear();
-    gui->scatterData->resize(session->SpectrumCount());
-    QScatterDataItem *p = &gui->scatterData->first();
-    double x, y, z;
-
-    for(const auto& spec : session->getSpectrums())
+    try
     {
-        geo::geodeticToCartesianSimplified(
-                    spec->latitudeStart,
-                    spec->longitudeStart,
-                    x, y, z);
-
-        p->setPosition(QVector3D(x, spec->altitudeStart, y));
-        p++;
+        gui->scatterSeries->setItemSize((double)val / 20.0);
     }
-
-    gui->scatterSeries->dataProxy()->resetArray(gui->scatterData);
+    catch(const std::exception& e)
+    {
+        qDebug() << e.what();
+    }
 }
 
-void gamman3d::resizeSceneNode(int val)
+void gamman3d::onChangeSceneTheme(int theme)
 {
-    gui->scatterSeries->setItemSize((double)val / 20.0);
+    try
+    {
+        gui->scatter->activeTheme()->setType(Q3DTheme::Theme(theme));
+    }
+    catch(const std::exception& e)
+    {
+        qDebug() << e.what();
+    }
 }
 
-void gamman3d::changeSceneTheme(int theme)
-{
-    gui->scatter->activeTheme()->setType(Q3DTheme::Theme(theme));
-}
-
-void gamman3d::sceneNodeSelected(int idx)
+void gamman3d::onSceneNodeSelected(int idx)
 {
     try
     {
@@ -234,12 +248,26 @@ void gamman3d::sceneNodeSelected(int idx)
     }
 }
 
-void gamman3d::showScatter()
+void gamman3d::onShowScatter()
 {
-    gui->pages->setCurrentWidget(gui->splitterScatter);
+    try
+    {
+        gui->pages->setCurrentWidget(gui->splitterScatter);
+    }
+    catch(const std::exception& e)
+    {
+        qDebug() << e.what();
+    }
 }
 
-void gamman3d::showSurface()
+void gamman3d::onShowSurface()
 {
-    gui->pages->setCurrentWidget(gui->splitterSurface);
+    try
+    {
+        gui->pages->setCurrentWidget(gui->splitterSurface);
+    }
+    catch(const std::exception& e)
+    {
+        qDebug() << e.what();
+    }
 }

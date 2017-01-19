@@ -31,7 +31,6 @@ public:
     ~gamman3d();
 
     void setupSignals();
-
     void populateScene();
 
 private:
@@ -42,13 +41,13 @@ private:
 
 private slots:
 
-    void openSession();
-    void closeSession();
-    void resizeSceneNode(int val);
-    void changeSceneTheme(int theme);
-    void sceneNodeSelected(int idx);
-    void showScatter();
-    void showSurface();
+    void onOpenSession();
+    void onCloseSession();
+    void onResizeSceneNode(int val);
+    void onChangeSceneTheme(int theme);
+    void onSceneNodeSelected(int idx);
+    void onShowScatter();
+    void onShowSurface();
 };
 
 #endif // GAMMAN3D_H
