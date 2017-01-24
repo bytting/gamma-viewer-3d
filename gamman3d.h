@@ -27,7 +27,7 @@ class gamman3d : public QMainWindow
 
 public:
 
-    explicit gamman3d(QWidget *parent = 0);
+    explicit gamman3d(QWidget* parent = 0);
     ~gamman3d();
 
     void setupSignals();

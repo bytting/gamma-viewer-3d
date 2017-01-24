@@ -32,13 +32,13 @@ class Session
 public:
 
     explicit Session();
-    ~Session();    
+    ~Session();        
 
-    const Spectrum& getSpectrum(unsigned int index) const;
+    const SpecList& getSpectrumList() const;
 
-    const SpecList& getSpectrums() const;
+    const Spectrum* getSpectrum(SpecList::size_type index) const;
 
-    unsigned int SpectrumCount() const
+    unsigned int spectrumCount() const
     {
         return mSpecList.size();
     }    

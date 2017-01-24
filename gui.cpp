@@ -62,11 +62,11 @@ void Gui::setup(gamman3d* g)
 
     actionShowScatter = viewMenu->addAction(
                 QIcon(QStringLiteral(":/res/images/scatter-32.png")),
-                QObject::tr("Show scatter"));
+                QObject::tr("Show s&catter"));
 
     actionShowSurface = viewMenu->addAction(
                 QIcon(QStringLiteral(":/res/images/chart-32.png")),
-                QObject::tr("Show surface"));
+                QObject::tr("Show s&urface"));
 
     // === TOOL BAR ===
     auto tools = new QToolBar(g);

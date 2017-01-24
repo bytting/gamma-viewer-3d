@@ -94,11 +94,11 @@ void gamman3d::populateScene()
 {
     // Draw scatter
     gui->scatterData->clear();
-    gui->scatterData->resize(session->SpectrumCount());
+    gui->scatterData->resize(session->spectrumCount());
     QScatterDataItem *p = &gui->scatterData->first();
     double x, y, z;
 
-    for(const auto& spec : session->getSpectrums())
+    for(const auto& spec : session->getSpectrumList())
     {
         geo::geodeticToCartesianSimplified(
                     spec->latitudeStart,
@@ -218,13 +218,7 @@ void gamman3d::onSceneNodeSelected(int idx)
             return;
         }
 
-        if((unsigned int)idx >= session->SpectrumCount())
-        {
-            qDebug() << "gamman3d::onSceneNodeSelected: Index out of bounds";
-            return;
-        }
-
-        const gamma::Spectrum& spec = session->getSpectrum(idx);
+        const gamma::Spectrum* spec = session->getSpectrum(idx);
 
         gui->labelScatterIndex->setText(
                     QStringLiteral("Index: ") +
@@ -232,15 +226,15 @@ void gamman3d::onSceneNodeSelected(int idx)
 
         gui->labelScatterLatitude->setText(
                     QStringLiteral("Latitude: ") +
-                    QString::number(spec.latitudeStart));
+                    QString::number(spec->latitudeStart));
 
         gui->labelScatterLongitude->setText(
                     QStringLiteral("Longitude: ") +
-                    QString::number(spec.longitudeStart));
+                    QString::number(spec->longitudeStart));
 
         gui->labelScatterAltitude->setText(
                     QStringLiteral("Altitude: ") +
-                    QString::number(spec.altitudeStart));
+                    QString::number(spec->altitudeStart));
     }
     catch(const std::exception& e)
     {
