@@ -73,9 +73,9 @@ void gamman3d::setupSignals()
 
     QObject::connect(
                 gui->comboScatterTheme,
-                SIGNAL(currentIndexChanged(int)),
+                qOverload<int>(&QComboBox::currentIndexChanged),
                 this,
-                SLOT(onChangeSceneTheme(int)));
+                qOverload<int>(&gamman3d::onChangeSceneTheme));
 
     QObject::connect(
                 gui->sliderScatterNodeSize,

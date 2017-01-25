@@ -28,19 +28,18 @@ Spectrum::Spectrum(QString filename)
     load(filename);
 }
 
-static QJsonDocument loadJson(QString fileName)
-{
-    QFile jsonFile(fileName);
-    jsonFile.open(QFile::ReadOnly);
-    return QJsonDocument().fromJson(jsonFile.readAll());
-}
-
 void Spectrum::load(QString filename)
 {    
-    auto doc = loadJson(filename);
+    QFile jsonFile(filename);
+    if(!jsonFile.open(QFile::ReadOnly))
+        throw std::runtime_error(
+                "Spectrum::load: Unable to load JSON document " +
+                filename.toStdString());
+
+    auto doc = QJsonDocument().fromJson(jsonFile.readAll());
     if(!doc.isObject())
         throw std::runtime_error(
-                "Spectrum::load: Unable to load json document " +
+                "Spectrum::load: JSON document is not an object " +
                 filename.toStdString());
 
     auto obj = doc.object();
