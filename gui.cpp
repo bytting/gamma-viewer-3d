@@ -177,4 +177,6 @@ void Gui::setup(gamman3d* g)
     widSpectrumInfo->layout()->addWidget(labelScatterLongitude);
     labelScatterAltitude = new QLabel();
     widSpectrumInfo->layout()->addWidget(labelScatterAltitude);
+    labelScatterTime = new QLabel();
+    widSpectrumInfo->layout()->addWidget(labelScatterTime);
 }

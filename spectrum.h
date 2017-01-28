@@ -19,6 +19,7 @@
 
 #include <vector>
 #include <QString>
+#include <QDateTime>
 
 namespace gamma
 {
@@ -27,27 +28,60 @@ class Spectrum
 {
 public:
 
-    Spectrum(QString filename);
+    typedef std::vector<int> ChanList;
+    typedef ChanList::size_type ChanListSize;
+
+    explicit Spectrum(QString filename);
     virtual ~Spectrum() {}
 
-    int sessionIndex;
-    double latitudeStart, latitudeStartErr;
-    double latitudeEnd, latitudeEndErr;
-    double longitudeStart, longitudeStartErr;
-    double longitudeEnd, longitudeEndErr;
-    double altitudeStart, altitudeStartErr;
-    double altitudeEnd, altitudeEndErr;
-    double gpsSpeedStart, gpsSpeedStartErr;
-    double gpsSpeedEnd, gpsSpeedEndErr;
-    QString gpsTimeStart, gpsTimeEnd;
-    int realtime, livetime;
-    int totalCount;
-    int numChannels;
-    std::vector<int> channels;
+    QString sessionName() const { return mSessionName; }
+    int sessionIndex() const { return mSessionIndex; }
+    int sessionIterations() const { return mSessionIterations; }
+    bool isPreview() const { return mSessionPreview > 0; }
+    double sessionDelay() const { return mSessionDelay; }
+    double latitudeStart() const { return mLatitudeStart; }
+    double latitudeStartErr() const { return mLatitudeStartErr; }
+    double latitudeEnd() const { return mLatitudeEnd; }
+    double latitudeEndErr() const { return mLatitudeEndErr; }
+    double longitudeStart() const { return mLongitudeStart; }
+    double longitudeStartErr() const { return mLongitudeStartErr; }
+    double longitudeEnd() const { return mLongitudeEnd; }
+    double longitudeEndErr() const { return mLongitudeEndErr; }
+    double altitudeStart() const { return mAltitudeStart; }
+    double altitudeStartErr() const { return mAltitudeStartErr; }
+    double altitudeEnd() const { return mAltitudeEnd; }
+    double altitudeEndErr() const { return mAltitudeEndErr; }
+    double gpsSpeedStart() const { return mGpsSpeedStart; }
+    double gpsSpeedStartErr() const { return mGpsSpeedStartErr; }
+    double gpsSpeedEnd() const { return mGpsSpeedEnd; }
+    double gpsSpeedEndErr() const { return mGpsSpeedEndErr; }
+    QDateTime gpsTimeStart() const { return mGpsTimeStart; }
+    QDateTime gpsTimeEnd() const { return mGpsTimeEnd; }
+    int realtime() const { return mRealtime; }
+    int livetime() const { return mLivetime; }
+    int totalCount() const { return mTotalCount; }
+    ChanListSize numChannels() const { return mChannels.size(); }
+    const ChanList& channels() const { return mChannels; }
+    int channel(ChanListSize index) const;
 
 private:
 
-    void load(QString filename);
+    void loadFile(QString filename);
+
+    QString mSessionName;
+    int mSessionIndex, mSessionIterations, mSessionPreview;
+    double mSessionDelay, mLatitudeStart, mLatitudeStartErr;
+    double mLatitudeEnd, mLatitudeEndErr;
+    double mLongitudeStart, mLongitudeStartErr;
+    double mLongitudeEnd, mLongitudeEndErr;
+    double mAltitudeStart, mAltitudeStartErr;
+    double mAltitudeEnd, mAltitudeEndErr;
+    double mGpsSpeedStart, mGpsSpeedStartErr;
+    double mGpsSpeedEnd, mGpsSpeedEndErr;
+    QDateTime mGpsTimeStart, mGpsTimeEnd;
+    int mRealtime, mLivetime;
+    int mTotalCount;
+    ChanList mChannels;
 };
 
 } // namespace gamma

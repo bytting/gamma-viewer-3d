@@ -52,6 +52,7 @@ public:
     QLabel* labelScatterLatitude;
     QLabel* labelScatterLongitude;
     QLabel* labelScatterAltitude;
+    QLabel* labelScatterTime;
 
     QtDataVisualization::Q3DScatter* scatter;
     QtDataVisualization::QScatter3DSeries* scatterSeries;

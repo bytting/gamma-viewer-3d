@@ -34,7 +34,7 @@ gamman3d::gamman3d(QWidget *parent) :
 }
 
 gamman3d::~gamman3d()
-{    
+{
     delete session;
     delete gui;
 }
@@ -101,11 +101,11 @@ void gamman3d::populateScene()
     for(const auto& spec : session->getSpectrumList())
     {
         geo::geodeticToCartesianSimplified(
-                    spec->latitudeStart,
-                    spec->longitudeStart,
+                    spec->latitudeStart(),
+                    spec->longitudeStart(),
                     x, y, z);
 
-        p->setPosition(QVector3D(x, spec->altitudeStart, y));
+        p->setPosition(QVector3D(x, spec->altitudeStart(), y));
         p++;
     }
 
@@ -161,6 +161,7 @@ void gamman3d::onOpenSession()
     }
     catch(std::exception &e)
     {
+        qDebug() << e.what();
         QMessageBox::warning(this, tr("Error"), e.what());
         return;
     }
@@ -220,21 +221,20 @@ void gamman3d::onSceneNodeSelected(int idx)
 
         const gamma::Spectrum* spec = session->getSpectrum(idx);
 
-        gui->labelScatterIndex->setText(
-                    QStringLiteral("Index: ") +
+        gui->labelScatterIndex->setText(QStringLiteral("Index: ") +
                     QString::number(idx));
 
-        gui->labelScatterLatitude->setText(
-                    QStringLiteral("Latitude: ") +
-                    QString::number(spec->latitudeStart));
+        gui->labelScatterLatitude->setText(QStringLiteral("Latitude: ") +
+                    QString::number(spec->latitudeStart()));
 
-        gui->labelScatterLongitude->setText(
-                    QStringLiteral("Longitude: ") +
-                    QString::number(spec->longitudeStart));
+        gui->labelScatterLongitude->setText(QStringLiteral("Longitude: ") +
+                    QString::number(spec->longitudeStart()));
 
-        gui->labelScatterAltitude->setText(
-                    QStringLiteral("Altitude: ") +
-                    QString::number(spec->altitudeStart));
+        gui->labelScatterAltitude->setText(QStringLiteral("Altitude: ") +
+                    QString::number(spec->altitudeStart()));
+
+        gui->labelScatterTime->setText(QStringLiteral("Time: ") +
+                    spec->gpsTimeStart().toLocalTime().toString("yyyy-MM-dd hh:mm:ss"));
     }
     catch(const std::exception& e)
     {

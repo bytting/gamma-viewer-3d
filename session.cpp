@@ -56,25 +56,30 @@ const SpecList& Session::getSpectrumList() const
 }
 
 Session::LoadResult Session::load(QString sessionPath)
-{    
+{
     auto res = LoadResult::Success;
 
     clear();
 
-    QDir dir(sessionPath + QStringLiteral("/json"));
+    QDir sessionDir(sessionPath);
+    if(!sessionDir.exists())
+        return LoadResult::DirDoesNotExist;
 
-    if (!dir.exists())
+    QDir spectrumDir(sessionPath + QDir::separator() +
+                     QStringLiteral("json"));
+    if (!spectrumDir.exists())
         return LoadResult::DirNotASession;
 
-    if(!QFile::exists(sessionPath + QStringLiteral("/session.json")))
+    if(!QFile::exists(sessionPath + QDir::separator() +
+                      QStringLiteral("session.json")))
         return LoadResult::DirNotASession;
 
-    const auto entryInfoList = dir.entryInfoList(
+    const auto entryInfoList = spectrumDir.entryInfoList(
                 QStringList() << "*.json",
                 QDir::NoDotAndDotDot | QDir::Files);
 
     for(const auto& info : entryInfoList)
-    {        
+    {
         try
         {
             auto spec = new Spectrum(info.absoluteFilePath());
