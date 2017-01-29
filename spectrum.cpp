@@ -15,7 +15,6 @@
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "spectrum.h"
-#include <stdexcept>
 #include <QJsonDocument>
 #include <QJsonObject>
 #include <QFile>
@@ -33,7 +32,7 @@ Spectrum::Spectrum(QString filename)
 int Spectrum::channel(ChanListSize index) const
 {
     if(index >= mChannels.size())
-        throw runtime_error("Spectrum::channel: Index out of bounds");
+        throw RangeOutOfBounds("Spectrum::channel");
 
     return mChannels[index];
 }
@@ -42,33 +41,23 @@ void Spectrum::loadFile(QString filename)
 {
     QFile jsonFile(filename);
     if(!jsonFile.open(QFile::ReadOnly))
-        throw runtime_error(
-                "Spectrum::load: Unable to load JSON document " +
-                filename.toStdString());
+        throw UnableToLoadFile(filename);
 
     auto doc = QJsonDocument().fromJson(jsonFile.readAll());
     if(!doc.isObject())
-        throw runtime_error(
-                "Spectrum::load: JSON document is not an object " +
-                filename.toStdString());
+        throw InvalidSpectrumFile(filename);
 
     auto obj = doc.object();
     if(!obj.contains("command"))
-        throw runtime_error(
-                "Spectrum::load: File has no command key " +
-                filename.toStdString());
+        throw InvalidSpectrumFile(filename);
 
     auto cmd = obj.value("command").toString();
 
     if(cmd != QStringLiteral("spectrum"))
-        throw runtime_error(
-                "Spectrum::load: File is not a 'spectrum' command " +
-                filename.toStdString());
+        throw InvalidSpectrumFile(filename);
 
     if(!obj.contains("arguments"))
-        throw runtime_error(
-                "Spectrum::load: File has no 'arguments' key " +
-                filename.toStdString());
+        throw InvalidSpectrumFile(filename);
 
     auto args = obj.value("arguments").toObject();
 

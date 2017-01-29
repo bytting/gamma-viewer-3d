@@ -23,7 +23,8 @@ HEADERS += \
     session.h \
     spectrum.h \
     geo.h \
-    gui.h
+    gui.h \
+    exceptions.h
 
 FORMS +=
 

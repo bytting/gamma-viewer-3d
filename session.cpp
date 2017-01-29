@@ -44,8 +44,7 @@ Session::~Session()
 const Spectrum* Session::getSpectrum(SpecList::size_type index) const
 {
     if(index >= mSpecList.size())
-        throw std::runtime_error(
-                "Session::getSpectrum: Index out of bounds");
+        throw RangeOutOfBounds("Session::getSpectrum");
 
     return mSpecList[index];
 }
@@ -55,49 +54,42 @@ const SpecList& Session::getSpectrumList() const
     return mSpecList;
 }
 
-Session::LoadResult Session::load(QString sessionPath)
+void Session::load(QString sessionPath)
 {
-    auto res = LoadResult::Success;
-
-    clear();
-
     QDir sessionDir(sessionPath);
     if(!sessionDir.exists())
-        return LoadResult::DirDoesNotExist;
+        throw DirDoesNotExist(sessionDir.absolutePath());
 
-    QDir spectrumDir(sessionPath + QDir::separator() +
-                     QStringLiteral("json"));
+    QDir spectrumDir(sessionPath + QDir::separator() + QStringLiteral("json"));
     if (!spectrumDir.exists())
-        return LoadResult::DirNotASession;
+        throw DirDoesNotExist(spectrumDir.absolutePath());
 
-    if(!QFile::exists(sessionPath + QDir::separator() +
-                      QStringLiteral("session.json")))
-        return LoadResult::DirNotASession;
+    if(!QFile::exists(sessionPath + QDir::separator() + QStringLiteral("session.json")))
+        throw DirIsNotASession(sessionDir.absolutePath());
+
+    clear();
 
     const auto entryInfoList = spectrumDir.entryInfoList(
                 QStringList() << "*.json",
                 QDir::NoDotAndDotDot | QDir::Files);
 
-    for(const auto& info : entryInfoList)
+    for(const auto& info: entryInfoList)
     {
         try
         {
             auto spec = new Spectrum(info.absoluteFilePath());
             mSpecList.push_back(spec);
         }
-        catch(const std::exception& e)
+        catch(const GammanException& e)
         {
             qDebug() << e.what();
-            res = LoadResult::InvalidSpectrumFound;
         }
     }
-
-    return res;
 }
 
 void Session::clear()
 {
-    for(auto& spec : mSpecList)
+    for(auto& spec: mSpecList)
         delete spec;
 
     mSpecList.clear();

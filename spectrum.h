@@ -17,6 +17,7 @@
 #ifndef SPECTRUM_H
 #define SPECTRUM_H
 
+#include "exceptions.h"
 #include <vector>
 #include <QString>
 #include <QDateTime>
@@ -63,6 +64,13 @@ public:
     ChanListSize numChannels() const { return mChannels.size(); }
     const ChanList& channels() const { return mChannels; }
     int channel(ChanListSize index) const;
+
+    class InvalidSpectrumFile : public GammanException
+    {
+    public:
+        explicit InvalidSpectrumFile(QString filename) noexcept
+            : GammanException("Invalid spectrum file: " + filename) {}
+    };
 
 private:
 

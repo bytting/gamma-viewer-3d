@@ -18,6 +18,7 @@
 #define SESSION_H
 
 #include "spectrum.h"
+#include "exceptions.h"
 #include <memory>
 #include <vector>
 #include <QString>
@@ -32,28 +33,20 @@ class Session
 public:
 
     explicit Session();
-    ~Session();        
+    ~Session();
 
     const SpecList& getSpectrumList() const;
-
     const Spectrum* getSpectrum(SpecList::size_type index) const;
+    unsigned int spectrumCount() const { return mSpecList.size(); }
+    void load(QString sessionPath);
+    void clear();
 
-    unsigned int spectrumCount() const
+    class DirIsNotASession : public GammanException
     {
-        return mSpecList.size();
-    }    
-
-    enum LoadResult
-    {
-        Success,
-        DirDoesNotExist,
-        DirNotASession,
-        InvalidSpectrumFound
+    public:
+        explicit DirIsNotASession(QString dir) noexcept
+            : GammanException("Directory is not a valid session: " + dir) {}
     };
-
-    LoadResult load(QString sessionPath);
-
-    void clear();    
 
 private:
 

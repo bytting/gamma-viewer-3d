@@ -15,8 +15,8 @@
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "gamman3d.h"
+#include "exceptions.h"
 #include "geo.h"
-#include <stdexcept>
 #include <QMessageBox>
 #include <QFileDialog>
 #include <QIcon>
@@ -116,54 +116,32 @@ void gamman3d::onOpenSession()
 {
     try
     {
-        QString dir = QDir::toNativeSeparators(
-                    QFileDialog::getExistingDirectory(
-                        this,
-                        tr("Open session directory"),
-                        QDir::homePath(),
-                        QFileDialog::ShowDirsOnly |
-                        QFileDialog::DontResolveSymlinks));
-        if(dir.isEmpty())
+        QString sessionDir = QFileDialog::getExistingDirectory(
+                    this,
+                    tr("Open session directory"),
+                    QDir::homePath(),
+                    QFileDialog::ShowDirsOnly | QFileDialog::DontResolveSymlinks);
+        if(sessionDir.isEmpty())
             return;
 
-        using namespace gamma;
+        sessionDir = QDir::toNativeSeparators(sessionDir);
 
-        switch(session->load(dir))
-        {
-        case Session::LoadResult::DirDoesNotExist:
-            QMessageBox::information(
-                        this,
-                        QObject::tr("Information"),
-                        QStringLiteral("Directory does not exist"));
-            return;
-
-        case Session::LoadResult::DirNotASession:
-            QMessageBox::information(
-                        this,
-                        QObject::tr("Information"),
-                        QStringLiteral("Directory does not appear to be a valid session"));
-            return;
-
-        case Session::LoadResult::InvalidSpectrumFound:
-            QMessageBox::information(
-                        this,
-                        QObject::tr("Information"),
-                        QStringLiteral("Session contains invalid spectrums"));
-            break;
-
-        default:
-            break;
-        }
+        session->load(sessionDir);
 
         populateScene();
+
         gui->scatterSeries->setSelectedItem(-1);
-        gui->labelStatus->setText(QStringLiteral("Session: ") + dir);
+        gui->labelStatus->setText(QStringLiteral("Session: ") + sessionDir);
     }
-    catch(std::exception &e)
+    catch(const GammanException& e)
     {
         qDebug() << e.what();
-        QMessageBox::warning(this, tr("Error"), e.what());
-        return;
+        QMessageBox::warning(this, tr("Warning"), e.what());
+    }
+    catch(const std::exception& e)
+    {
+        qDebug() << e.what();
+        QMessageBox::critical(this, tr("Error"), e.what());
     }
 }
 
@@ -216,6 +194,7 @@ void gamman3d::onSceneNodeSelected(int idx)
             gui->labelScatterLatitude->setText("");
             gui->labelScatterLongitude->setText("");
             gui->labelScatterAltitude->setText("");
+            gui->labelScatterTime->setText("");
             return;
         }
 
