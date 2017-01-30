@@ -44,7 +44,7 @@ Session::~Session()
 const Spectrum* Session::getSpectrum(SpecList::size_type index) const
 {
     if(index >= mSpecList.size())
-        throw RangeOutOfBounds("Session::getSpectrum");
+        throw IndexOutOfBounds("Session::getSpectrum");
 
     return mSpecList[index];
 }

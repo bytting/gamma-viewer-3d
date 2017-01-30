@@ -32,7 +32,7 @@ Spectrum::Spectrum(QString filename)
 int Spectrum::channel(ChanListSize index) const
 {
     if(index >= mChannels.size())
-        throw RangeOutOfBounds("Spectrum::channel");
+        throw IndexOutOfBounds("Spectrum::channel");
 
     return mChannels[index];
 }

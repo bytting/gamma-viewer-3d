@@ -18,7 +18,6 @@
 #define EXCEPTIONS_H
 
 #include <stdexcept>
-#include <string>
 #include <QString>
 
 class GammanException : public std::runtime_error
@@ -29,16 +28,18 @@ public:
         : std::runtime_error(arg.toStdString()) {}
 };
 
-class RangeOutOfBounds : public GammanException
+class IndexOutOfBounds : public GammanException
 {
 public:
-    explicit RangeOutOfBounds(QString source) noexcept
-        : GammanException("Range out of bounds: " + source) {}
+
+    explicit IndexOutOfBounds(QString source) noexcept
+        : GammanException("Index out of bounds: " + source) {}
 };
 
 class DirDoesNotExist : public GammanException
 {
 public:
+
     explicit DirDoesNotExist(QString dir) noexcept
         : GammanException("Directory does not exist: " + dir) {}
 };
@@ -46,6 +47,7 @@ public:
 class FileDoesNotExist : public GammanException
 {
 public:
+
     explicit FileDoesNotExist(QString filename) noexcept
         : GammanException("File does not exist: " + filename) {}
 };
@@ -53,6 +55,7 @@ public:
 class UnableToLoadFile : public GammanException
 {
 public:
+
     explicit UnableToLoadFile(QString filename) noexcept
         : GammanException("Unable to load file: " + filename) {}
 };
