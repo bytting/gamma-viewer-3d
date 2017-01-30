@@ -24,10 +24,10 @@
 
 using namespace QtDataVisualization;
 
-gamman3d::gamman3d(QWidget *parent) :
-    QMainWindow(parent),
-    gui(new Gui()),
-    session(new gamma::Session())
+gamman3d::gamman3d(QWidget *parent)
+    : QMainWindow(parent),
+      gui(new Gui()),
+      session(new gamma::Session())
 {
     gui->setup(this);
     setupSignals();

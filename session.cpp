@@ -41,7 +41,7 @@ Session::~Session()
     }
 }
 
-const Spectrum* Session::getSpectrum(SpecList::size_type index) const
+const Spectrum* Session::getSpectrum(SpecListSize index) const
 {
     if(index >= mSpecList.size())
         throw IndexOutOfBounds("Session::getSpectrum");
@@ -62,7 +62,7 @@ void Session::load(QString sessionPath)
 
     QDir spectrumDir(sessionPath + QDir::separator() + QStringLiteral("json"));
     if (!spectrumDir.exists())
-        throw DirDoesNotExist(spectrumDir.absolutePath());
+        throw DirIsNotASession(spectrumDir.absolutePath());
 
     if(!QFile::exists(sessionPath + QDir::separator() + QStringLiteral("session.json")))
         throw DirIsNotASession(sessionDir.absolutePath());
@@ -73,7 +73,7 @@ void Session::load(QString sessionPath)
                 QStringList() << "*.json",
                 QDir::NoDotAndDotDot | QDir::Files);
 
-    for(const auto& info: entryInfoList)
+    for(const auto& info : entryInfoList)
     {
         try
         {

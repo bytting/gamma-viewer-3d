@@ -27,6 +27,7 @@ namespace gamma
 {
 
 typedef std::vector<Spectrum*> SpecList;
+typedef std::vector<Spectrum*>::size_type SpecListSize;
 
 class Session
 {
@@ -36,7 +37,7 @@ public:
     ~Session();
 
     const SpecList& getSpectrumList() const;
-    const Spectrum* getSpectrum(SpecList::size_type index) const;
+    const Spectrum* getSpectrum(SpecListSize index) const;
     unsigned int spectrumCount() const { return mSpecList.size(); }
     void load(QString sessionPath);
     void clear();

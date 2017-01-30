@@ -87,8 +87,7 @@ private:
     double mGpsSpeedStart, mGpsSpeedStartErr;
     double mGpsSpeedEnd, mGpsSpeedEndErr;
     QDateTime mGpsTimeStart, mGpsTimeEnd;
-    int mRealtime, mLivetime;
-    int mTotalCount;
+    int mRealtime, mLivetime, mTotalCount;
     ChanList mChannels;
 };
 
