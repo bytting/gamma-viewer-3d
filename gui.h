@@ -28,11 +28,14 @@
 
 class gamman3d;
 
-class Gui
+namespace gui
+{
+
+class Widgets
 {
 public:
 
-    explicit Gui();
+    Widgets();
 
     void setup(gamman3d* g);
 
@@ -58,5 +61,7 @@ public:
     QtDataVisualization::QScatter3DSeries* scatterSeries;
     QtDataVisualization::QScatterDataArray* scatterData;
 };
+
+} // namespace gui
 
 #endif // GUI_H

@@ -36,7 +36,7 @@ public:
 private:
 
     // FIXME: Use smart pointers (qtcreator doesn't complete them atm)
-    Gui* gui;
+    gui::Widgets* widgets;
     gamma::Session* session;
 
 private slots:

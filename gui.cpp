@@ -27,11 +27,14 @@
 #include <QToolBox>
 #include <QLabel>
 
-Gui::Gui()
+namespace gui
+{
+
+Widgets::Widgets()
 {
 }
 
-void Gui::setup(gamman3d* g)
+void Widgets::setup(gamman3d* g)
 {
     using namespace QtDataVisualization;
 
@@ -180,3 +183,5 @@ void Gui::setup(gamman3d* g)
     labelScatterTime = new QLabel();
     widSpectrumInfo->layout()->addWidget(labelScatterTime);
 }
+
+} // namespace gui

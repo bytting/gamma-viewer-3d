@@ -33,18 +33,17 @@ class Session
 {
 public:
 
-    explicit Session();
+    Session();
     ~Session();
 
     const SpecList& getSpectrumList() const;
     const Spectrum* getSpectrum(SpecListSize index) const;
-    unsigned int spectrumCount() const { return mSpecList.size(); }
+    SpecListSize spectrumCount() const { return mSpecList.size(); }
     void load(QString sessionPath);
     void clear();
 
-    class DirIsNotASession : public GammanException
+    struct DirIsNotASession : public GammanException
     {
-    public:
         explicit DirIsNotASession(QString dir) noexcept
             : GammanException("Directory is not a valid session: " + dir) {}
     };

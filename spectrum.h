@@ -65,9 +65,8 @@ public:
     const ChanList& channels() const { return mChannels; }
     int channel(ChanListSize index) const;
 
-    class InvalidSpectrumFile : public GammanException
+    struct InvalidSpectrumFile : public GammanException
     {
-    public:
         explicit InvalidSpectrumFile(QString filename) noexcept
             : GammanException("Invalid spectrum file: " + filename) {}
     };

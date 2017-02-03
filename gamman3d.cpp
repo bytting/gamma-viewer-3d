@@ -26,65 +26,65 @@ using namespace QtDataVisualization;
 
 gamman3d::gamman3d(QWidget *parent)
     : QMainWindow(parent),
-      gui(new Gui()),
+      widgets(new gui::Widgets()),
       session(new gamma::Session())
 {
-    gui->setup(this);
+    widgets->setup(this);
     setupSignals();
 }
 
 gamman3d::~gamman3d()
 {
     delete session;
-    delete gui;
+    delete widgets;
 }
 
 void gamman3d::setupSignals()
 {
     QObject::connect(
-                gui->actionOpenSession,
+                widgets->actionOpenSession,
                 &QAction::triggered,
                 this,
                 &gamman3d::onOpenSession);
 
     QObject::connect(
-                gui->actionCloseSession,
+                widgets->actionCloseSession,
                 &QAction::triggered,
                 this,
                 &gamman3d::onCloseSession);
 
     QObject::connect(
-                gui->actionExit,
+                widgets->actionExit,
                 &QAction::triggered,
                 this,
                 &QWidget::close);
 
     QObject::connect(
-                gui->actionShowScatter,
+                widgets->actionShowScatter,
                 &QAction::triggered,
                 this,
                 &gamman3d::onShowScatter);
 
     QObject::connect(
-                gui->actionShowSurface,
+                widgets->actionShowSurface,
                 &QAction::triggered,
                 this,
                 &gamman3d::onShowSurface);
 
     QObject::connect(
-                gui->comboScatterTheme,
+                widgets->comboScatterTheme,
                 qOverload<int>(&QComboBox::currentIndexChanged),
                 this,
                 qOverload<int>(&gamman3d::onChangeSceneTheme));
 
     QObject::connect(
-                gui->sliderScatterNodeSize,
+                widgets->sliderScatterNodeSize,
                 &QSlider::valueChanged,
                 this,
                 &gamman3d::onResizeSceneNode);
 
     QObject::connect(
-                gui->scatterSeries,
+                widgets->scatterSeries,
                 &QScatter3DSeries::selectedItemChanged,
                 this,
                 &gamman3d::onSceneNodeSelected);
@@ -93,9 +93,9 @@ void gamman3d::setupSignals()
 void gamman3d::populateScene()
 {
     // Draw scatter
-    gui->scatterData->clear();
-    gui->scatterData->resize(session->spectrumCount());
-    QScatterDataItem *p = &gui->scatterData->first();
+    widgets->scatterData->clear();
+    widgets->scatterData->resize(session->spectrumCount());
+    QScatterDataItem *p = &widgets->scatterData->first();
     double x, y, z;
 
     for(const auto& spec : session->getSpectrumList())
@@ -109,7 +109,7 @@ void gamman3d::populateScene()
         p++;
     }
 
-    gui->scatterSeries->dataProxy()->resetArray(gui->scatterData);
+    widgets->scatterSeries->dataProxy()->resetArray(widgets->scatterData);
 }
 
 void gamman3d::onOpenSession()
@@ -120,7 +120,8 @@ void gamman3d::onOpenSession()
                     this,
                     tr("Open session directory"),
                     QDir::homePath(),
-                    QFileDialog::ShowDirsOnly | QFileDialog::DontResolveSymlinks);
+                    QFileDialog::ShowDirsOnly |
+                    QFileDialog::DontResolveSymlinks);
         if(sessionDir.isEmpty())
             return;
 
@@ -130,8 +131,9 @@ void gamman3d::onOpenSession()
 
         populateScene();
 
-        gui->scatterSeries->setSelectedItem(-1);
-        gui->labelStatus->setText(QStringLiteral("Session: ") + sessionDir);
+        widgets->scatterSeries->setSelectedItem(-1);
+        widgets->labelStatus->setText(
+                    QStringLiteral("Session: ") + sessionDir);
     }
     catch(const GammanException& e)
     {
@@ -150,9 +152,9 @@ void gamman3d::onCloseSession()
     try
     {
         session->clear();
-        gui->scatterData->clear();
-        gui->scatterSeries->dataProxy()->resetArray(gui->scatterData);
-        gui->labelStatus->setText("");
+        widgets->scatterData->clear();
+        widgets->scatterSeries->dataProxy()->resetArray(widgets->scatterData);
+        widgets->labelStatus->setText("");
     }
     catch(const std::exception& e)
     {
@@ -164,7 +166,7 @@ void gamman3d::onResizeSceneNode(int val)
 {
     try
     {
-        gui->scatterSeries->setItemSize((double)val / 20.0);
+        widgets->scatterSeries->setItemSize((double)val / 20.0);
     }
     catch(const std::exception& e)
     {
@@ -176,7 +178,8 @@ void gamman3d::onChangeSceneTheme(int theme)
 {
     try
     {
-        gui->scatter->activeTheme()->setType(Q3DTheme::Theme(theme));
+        widgets->scatter->activeTheme()->setType(
+                    Q3DTheme::Theme(theme));
     }
     catch(const std::exception& e)
     {
@@ -190,30 +193,35 @@ void gamman3d::onSceneNodeSelected(int idx)
     {
         if(idx < 0)
         {
-            gui->labelScatterIndex->setText("");
-            gui->labelScatterLatitude->setText("");
-            gui->labelScatterLongitude->setText("");
-            gui->labelScatterAltitude->setText("");
-            gui->labelScatterTime->setText("");
+            widgets->labelScatterIndex->setText("");
+            widgets->labelScatterLatitude->setText("");
+            widgets->labelScatterLongitude->setText("");
+            widgets->labelScatterAltitude->setText("");
+            widgets->labelScatterTime->setText("");
             return;
         }
 
         const gamma::Spectrum* spec = session->getSpectrum(idx);
 
-        gui->labelScatterIndex->setText(QStringLiteral("Index: ") +
-                    QString::number(idx));
+        widgets->labelScatterIndex->setText(
+                    QStringLiteral("Index: ") + QString::number(idx));
 
-        gui->labelScatterLatitude->setText(QStringLiteral("Latitude: ") +
+        widgets->labelScatterLatitude->setText(
+                    QStringLiteral("Latitude: ") +
                     QString::number(spec->latitudeStart()));
 
-        gui->labelScatterLongitude->setText(QStringLiteral("Longitude: ") +
+        widgets->labelScatterLongitude->setText(
+                    QStringLiteral("Longitude: ") +
                     QString::number(spec->longitudeStart()));
 
-        gui->labelScatterAltitude->setText(QStringLiteral("Altitude: ") +
+        widgets->labelScatterAltitude->setText(
+                    QStringLiteral("Altitude: ") +
                     QString::number(spec->altitudeStart()));
 
-        gui->labelScatterTime->setText(QStringLiteral("Time: ") +
-                    spec->gpsTimeStart().toLocalTime().toString("yyyy-MM-dd hh:mm:ss"));
+        widgets->labelScatterTime->setText(
+                    QStringLiteral("Time: ") +
+                    spec->gpsTimeStart().toLocalTime().toString(
+                        "yyyy-MM-dd hh:mm:ss"));
     }
     catch(const std::exception& e)
     {
@@ -225,7 +233,7 @@ void gamman3d::onShowScatter()
 {
     try
     {
-        gui->pages->setCurrentWidget(gui->splitterScatter);
+        widgets->pages->setCurrentWidget(widgets->splitterScatter);
     }
     catch(const std::exception& e)
     {
@@ -237,7 +245,7 @@ void gamman3d::onShowSurface()
 {
     try
     {
-        gui->pages->setCurrentWidget(gui->splitterSurface);
+        widgets->pages->setCurrentWidget(widgets->splitterSurface);
     }
     catch(const std::exception& e)
     {

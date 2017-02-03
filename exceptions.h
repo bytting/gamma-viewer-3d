@@ -20,42 +20,32 @@
 #include <stdexcept>
 #include <QString>
 
-class GammanException : public std::runtime_error
+struct GammanException : public std::runtime_error
 {
-public:
-
     explicit GammanException(QString arg) noexcept
         : std::runtime_error(arg.toStdString()) {}
 };
 
-class IndexOutOfBounds : public GammanException
+struct IndexOutOfBounds : public GammanException
 {
-public:
-
     explicit IndexOutOfBounds(QString source) noexcept
         : GammanException("Index out of bounds: " + source) {}
 };
 
-class DirDoesNotExist : public GammanException
+struct DirDoesNotExist : public GammanException
 {
-public:
-
     explicit DirDoesNotExist(QString dir) noexcept
         : GammanException("Directory does not exist: " + dir) {}
 };
 
-class FileDoesNotExist : public GammanException
+struct FileDoesNotExist : public GammanException
 {
-public:
-
     explicit FileDoesNotExist(QString filename) noexcept
         : GammanException("File does not exist: " + filename) {}
 };
 
-class UnableToLoadFile : public GammanException
+struct UnableToLoadFile : public GammanException
 {
-public:
-
     explicit UnableToLoadFile(QString filename) noexcept
         : GammanException("Unable to load file: " + filename) {}
 };
