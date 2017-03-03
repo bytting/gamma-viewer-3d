@@ -41,7 +41,7 @@ public:
     const SpecList& getSpectrumList() const;
     const Spectrum* getSpectrum(SpecListSize index) const;
     SpecListSize spectrumCount() const { return mSpecList.size(); }
-    void loadPath(QString sessionPath);
+    void loadPath(QString sessionPath, QString geScriptFileName = QString());
     void clear();
 
     struct DirIsNotASession : public GammanException

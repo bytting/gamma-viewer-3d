@@ -57,7 +57,7 @@ const SpecList& Session::getSpectrumList() const
     return mSpecList;
 }
 
-void Session::loadPath(QString sessionPath)
+void Session::loadPath(QString sessionPath, QString geScriptFileName)
 {
     QDir sessionDir(sessionPath);
     if(!sessionDir.exists())
@@ -84,13 +84,15 @@ void Session::loadPath(QString sessionPath)
         try
         {
             auto spec = new Spectrum(info.absoluteFilePath());
+            if(QFile::exists(geScriptFileName))
+                spec->calculateDoserate(mDetector, geScriptFileName);
             mSpecList.push_back(spec);
         }
         catch(const GammanException& e)
         {
             qDebug() << e.what();
         }
-    }
+    }    
 }
 
 void Session::loadSessionFile(QString sessionFile)

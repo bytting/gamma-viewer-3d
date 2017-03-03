@@ -160,8 +160,14 @@ void Spectrum::loadFile(QString filename)
     }
 }
 
-double Spectrum::calculateDoserate(Detector det, QString scriptFileName) const
+void Spectrum::calculateDoserate(Detector det, QString scriptFileName)
 {
+    if(scriptFileName.isEmpty())
+        return;
+
+    if(!QFile::exists(scriptFileName))
+        return;
+
     QFile scriptFile(scriptFileName);
     if(!scriptFile.open(QFile::ReadOnly))
         throw UnableToLoadFile(scriptFileName);
@@ -170,7 +176,7 @@ double Spectrum::calculateDoserate(Detector det, QString scriptFileName) const
     QString script = stream.readAll();
     QScriptEngine engine;
 
-    double doserate = 0.0;
+    mDoserate = 0.0;
 
     // Trim off discriminators
     int startChan = (int)((double)det.numChannels() * ((double)det.LLD() / 100.0));
@@ -189,10 +195,8 @@ double Spectrum::calculateDoserate(Detector det, QString scriptFileName) const
         engine.globalObject().setProperty("energy", E / 1000.0);
         double GE = engine.evaluate(script).toNumber();
         double chanDose = GE * (cps * 60.0);
-        doserate += chanDose;
+        mDoserate += chanDose;
     }
-
-    return doserate;
 }
 
 } // namespace gamma

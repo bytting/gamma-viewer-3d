@@ -36,11 +36,13 @@ public:
     explicit Spectrum(QString filename);
     virtual ~Spectrum() {}
 
+    bool isPreview() const { return mSessionPreview > 0; }
+
     QString sessionName() const { return mSessionName; }
     int sessionIndex() const { return mSessionIndex; }
     int sessionIterations() const { return mSessionIterations; }
-    bool isPreview() const { return mSessionPreview > 0; }
     double sessionDelay() const { return mSessionDelay; }
+
     double latitudeStart() const { return mLatitudeStart; }
     double latitudeStartErr() const { return mLatitudeStartErr; }
     double latitudeEnd() const { return mLatitudeEnd; }
@@ -62,11 +64,13 @@ public:
     int realtime() const { return mRealtime; }
     int livetime() const { return mLivetime; }
     int totalCount() const { return mTotalCount; }
-    ChanListSize numChannels() const { return mChannels.size(); }
-    const ChanList& channels() const { return mChannels; }
-    int channel(ChanListSize index) const;
 
-    double calculateDoserate(Detector det, QString scriptFileName) const;
+    ChanListSize numChannels() const { return mChannels.size(); }    
+    const ChanList& channels() const { return mChannels; }    
+    int channel(ChanListSize index) const;    
+
+    void calculateDoserate(Detector det, QString scriptFileName);
+    double doserate() const { return mDoserate; }
 
     struct InvalidSpectrumFile : public GammanException
     {
@@ -91,6 +95,7 @@ private:
     QDateTime mGpsTimeStart, mGpsTimeEnd;
     int mRealtime, mLivetime, mTotalCount;
     ChanList mChannels;
+    double mDoserate;
 };
 
 } // namespace gamma
