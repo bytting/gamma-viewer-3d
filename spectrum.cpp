@@ -18,6 +18,8 @@
 #include <QJsonDocument>
 #include <QJsonObject>
 #include <QFile>
+#include <QTextStream>
+#include <QtScript/QScriptEngine>
 
 using namespace std;
 
@@ -156,6 +158,41 @@ void Spectrum::loadFile(QString filename)
             mTotalCount += count;
         }
     }
+}
+
+double Spectrum::calculateDoserate(Detector det, QString scriptFileName) const
+{
+    QFile scriptFile(scriptFileName);
+    if(!scriptFile.open(QFile::ReadOnly))
+        throw UnableToLoadFile(scriptFileName);
+
+    QTextStream stream(&scriptFile);
+    QString script = stream.readAll();
+    QScriptEngine engine;
+
+    double doserate = 0.0;
+
+    // Trim off discriminators
+    int startChan = (int)((double)det.numChannels() * ((double)det.LLD() / 100.0));
+    int endChan = (int)((double)det.numChannels() * ((double)det.ULD() / 100.0));
+    if(endChan > det.numChannels()) // FIXME: Can not exceed 100% atm
+        endChan = det.numChannels();
+
+    // Accumulate doserates of each channel
+    for (int i = startChan; i < endChan; i++)
+    {
+        float sec = (float)mLivetime / 1000000.0;
+        float cps = mChannels[i] / sec;
+        double E = det.getEnergy(i);
+        if (E < 0.05) // Energies below 0.05 are invalid
+            continue;
+        engine.globalObject().setProperty("energy", E / 1000.0);
+        double GE = engine.evaluate(script).toNumber();
+        double chanDose = GE * (cps * 60.0);
+        doserate += chanDose;
+    }
+
+    return doserate;
 }
 
 } // namespace gamma

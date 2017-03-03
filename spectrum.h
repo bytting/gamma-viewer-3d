@@ -18,6 +18,7 @@
 #define SPECTRUM_H
 
 #include "exceptions.h"
+#include "detector.h"
 #include <vector>
 #include <QString>
 #include <QDateTime>
@@ -64,6 +65,8 @@ public:
     ChanListSize numChannels() const { return mChannels.size(); }
     const ChanList& channels() const { return mChannels; }
     int channel(ChanListSize index) const;
+
+    double calculateDoserate(Detector det, QString scriptFileName) const;
 
     struct InvalidSpectrumFile : public GammanException
     {

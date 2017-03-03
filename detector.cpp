@@ -17,6 +17,7 @@
 #include "detector.h"
 #include "exceptions.h"
 #include <QJsonArray>
+#include <cmath>
 
 namespace gamma
 {
@@ -70,6 +71,20 @@ void Detector::loadJson(const QJsonObject &obj)
     mEnergyCurveCoefficients.clear();
     for(auto c : coeffs)
         mEnergyCurveCoefficients.push_back(c.toDouble());
+}
+
+double Detector::getEnergy(int index)
+{
+    if (mEnergyCurveCoefficients.size() < 2
+            || mEnergyCurveCoefficients.size() > 5
+            || index < 0)
+        return 0.0;
+
+    double dx = (double)index;
+    double e = 0.0;
+    for(CoefficientListSize i = 0; i < mEnergyCurveCoefficients.size(); i++)
+        e += mEnergyCurveCoefficients[i] * std::pow(dx, (double)i);
+    return e;
 }
 
 } // namespace gamma

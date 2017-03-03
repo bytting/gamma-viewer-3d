@@ -49,6 +49,8 @@ public:
 
     void loadJson(const QJsonObject &obj);
 
+    double getEnergy(int index);
+
 private:
 
     QString mTypeName;
