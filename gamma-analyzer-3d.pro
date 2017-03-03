@@ -16,7 +16,9 @@ SOURCES += \
     spectrum.cpp \
     session.cpp \
     geo.cpp \
-    gui.cpp
+    gui.cpp \
+    detectortype.cpp \
+    detector.cpp
 
 HEADERS += \
     gamman3d.h \
@@ -24,7 +26,9 @@ HEADERS += \
     spectrum.h \
     geo.h \
     gui.h \
-    exceptions.h
+    exceptions.h \
+    detectortype.h \
+    detector.h
 
 FORMS +=
 

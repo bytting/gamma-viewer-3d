@@ -19,6 +19,8 @@
 
 #include "spectrum.h"
 #include "exceptions.h"
+#include "detectortype.h"
+#include "detector.h"
 #include <memory>
 #include <vector>
 #include <QString>
@@ -27,7 +29,7 @@ namespace gamma
 {
 
 typedef std::vector<Spectrum*> SpecList;
-typedef std::vector<Spectrum*>::size_type SpecListSize;
+typedef SpecList::size_type SpecListSize;
 
 class Session
 {
@@ -39,7 +41,7 @@ public:
     const SpecList& getSpectrumList() const;
     const Spectrum* getSpectrum(SpecListSize index) const;
     SpecListSize spectrumCount() const { return mSpecList.size(); }
-    void load(QString sessionPath);
+    void loadPath(QString sessionPath);
     void clear();
 
     struct DirIsNotASession : public GammanException
@@ -48,7 +50,23 @@ public:
             : GammanException("Directory is not a valid session: " + dir) {}
     };
 
+    struct InvalidSessionFile : public GammanException
+    {
+        explicit InvalidSessionFile(QString filename) noexcept
+            : GammanException("Invalid session file: " + filename) {}
+    };
+
 private:
+
+    void loadSessionFile(QString sessionFile);
+
+    QString mName;
+    QString mComment;
+    double mLivetime;
+    int mIterations;
+
+    DetectorType mDetectorType;
+    Detector mDetector;
 
     SpecList mSpecList;
 };

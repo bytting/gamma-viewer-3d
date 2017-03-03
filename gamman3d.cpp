@@ -127,7 +127,7 @@ void gamman3d::onOpenSession()
 
         sessionDir = QDir::toNativeSeparators(sessionDir);
 
-        session->load(sessionDir);
+        session->loadPath(sessionDir);
 
         populateScene();
 

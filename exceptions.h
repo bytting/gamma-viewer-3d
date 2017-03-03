@@ -50,4 +50,10 @@ struct UnableToLoadFile : public GammanException
         : GammanException("Unable to load file: " + filename) {}
 };
 
+struct MissingJsonValue : public GammanException
+{
+    explicit MissingJsonValue(QString source) noexcept
+        : GammanException("Missing JSON value: " + source) {}
+};
+
 #endif // EXCEPTIONS_H

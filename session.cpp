@@ -19,7 +19,10 @@
 #include <memory>
 #include <QString>
 #include <QDir>
+#include <QFile>
 #include <QFileInfo>
+#include <QJsonDocument>
+#include <QJsonObject>
 #include <QDebug>
 
 namespace gamma
@@ -54,7 +57,7 @@ const SpecList& Session::getSpectrumList() const
     return mSpecList;
 }
 
-void Session::load(QString sessionPath)
+void Session::loadPath(QString sessionPath)
 {
     QDir sessionDir(sessionPath);
     if(!sessionDir.exists())
@@ -64,10 +67,13 @@ void Session::load(QString sessionPath)
     if (!spectrumDir.exists())
         throw DirIsNotASession(spectrumDir.absolutePath());
 
-    if(!QFile::exists(sessionPath + QDir::separator() + QStringLiteral("session.json")))
+    QString sessionFile = sessionPath + QDir::separator() + QStringLiteral("session.json");
+    if(!QFile::exists(sessionFile))
         throw DirIsNotASession(sessionDir.absolutePath());
 
     clear();
+
+    loadSessionFile(sessionFile);
 
     const auto entryInfoList = spectrumDir.entryInfoList(
                 QStringList() << "*.json",
@@ -87,8 +93,45 @@ void Session::load(QString sessionPath)
     }
 }
 
-void Session::clear()
+void Session::loadSessionFile(QString sessionFile)
 {
+    QFile jsonFile(sessionFile);
+    if(!jsonFile.open(QFile::ReadOnly))
+        throw UnableToLoadFile(sessionFile);
+
+    auto doc = QJsonDocument().fromJson(jsonFile.readAll());
+    if(!doc.isObject())
+        throw InvalidSessionFile(sessionFile);
+
+    auto root = doc.object();
+
+    if(!root.contains("Name"))
+        throw MissingJsonValue("Session:Name");
+    mName = root.value("Name").toString();
+
+    if(!root.contains("Comment"))
+        throw MissingJsonValue("Session:Comment");
+    mComment = root.value("Comment").toString();
+
+    if(!root.contains("Livetime"))
+        throw MissingJsonValue("Session:Livetime");
+    mLivetime = root.value("Livetime").toInt();
+
+    if(!root.contains("Iterations"))
+        throw MissingJsonValue("Session:Iterations");
+    mIterations = root.value("Iterations").toInt();
+
+    if(!root.contains("DetectorType"))
+        throw MissingJsonValue("Session:DetectorType");
+    mDetectorType.loadJson(root.value("DetectorType").toObject());
+
+    if(!root.contains("Detector"))
+        throw MissingJsonValue("Session:Detector");
+    mDetector.loadJson(root.value("Detector").toObject());
+}
+
+void Session::clear()
+{    
     for(auto& spec: mSpecList)
         delete spec;
 
