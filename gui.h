@@ -44,6 +44,7 @@ public:
     QAction* actionExit;
     QAction* actionShowScatter;
     QAction* actionShowSurface;
+    QAction* actionSetScript;
 
     QStackedWidget* pages;
     QSplitter* splitterScatter;
@@ -56,6 +57,7 @@ public:
     QLabel* labelScatterLongitude;
     QLabel* labelScatterAltitude;
     QLabel* labelScatterTime;
+    QLabel* labelScatterDoserate;
 
     QtDataVisualization::Q3DScatter* scatter;
     QtDataVisualization::QScatter3DSeries* scatterSeries;

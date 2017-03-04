@@ -1,5 +1,5 @@
 
-QT += core gui datavisualization script
+QT += core gui datavisualization
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -34,3 +34,6 @@ FORMS +=
 
 RESOURCES += \
     resources.qrc
+
+unix: CONFIG += link_pkgconfig
+unix: PKGCONFIG += lua

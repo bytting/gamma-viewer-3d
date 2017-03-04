@@ -25,7 +25,14 @@
 #include <vector>
 #include <QString>
 
-namespace gamma
+extern "C"
+{
+#include <lua.h>
+#include <lualib.h>
+#include <lauxlib.h>
+}
+
+namespace gad
 {
 
 typedef std::vector<Spectrum*> SpecList;
@@ -41,8 +48,10 @@ public:
     const SpecList& getSpectrumList() const;
     const Spectrum* getSpectrum(SpecListSize index) const;
     SpecListSize spectrumCount() const { return mSpecList.size(); }
-    void loadPath(QString sessionPath, QString geScriptFileName = QString());
+    void loadPath(QString sessionPath);
     void clear();
+
+    void loadDoserateScript(QString scriptFileName);
 
     struct DirIsNotASession : public GammanException
     {
@@ -69,6 +78,9 @@ private:
     Detector mDetector;
 
     SpecList mSpecList;
+
+    lua_State* L;
+    bool mScriptLoaded = false;
 };
 
 } // namespace gamma

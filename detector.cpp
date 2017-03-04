@@ -19,7 +19,7 @@
 #include <QJsonArray>
 #include <cmath>
 
-namespace gamma
+namespace gad
 {
 
 Detector::Detector(const QJsonObject &obj)
@@ -73,7 +73,7 @@ void Detector::loadJson(const QJsonObject &obj)
         mEnergyCurveCoefficients.push_back(c.toDouble());
 }
 
-double Detector::getEnergy(int index)
+double Detector::getEnergy(int index) const
 {
     if (mEnergyCurveCoefficients.size() < 2
             || mEnergyCurveCoefficients.size() > 5

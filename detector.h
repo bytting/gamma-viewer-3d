@@ -19,8 +19,9 @@
 
 #include <QString>
 #include <QJsonObject>
+#include <vector>
 
-namespace gamma
+namespace gad
 {
 
 typedef std::vector<double> CoefficientList;
@@ -49,7 +50,7 @@ public:
 
     void loadJson(const QJsonObject &obj);
 
-    double getEnergy(int index);
+    double getEnergy(int index) const;
 
 private:
 
@@ -60,7 +61,7 @@ private:
     double mCoarseGain, mFineGain;
     int mLivetime;
     int mLLD, mULD;
-    std::vector<double> mEnergyCurveCoefficients;
+    CoefficientList mEnergyCurveCoefficients;
 };
 
 } // namespace gamma

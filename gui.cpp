@@ -71,6 +71,10 @@ void Widgets::setup(gamman3d* g)
                 QIcon(QStringLiteral(":/res/images/chart-32.png")),
                 QObject::tr("Show s&urface"));
 
+    actionSetScript = viewMenu->addAction(
+                QIcon(QStringLiteral(":/res/images/chart-32.png")),
+                QObject::tr("Set script"));
+
     // === TOOL BAR ===
     auto tools = new QToolBar(g);
     g->addToolBar(tools);
@@ -79,6 +83,8 @@ void Widgets::setup(gamman3d* g)
     tools->addSeparator();
     tools->addAction(actionShowScatter);
     tools->addAction(actionShowSurface);
+    tools->addSeparator();
+    tools->addAction(actionSetScript);
     tools->addSeparator();
 
     auto labelScatterTheme = new QLabel(QObject::tr(" Theme "));
@@ -182,6 +188,8 @@ void Widgets::setup(gamman3d* g)
     widSpectrumInfo->layout()->addWidget(labelScatterAltitude);
     labelScatterTime = new QLabel();
     widSpectrumInfo->layout()->addWidget(labelScatterTime);
+    labelScatterDoserate = new QLabel();
+    widSpectrumInfo->layout()->addWidget(labelScatterDoserate);
 }
 
 } // namespace gui

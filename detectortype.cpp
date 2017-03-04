@@ -17,7 +17,7 @@
 #include "detectortype.h"
 #include "exceptions.h"
 
-namespace gamma
+namespace gad
 {
 
 DetectorType::DetectorType(const QJsonObject &obj)

@@ -27,7 +27,7 @@ using namespace QtDataVisualization;
 gamman3d::gamman3d(QWidget *parent)
     : QMainWindow(parent),
       widgets(new gui::Widgets()),
-      session(new gamma::Session())
+      session(new gad::Session())
 {
     widgets->setup(this);
     setupSignals();
@@ -70,6 +70,12 @@ void gamman3d::setupSignals()
                 &QAction::triggered,
                 this,
                 &gamman3d::onShowSurface);
+
+    QObject::connect(
+                widgets->actionSetScript,
+                &QAction::triggered,
+                this,
+                &gamman3d::onSetScript);
 
     QObject::connect(
                 widgets->comboScatterTheme,
@@ -198,10 +204,11 @@ void gamman3d::onSceneNodeSelected(int idx)
             widgets->labelScatterLongitude->setText("");
             widgets->labelScatterAltitude->setText("");
             widgets->labelScatterTime->setText("");
+            widgets->labelScatterDoserate->setText("");
             return;
         }
 
-        const gamma::Spectrum* spec = session->getSpectrum(idx);
+        const gad::Spectrum* spec = session->getSpectrum(idx);
 
         widgets->labelScatterIndex->setText(
                     QStringLiteral("Index: ") + QString::number(idx));
@@ -222,6 +229,10 @@ void gamman3d::onSceneNodeSelected(int idx)
                     QStringLiteral("Time: ") +
                     spec->gpsTimeStart().toLocalTime().toString(
                         "yyyy-MM-dd hh:mm:ss"));
+
+        widgets->labelScatterDoserate->setText(
+                    QStringLiteral("Doserate: ") +
+                    QString::number(spec->doserate()));
     }
     catch(const std::exception& e)
     {
@@ -246,6 +257,29 @@ void gamman3d::onShowSurface()
     try
     {
         widgets->pages->setCurrentWidget(widgets->splitterSurface);
+    }
+    catch(const std::exception& e)
+    {
+        qDebug() << e.what();
+    }
+}
+
+void gamman3d::onSetScript()
+{
+    try
+    {
+        QString scriptFileName = QFileDialog::getOpenFileName(
+                    this,
+                    tr("Open Lua script"),
+                    QDir::homePath(),
+                    tr("Lua script (*.lua)"));
+
+        scriptFileName = QDir::toNativeSeparators(scriptFileName);
+
+        if(QFile::exists(scriptFileName))
+        {
+            session->loadDoserateScript(scriptFileName);
+        }
     }
     catch(const std::exception& e)
     {

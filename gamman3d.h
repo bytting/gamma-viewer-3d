@@ -37,7 +37,7 @@ private:
 
     // FIXME: Use smart pointers (qtcreator doesn't complete them atm)
     gui::Widgets* widgets;
-    gamma::Session* session;
+    gad::Session* session;
 
 private slots:
 
@@ -48,6 +48,7 @@ private slots:
     void onSceneNodeSelected(int idx);
     void onShowScatter();
     void onShowSurface();
+    void onSetScript();
 };
 
 #endif // GAMMAN3D_H

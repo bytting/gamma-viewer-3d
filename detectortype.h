@@ -20,7 +20,7 @@
 #include <QString>
 #include <QJsonObject>
 
-namespace gamma
+namespace gad
 {
 
 class DetectorType

@@ -23,7 +23,14 @@
 #include <QString>
 #include <QDateTime>
 
-namespace gamma
+extern "C"
+{
+#include <lua.h>
+#include <lualib.h>
+#include <lauxlib.h>
+}
+
+namespace gad
 {
 
 class Spectrum
@@ -65,11 +72,11 @@ public:
     int livetime() const { return mLivetime; }
     int totalCount() const { return mTotalCount; }
 
-    ChanListSize numChannels() const { return mChannels.size(); }    
-    const ChanList& channels() const { return mChannels; }    
-    int channel(ChanListSize index) const;    
+    ChanListSize numChannels() const { return mChannels.size(); }
+    const ChanList& channels() const { return mChannels; }
+    int channel(ChanListSize index) const;
 
-    void calculateDoserate(Detector det, QString scriptFileName);
+    void calculateDoserate(const Detector &det, lua_State* L);
     double doserate() const { return mDoserate; }
 
     struct InvalidSpectrumFile : public GammanException

@@ -25,11 +25,13 @@
 #include <QJsonObject>
 #include <QDebug>
 
-namespace gamma
+namespace gad
 {
 
 Session::Session()
 {
+    L = luaL_newstate();
+    luaL_openlibs(L);
 }
 
 Session::~Session()
@@ -37,6 +39,7 @@ Session::~Session()
     try
     {
         clear();
+        lua_close(L);
     }
     catch(const std::exception& e)
     {
@@ -57,7 +60,7 @@ const SpecList& Session::getSpectrumList() const
     return mSpecList;
 }
 
-void Session::loadPath(QString sessionPath, QString geScriptFileName)
+void Session::loadPath(QString sessionPath)
 {
     QDir sessionDir(sessionPath);
     if(!sessionDir.exists())
@@ -84,15 +87,15 @@ void Session::loadPath(QString sessionPath, QString geScriptFileName)
         try
         {
             auto spec = new Spectrum(info.absoluteFilePath());
-            if(QFile::exists(geScriptFileName))
-                spec->calculateDoserate(mDetector, geScriptFileName);
+            if(mScriptLoaded)
+                spec->calculateDoserate(mDetector, L);
             mSpecList.push_back(spec);
         }
         catch(const GammanException& e)
         {
             qDebug() << e.what();
         }
-    }    
+    }
 }
 
 void Session::loadSessionFile(QString sessionFile)
@@ -133,11 +136,18 @@ void Session::loadSessionFile(QString sessionFile)
 }
 
 void Session::clear()
-{    
+{
     for(auto& spec: mSpecList)
         delete spec;
 
     mSpecList.clear();
+}
+
+void Session::loadDoserateScript(QString scriptFileName)
+{
+    if(luaL_dofile(L, scriptFileName.toStdString().c_str()))
+        qDebug() << "luaL_dofile failed";
+    else mScriptLoaded = true;
 }
 
 } // namespace gamma

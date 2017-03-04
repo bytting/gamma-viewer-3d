@@ -19,11 +19,10 @@
 #include <QJsonObject>
 #include <QFile>
 #include <QTextStream>
-#include <QtScript/QScriptEngine>
 
 using namespace std;
 
-namespace gamma
+namespace gad
 {
 
 Spectrum::Spectrum(QString filename)
@@ -160,22 +159,21 @@ void Spectrum::loadFile(QString filename)
     }
 }
 
-void Spectrum::calculateDoserate(Detector det, QString scriptFileName)
+static double GEValue(lua_State* L, double energy)
 {
-    if(scriptFileName.isEmpty())
-        return;
+    double ge;
 
-    if(!QFile::exists(scriptFileName))
-        return;
+    lua_getglobal(L, "gevalue");
+    lua_pushnumber(L, energy);
+    lua_call(L, 1, 1);
+    ge = (double)lua_tonumber(L, -1);
+    lua_pop(L, 1);
 
-    QFile scriptFile(scriptFileName);
-    if(!scriptFile.open(QFile::ReadOnly))
-        throw UnableToLoadFile(scriptFileName);
+    return ge;
+}
 
-    QTextStream stream(&scriptFile);
-    QString script = stream.readAll();
-    QScriptEngine engine;
-
+void Spectrum::calculateDoserate(const Detector &det, lua_State* L)
+{
     mDoserate = 0.0;
 
     // Trim off discriminators
@@ -192,8 +190,7 @@ void Spectrum::calculateDoserate(Detector det, QString scriptFileName)
         double E = det.getEnergy(i);
         if (E < 0.05) // Energies below 0.05 are invalid
             continue;
-        engine.globalObject().setProperty("energy", E / 1000.0);
-        double GE = engine.evaluate(script).toNumber();
+        double GE = GEValue(L, E / 1000.0);
         double chanDose = GE * (cps * 60.0);
         mDoserate += chanDose;
     }
