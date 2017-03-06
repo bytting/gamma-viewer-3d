@@ -67,6 +67,7 @@ private:
     Qt3DExtras::Qt3DWindow* view;
     Qt3DCore::QEntity* scene;
     Qt3DRender::QCamera* camera;
+    Qt3DExtras::QSphereMesh* mesh;
 
 private slots:
 

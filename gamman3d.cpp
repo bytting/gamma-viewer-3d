@@ -80,11 +80,11 @@ void gamman3d::setupSignals()
                 this,
                 &gamman3d::onShowSettings);
 
-    /*QObject::connect(
-                widgets->actionSetScript,
+    QObject::connect(
+                ui->actionLoadDoserateScript,
                 &QAction::triggered,
                 this,
-                &gamman3d::onSetScript);*/
+                &gamman3d::onSetScript);
 
     /*QObject::connect(
                 widgets->scatterSeries,
@@ -112,6 +112,8 @@ void gamman3d::createScene()
     camera->setNearPlane(0.01f);
     camera->setFarPlane(100000.0f);
 
+    mesh = new Qt3DExtras::QSphereMesh(scene);
+    mesh->setRadius(0.05f);
 
     Qt3DExtras::QOrbitCameraController* camCtrl = new Qt3DExtras::QOrbitCameraController(scene);
     camCtrl->setLinearSpeed(50.0f);
@@ -197,20 +199,17 @@ void gamman3d::populateScene()
 
 void gamman3d::addSceneNode(const QVector3D &vec)
 {
-    Qt3DExtras::QSphereMesh* mesh = new Qt3DExtras::QSphereMesh;
-    mesh->setRadius(0.05f);
-
     Qt3DCore::QEntity* entity = new Qt3DCore::QEntity(scene);
     entity->addComponent(mesh);
 
-    Qt3DCore::QTransform* transform = new Qt3DCore::QTransform();
+    Qt3DCore::QTransform* transform = new Qt3DCore::QTransform(scene);
     transform->setTranslation(vec);
     entity->addComponent(transform);
 
-    Qt3DExtras::QPhongMaterial* mat = new Qt3DExtras::QPhongMaterial();
-    mat->setDiffuse(QColor(255, 0, 0));
+    Qt3DExtras::QPhongMaterial* mat = new Qt3DExtras::QPhongMaterial(scene);
+    mat->setDiffuse(QColor(100, 50, 50));
     mat->setSpecular(QColor(255, 0, 0));
-    mat->setAmbient(QColor(255, 0, 0));
+    mat->setAmbient(QColor(200, 20, 20));
     mat->setShininess(6.0f);
     entity->addComponent(mat);
 }

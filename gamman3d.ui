@@ -72,6 +72,7 @@
    <addaction name="separator"/>
    <addaction name="actionShowScene"/>
    <addaction name="actionShowSettings"/>
+   <addaction name="actionLoadDoserateScript"/>
   </widget>
   <action name="actionOpenSession">
    <property name="icon">
@@ -131,6 +132,18 @@
    </property>
    <property name="toolTip">
     <string>Show settings</string>
+   </property>
+  </action>
+  <action name="actionLoadDoserateScript">
+   <property name="icon">
+    <iconset resource="resources.qrc">
+     <normaloff>:/res/images/script-32.png</normaloff>:/res/images/script-32.png</iconset>
+   </property>
+   <property name="text">
+    <string>Load doserate script</string>
+   </property>
+   <property name="toolTip">
+    <string>Load doserate script</string>
    </property>
   </action>
  </widget>

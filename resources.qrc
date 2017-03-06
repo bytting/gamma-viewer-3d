@@ -7,5 +7,6 @@
         <file>mesh/arrow.obj</file>
         <file>images/scatter-32.png</file>
         <file>images/chart-32.png</file>
+        <file>images/script-32.png</file>
     </qresource>
 </RCC>
