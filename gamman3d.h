@@ -17,9 +17,27 @@
 #ifndef GAMMAN3D_H
 #define GAMMAN3D_H
 
-#include "gui.h"
+//#include "gui.h"
 #include "session.h"
 #include <QMainWindow>
+#include <QLabel>
+#include <Qt3DCore/QEntity>
+#include <Qt3DCore/QTransform>
+#include <Qt3DCore/QAspectEngine>
+#include <Qt3DRender/QCamera>
+#include <Qt3DRender/QCameraLens>
+#include <Qt3DRender/QRenderAspect>
+#include <Qt3DExtras/QForwardRenderer>
+#include <Qt3DInput/QInputAspect>
+#include <Qt3DExtras/Qt3DWindow>
+#include <Qt3DExtras/QSphereMesh>
+#include <Qt3DExtras/QPhongMaterial>
+#include <Qt3DExtras/QDiffuseMapMaterial>
+#include <Qt3DExtras/QOrbitCameraController>
+
+namespace Ui {
+class gamman3d;
+}
 
 class gamman3d : public QMainWindow
 {
@@ -30,24 +48,33 @@ public:
     explicit gamman3d(QWidget* parent = 0);
     ~gamman3d();
 
+    void setupWidgets();
+
     void setupSignals();
+
+    void createScene();
+
     void populateScene();
+
+    void addSceneNode(const QVector3D &vec);
 
 private:
 
-    // FIXME: Use smart pointers (qtcreator doesn't complete them atm)
-    gui::Widgets* widgets;
+    Ui::gamman3d* ui;
+    QLabel* labelStatus;
     gad::Session* session;
+
+    Qt3DExtras::Qt3DWindow* view;
+    Qt3DCore::QEntity* scene;
+    Qt3DRender::QCamera* camera;
 
 private slots:
 
     void onOpenSession();
     void onCloseSession();
-    void onResizeSceneNode(int val);
-    void onChangeSceneTheme(int theme);
     void onSceneNodeSelected(int idx);
-    void onShowScatter();
-    void onShowSurface();
+    void onShowScene();
+    void onShowSettings();
     void onSetScript();
 };
 

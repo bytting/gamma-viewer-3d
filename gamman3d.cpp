@@ -15,6 +15,7 @@
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "gamman3d.h"
+#include "ui_gamman3d.h"
 #include "exceptions.h"
 #include "geo.h"
 #include <QMessageBox>
@@ -22,87 +23,113 @@
 #include <QIcon>
 #include <QDebug>
 
-using namespace QtDataVisualization;
-
 gamman3d::gamman3d(QWidget *parent)
     : QMainWindow(parent),
-      widgets(new gui::Widgets()),
+      ui(new Ui::gamman3d),
       session(new gad::Session())
 {
-    widgets->setup(this);
+    ui->setupUi(this);
+    setupWidgets();
     setupSignals();
+    createScene();
 }
 
 gamman3d::~gamman3d()
 {
+    delete scene;
+    delete view;
     delete session;
-    delete widgets;
+    delete ui;
+}
+
+void gamman3d::setupWidgets()
+{
+    labelStatus = new QLabel(ui->status);
+    statusBar()->addWidget(labelStatus);
 }
 
 void gamman3d::setupSignals()
 {
     QObject::connect(
-                widgets->actionOpenSession,
+                ui->actionOpenSession,
                 &QAction::triggered,
                 this,
                 &gamman3d::onOpenSession);
 
     QObject::connect(
-                widgets->actionCloseSession,
+                ui->actionCloseSession,
                 &QAction::triggered,
                 this,
                 &gamman3d::onCloseSession);
 
     QObject::connect(
-                widgets->actionExit,
+                ui->actionExit,
                 &QAction::triggered,
                 this,
                 &QWidget::close);
 
     QObject::connect(
-                widgets->actionShowScatter,
+                ui->actionShowScene,
                 &QAction::triggered,
                 this,
-                &gamman3d::onShowScatter);
+                &gamman3d::onShowScene);
 
     QObject::connect(
-                widgets->actionShowSurface,
+                ui->actionShowSettings,
                 &QAction::triggered,
                 this,
-                &gamman3d::onShowSurface);
+                &gamman3d::onShowSettings);
 
-    QObject::connect(
+    /*QObject::connect(
                 widgets->actionSetScript,
                 &QAction::triggered,
                 this,
-                &gamman3d::onSetScript);
+                &gamman3d::onSetScript);*/
 
-    QObject::connect(
-                widgets->comboScatterTheme,
-                qOverload<int>(&QComboBox::currentIndexChanged),
-                this,
-                qOverload<int>(&gamman3d::onChangeSceneTheme));
-
-    QObject::connect(
-                widgets->sliderScatterNodeSize,
-                &QSlider::valueChanged,
-                this,
-                &gamman3d::onResizeSceneNode);
-
-    QObject::connect(
+    /*QObject::connect(
                 widgets->scatterSeries,
                 &QScatter3DSeries::selectedItemChanged,
                 this,
-                &gamman3d::onSceneNodeSelected);
+                &gamman3d::onSceneNodeSelected);*/
+}
+
+void gamman3d::createScene()
+{
+    view = new Qt3DExtras::Qt3DWindow();
+    auto containerScene = QWidget::createWindowContainer(view);
+    ui->layoutScene->addWidget(containerScene);
+
+    view->defaultFrameGraph()->setClearColor(
+                ui->pageScene->palette().color(QWidget::backgroundRole()));
+    scene = new Qt3DCore::QEntity();
+
+    camera = view->camera();
+    camera->setProjectionType(Qt3DRender::QCameraLens::PerspectiveProjection);
+    camera->setAspectRatio(view->width() / view->height());
+    //camera->setUpVector(QVector3D(0.0f, 1.0f, 0.0f));
+    camera->setPosition(QVector3D(0.0f, 0.0f, 40.0f));
+    camera->setViewCenter(QVector3D(0.0f, 0.0f, 0.0f));
+    camera->setNearPlane(0.01f);
+    camera->setFarPlane(100000.0f);
+
+
+    Qt3DExtras::QOrbitCameraController* camCtrl = new Qt3DExtras::QOrbitCameraController(scene);
+    camCtrl->setLinearSpeed(50.0f);
+    camCtrl->setLookSpeed(180.0f);
+    camCtrl->setCamera(camera);
+
+    view->setRootEntity(scene);
+    view->show();
 }
 
 void gamman3d::populateScene()
 {
-    // Draw scatter
-    widgets->scatterData->clear();
-    widgets->scatterData->resize(session->spectrumCount());
-    QScatterDataItem *p = &widgets->scatterData->first();
+    // FIXME: clear scene
+
     double x, y, z;
+    double minX=0, minY=0, minZ=0, maxX=0, maxY=0, maxZ=0;
+    double minAlt = 0, maxAlt = 0;
+    bool first = true;
 
     for(const auto& spec : session->getSpectrumList())
     {
@@ -111,11 +138,81 @@ void gamman3d::populateScene()
                     spec->longitudeStart(),
                     x, y, z);
 
-        p->setPosition(QVector3D(x, spec->altitudeStart(), y));
-        p++;
+        if(first)
+        {
+            minX = maxX = x;
+            minY = maxY = y;
+            minZ = maxZ = z;
+            minAlt = spec->altitudeStart();
+            maxAlt = spec->altitudeStart();
+            first = false;
+        }
+        else
+        {
+            if(x < minX)
+                minX = x;
+            if(y < minY)
+                minY = y;
+            if(z < minZ)
+                minZ = z;
+
+            if(x > maxX)
+                maxX = x;
+            if(y > maxY)
+                maxY = y;
+            if(z > maxZ)
+                maxZ = z;
+
+            if(minAlt > spec->altitudeStart())
+                minAlt = spec->altitudeStart();
+            if(maxAlt < spec->altitudeStart())
+                maxAlt = spec->altitudeStart();
+        }
     }
 
-    widgets->scatterSeries->dataProxy()->resetArray(widgets->scatterData);
+    double deltaX = (maxX - minX) / 2.0;
+    double deltaY = (maxY - minY) / 2.0;
+    double deltaZ = (maxZ - minZ) / 2.0;
+
+    for(const auto& spec : session->getSpectrumList())
+    {
+        geo::geodeticToCartesianSimplified(
+                    spec->latitudeStart(),
+                    spec->longitudeStart(),
+                    x, y, z);
+
+        x -= minX + deltaX;
+        y -= minY + deltaY;
+        z -= minZ + deltaZ;
+        double alt = spec->altitudeStart() - minAlt;
+
+        x *= 1000.0;
+        y *= 1000.0;
+        z *= 1000.0;
+        alt /= 10.0;
+
+        addSceneNode(QVector3D(x, alt, y));
+    }
+}
+
+void gamman3d::addSceneNode(const QVector3D &vec)
+{
+    Qt3DExtras::QSphereMesh* mesh = new Qt3DExtras::QSphereMesh;
+    mesh->setRadius(0.05f);
+
+    Qt3DCore::QEntity* entity = new Qt3DCore::QEntity(scene);
+    entity->addComponent(mesh);
+
+    Qt3DCore::QTransform* transform = new Qt3DCore::QTransform();
+    transform->setTranslation(vec);
+    entity->addComponent(transform);
+
+    Qt3DExtras::QPhongMaterial* mat = new Qt3DExtras::QPhongMaterial();
+    mat->setDiffuse(QColor(255, 0, 0));
+    mat->setSpecular(QColor(255, 0, 0));
+    mat->setAmbient(QColor(255, 0, 0));
+    mat->setShininess(6.0f);
+    entity->addComponent(mat);
 }
 
 void gamman3d::onOpenSession()
@@ -137,9 +234,7 @@ void gamman3d::onOpenSession()
 
         populateScene();
 
-        widgets->scatterSeries->setSelectedItem(-1);
-        widgets->labelStatus->setText(
-                    QStringLiteral("Session: ") + sessionDir);
+        labelStatus->setText(QStringLiteral("Session: ") + sessionDir);
     }
     catch(const GammanException& e)
     {
@@ -157,35 +252,9 @@ void gamman3d::onCloseSession()
 {
     try
     {
+        scene->childNodes().clear();
         session->clear();
-        widgets->scatterData->clear();
-        widgets->scatterSeries->dataProxy()->resetArray(widgets->scatterData);
-        widgets->labelStatus->setText("");
-    }
-    catch(const std::exception& e)
-    {
-        qDebug() << e.what();
-    }
-}
-
-void gamman3d::onResizeSceneNode(int val)
-{
-    try
-    {
-        widgets->scatterSeries->setItemSize((double)val / 20.0);
-    }
-    catch(const std::exception& e)
-    {
-        qDebug() << e.what();
-    }
-}
-
-void gamman3d::onChangeSceneTheme(int theme)
-{
-    try
-    {
-        widgets->scatter->activeTheme()->setType(
-                    Q3DTheme::Theme(theme));
+        labelStatus->setText("");
     }
     catch(const std::exception& e)
     {
@@ -195,7 +264,7 @@ void gamman3d::onChangeSceneTheme(int theme)
 
 void gamman3d::onSceneNodeSelected(int idx)
 {
-    try
+    /*try
     {
         if(idx < 0)
         {
@@ -237,14 +306,14 @@ void gamman3d::onSceneNodeSelected(int idx)
     catch(const std::exception& e)
     {
         qDebug() << e.what();
-    }
+    }*/
 }
 
-void gamman3d::onShowScatter()
+void gamman3d::onShowScene()
 {
     try
     {
-        widgets->pages->setCurrentWidget(widgets->splitterScatter);
+        ui->pages->setCurrentWidget(ui->pageScene);
     }
     catch(const std::exception& e)
     {
@@ -252,11 +321,11 @@ void gamman3d::onShowScatter()
     }
 }
 
-void gamman3d::onShowSurface()
+void gamman3d::onShowSettings()
 {
     try
     {
-        widgets->pages->setCurrentWidget(widgets->splitterSurface);
+        ui->pages->setCurrentWidget(ui->pageSettings);
     }
     catch(const std::exception& e)
     {

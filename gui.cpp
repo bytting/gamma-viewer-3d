@@ -36,8 +36,6 @@ Widgets::Widgets()
 
 void Widgets::setup(gamman3d* g)
 {
-    using namespace QtDataVisualization;
-
     // === MAIN WINDOW ===
     g->setMinimumSize(640, 480);
     g->setWindowIcon(QIcon(QStringLiteral(":/res/images/crash.ico")));
@@ -142,33 +140,8 @@ void Widgets::setup(gamman3d* g)
 
     pages->setCurrentWidget(splitterScatter);
 
-    // === SCATTER ===
-    scatter = new Q3DScatter();
-    auto widgetScatter = QWidget::createWindowContainer(scatter);
-    widgetScatter->setContentsMargins(0, 0, 0, 0);
-    widgetScatter->setSizePolicy(
-                QSizePolicy::Expanding, QSizePolicy::Expanding);
-    splitterScatter->addWidget(widgetScatter);
-
-    scatter->scene()->activeCamera()->setCameraPreset(
-                Q3DCamera::CameraPresetFront);
-    scatter->setShadowQuality(
-                QAbstract3DGraph::ShadowQualityNone);
-    scatter->activeTheme()->setType(Q3DTheme::ThemeQt);
-    scatter->show();
-
-    auto scatterProxy = new QScatterDataProxy();
-    scatterSeries = new QScatter3DSeries(scatterProxy);
-    scatterSeries->setItemSize(0.1f);
-    scatterSeries->setItemLabelVisible(false);
-    //scatterSeries->setMesh(QAbstract3DSeries::MeshUserDefined);
-    //scatterSeries->setUserDefinedMesh(QStringLiteral(":/res/mesh/arrow.obj"));
-    scatterSeries->setMeshSmooth(true);
-    scatter->addSeries(scatterSeries);
-    scatterData = new QScatterDataArray();
-
     // === SPECTRUM INFO ===
-    auto widSpectrumInfo = new QWidget(splitterScatter);
+    /*auto widSpectrumInfo = new QWidget(splitterScatter);
     widSpectrumInfo->setLayout(new QVBoxLayout());
     widSpectrumInfo->layout()->setAlignment(Qt::AlignTop);
     splitterScatter->addWidget(widSpectrumInfo);
@@ -189,7 +162,7 @@ void Widgets::setup(gamman3d* g)
     labelScatterTime = new QLabel();
     widSpectrumInfo->layout()->addWidget(labelScatterTime);
     labelScatterDoserate = new QLabel();
-    widSpectrumInfo->layout()->addWidget(labelScatterDoserate);
+    widSpectrumInfo->layout()->addWidget(labelScatterDoserate);*/
 }
 
 } // namespace gui

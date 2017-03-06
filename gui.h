@@ -23,8 +23,6 @@
 #include <QAction>
 #include <QComboBox>
 #include <QSlider>
-#include <QtDataVisualization/Q3DScatter>
-#include <QtDataVisualization/QScatter3DSeries>
 
 class gamman3d;
 
@@ -58,10 +56,6 @@ public:
     QLabel* labelScatterAltitude;
     QLabel* labelScatterTime;
     QLabel* labelScatterDoserate;
-
-    QtDataVisualization::Q3DScatter* scatter;
-    QtDataVisualization::QScatter3DSeries* scatterSeries;
-    QtDataVisualization::QScatterDataArray* scatterData;
 };
 
 } // namespace gui
