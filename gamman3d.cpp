@@ -36,8 +36,8 @@ gamman3d::gamman3d(QWidget *parent)
 
 gamman3d::~gamman3d()
 {
-    delete scene;
-    delete view;
+    //delete scene;
+    //delete view;
     delete session;
     delete ui;
 }
@@ -66,7 +66,7 @@ void gamman3d::setupSignals()
                 ui->actionExit,
                 &QAction::triggered,
                 this,
-                &QWidget::close);
+                &gamman3d::onExitApplication);
 
     QObject::connect(
                 ui->actionShowScene,
@@ -212,6 +212,13 @@ void gamman3d::addSceneNode(const QVector3D &vec)
     mat->setAmbient(QColor(200, 20, 20));
     mat->setShininess(6.0f);
     entity->addComponent(mat);
+}
+
+void gamman3d::onExitApplication()
+{
+    //view->disconnect();
+    //view->close();
+    this->close();
 }
 
 void gamman3d::onOpenSession()

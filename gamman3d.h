@@ -71,6 +71,7 @@ private:
 
 private slots:
 
+    void onExitApplication();
     void onOpenSession();
     void onCloseSession();
     void onSceneNodeSelected(int idx);
