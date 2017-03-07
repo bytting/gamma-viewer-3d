@@ -67,11 +67,13 @@ void Session::loadPath(QString sessionPath)
     if(!sessionDir.exists())
         throw DirDoesNotExist(sessionDir.absolutePath());
 
-    QDir spectrumDir(sessionPath + QDir::separator() + QStringLiteral("json"));
+    QDir spectrumDir(sessionPath + QDir::separator() +
+                     QStringLiteral("json"));
     if (!spectrumDir.exists())
         throw DirIsNotASession(spectrumDir.absolutePath());
 
-    QString sessionFile = sessionPath + QDir::separator() + QStringLiteral("session.json");
+    QString sessionFile = sessionPath + QDir::separator() +
+            QStringLiteral("session.json");
     if(!QFile::exists(sessionFile))
         throw DirIsNotASession(sessionDir.absolutePath());
 
@@ -101,8 +103,10 @@ void Session::loadPath(QString sessionPath)
             double maxY = std::max(spec->y1(), spec->y2());
             double maxZ = std::max(spec->z1(), spec->z2());
 
-            double minAltitude = std::min(spec->altitudeStart(), spec->altitudeEnd());
-            double maxAltitude = std::max(spec->altitudeStart(), spec->altitudeEnd());
+            double minAltitude = std::min(spec->altitudeStart(),
+                                          spec->altitudeEnd());
+            double maxAltitude = std::max(spec->altitudeStart(),
+                                          spec->altitudeEnd());
 
             if(first)
             {

@@ -188,8 +188,10 @@ void Spectrum::calculateDoserate(const Detector &det, lua_State* L)
     mDoserate = 0.0;
 
     // Trim off discriminators
-    int startChan = (int)((double)det.numChannels() * ((double)det.LLD() / 100.0));
-    int endChan = (int)((double)det.numChannels() * ((double)det.ULD() / 100.0));
+    int startChan = (int)((double)det.numChannels() *
+                          ((double)det.LLD() / 100.0));
+    int endChan = (int)((double)det.numChannels() *
+                        ((double)det.ULD() / 100.0));
     if(endChan > det.numChannels()) // FIXME: Can not exceed 100% atm
         endChan = det.numChannels();
 
