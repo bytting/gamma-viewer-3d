@@ -80,15 +80,34 @@ void Session::loadPath(QString sessionPath)
 
     const auto entryInfoList = spectrumDir.entryInfoList(
                 QStringList() << "*.json",
-                QDir::NoDotAndDotDot | QDir::Files);
+                QDir::NoDotAndDotDot | QDir::Files);    
 
+    bool first = true;
     for(const auto& info : entryInfoList)
     {
         try
         {
-            auto spec = new Spectrum(info.absoluteFilePath());
+            auto spec = new Spectrum(info.absoluteFilePath());            
+
             if(mScriptLoaded)
-                spec->calculateDoserate(mDetector, L);
+            {
+                spec->calculateDoserate(mDetector, L);                
+
+                if(first)
+                {
+                    mMinDoserate = spec->doserate();
+                    mMaxDoserate = spec->doserate();
+                    first = false;
+                }
+                else
+                {
+                    if(spec->doserate() < mMinDoserate)
+                        mMinDoserate = spec->doserate();
+                    if(spec->doserate() > mMaxDoserate)
+                        mMaxDoserate = spec->doserate();
+                }
+            }
+
             mSpecList.push_back(spec);
         }
         catch(const GammanException& e)
@@ -141,6 +160,8 @@ void Session::clear()
         delete spec;
 
     mSpecList.clear();
+
+    mMinDoserate = mMaxDoserate = 0.0;
 }
 
 void Session::loadDoserateScript(QString scriptFileName)

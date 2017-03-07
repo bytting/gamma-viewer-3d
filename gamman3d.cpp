@@ -22,6 +22,7 @@
 #include <QFileDialog>
 #include <QIcon>
 #include <QDebug>
+#include <cmath>
 
 gamman3d::gamman3d(QWidget *parent)
     : QMainWindow(parent),
@@ -198,11 +199,11 @@ void gamman3d::populateScene()
         z *= 1000.0;
         alt /= 10.0;
 
-        addSceneNode(QVector3D(x, alt, y));
+        addSceneNode(QVector3D(x, alt, y), spec);
     }
 }
 
-void gamman3d::addSceneNode(const QVector3D &vec)
+void gamman3d::addSceneNode(const QVector3D &vec, const gad::Spectrum *spec)
 {
     Qt3DCore::QEntity* entity = new Qt3DCore::QEntity(scene);
     entity->addComponent(mesh);
@@ -211,12 +212,41 @@ void gamman3d::addSceneNode(const QVector3D &vec)
     transform->setTranslation(vec);
     entity->addComponent(transform);
 
+    int r, g, b;
+    makeRainbowRGB(session->minDoserate(),
+                   session->maxDoserate(),
+                   spec->doserate(),
+                   r, g, b);
+
     Qt3DExtras::QPhongMaterial* mat = new Qt3DExtras::QPhongMaterial(scene);
-    mat->setDiffuse(QColor(100, 50, 50));
-    mat->setSpecular(QColor(255, 0, 0));
-    mat->setAmbient(QColor(200, 20, 20));
+    mat->setDiffuse(QColor(r, g, b));
+    mat->setSpecular(QColor(r, g, b));
+    mat->setAmbient(QColor(r - r / 6, g - g / 6, b - b / 6));
     mat->setShininess(6.0f);
     entity->addComponent(mat);
+}
+
+void gamman3d::makeRainbowRGB(
+        double minDoserate,
+        double maxDoserate,
+        double doserate,
+        int &r,
+        int &g,
+        int &b)
+{
+    double f = (doserate - minDoserate) / (maxDoserate - minDoserate);
+
+    auto a = (1.0 - f) / 0.25;	//invert and group
+    auto X = std::floor(a);	//this is the integer part
+    auto Y = std::floor(255.0 * (a - X)); //fractional part from 0 to 255
+    switch((int)X)
+    {
+        case 0: r = 255; g = Y; b = 0; break;
+        case 1: r = 255 - Y; g = 255; b = 0; break;
+        case 2: r = 0; g = 255; b = Y; break;
+        case 3: r = 0; g = 255 - Y; b = 255; break;
+        case 4: r = 0; g = 0; b = 255; break;
+    }
 }
 
 void gamman3d::onExitApplication()

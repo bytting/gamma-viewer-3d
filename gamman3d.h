@@ -17,7 +17,7 @@
 #ifndef GAMMAN3D_H
 #define GAMMAN3D_H
 
-//#include "gui.h"
+#include "spectrum.h"
 #include "session.h"
 #include <QMainWindow>
 #include <QLabel>
@@ -56,7 +56,15 @@ public:
 
     void populateScene();
 
-    void addSceneNode(const QVector3D &vec);
+    void addSceneNode(const QVector3D &vec, const gad::Spectrum *spec);
+
+    void makeRainbowRGB(
+            double minDoserate,
+            double maxDoserate,
+            double doserate,
+            int &r,
+            int &g,
+            int &b);
 
 private:
 

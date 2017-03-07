@@ -53,6 +53,9 @@ public:
 
     void loadDoserateScript(QString scriptFileName);
 
+    double minDoserate() const { return mMinDoserate; }
+    double maxDoserate() const { return mMaxDoserate; }
+
     struct DirIsNotASession : public GammanException
     {
         explicit DirIsNotASession(QString dir) noexcept
@@ -71,16 +74,18 @@ private:
 
     QString mName;
     QString mComment;
-    double mLivetime;
-    int mIterations;
+    double mLivetime = 0.0;
+    int mIterations = 0;
 
     DetectorType mDetectorType;
     Detector mDetector;
 
-    SpecList mSpecList;
+    SpecList mSpecList;    
 
     lua_State* L;
     bool mScriptLoaded = false;
+    double mMinDoserate = 0.0;
+    double mMaxDoserate = 0.0;
 };
 
 } // namespace gamma
