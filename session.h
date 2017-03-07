@@ -46,12 +46,16 @@ public:
     ~Session();
 
     const SpecList& getSpectrumList() const;
+
     const Spectrum* getSpectrum(SpecListSize index) const;
+
     SpecListSize spectrumCount() const { return mSpecList.size(); }
+
     void loadPath(QString sessionPath);
-    void clear();
 
     void loadDoserateScript(QString scriptFileName);
+
+    void clear();
 
     double minDoserate() const { return mMinDoserate; }
     double maxDoserate() const { return mMaxDoserate; }

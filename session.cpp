@@ -201,6 +201,13 @@ void Session::loadSessionFile(QString sessionFile)
     mDetector.loadJson(root.value("Detector").toObject());
 }
 
+void Session::loadDoserateScript(QString scriptFileName)
+{
+    if(luaL_dofile(L, scriptFileName.toStdString().c_str()))
+        qDebug() << "luaL_dofile failed";
+    else mScriptLoaded = true;
+}
+
 void Session::clear()
 {
     for(auto& spec: mSpecList)
@@ -211,13 +218,7 @@ void Session::clear()
     mMinDoserate = mMaxDoserate = 0.0;
     mMinX = mMinY = mMinZ = 0.0;
     mMaxX = mMaxY = mMaxZ = 0.0;
-}
-
-void Session::loadDoserateScript(QString scriptFileName)
-{
-    if(luaL_dofile(L, scriptFileName.toStdString().c_str()))
-        qDebug() << "luaL_dofile failed";
-    else mScriptLoaded = true;
+    mMinAltitude = mMaxAltitude = 0.0;
 }
 
 } // namespace gad

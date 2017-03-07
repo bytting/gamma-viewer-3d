@@ -173,7 +173,7 @@ void gamman3d::addSceneNode(const QVector3D &vec,
     mat->setAmbient(QColor(color.red() - color.red() / 6,
                            color.green() - color.green() / 6,
                            color.blue() - color.blue() / 6));
-    mat->setShininess(6.0f);
+    mat->setShininess(5.0f);
     entity->addComponent(mat);
 }
 
