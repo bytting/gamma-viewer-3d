@@ -16,7 +16,6 @@ SOURCES += \
     spectrum.cpp \
     session.cpp \
     geo.cpp \
-    gui.cpp \
     detectortype.cpp \
     detector.cpp \
     lua/lapi.c \
@@ -58,7 +57,6 @@ HEADERS += \
     session.h \
     spectrum.h \
     geo.h \
-    gui.h \
     exceptions.h \
     detectortype.h \
     detector.h \
