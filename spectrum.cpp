@@ -15,6 +15,7 @@
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "spectrum.h"
+#include "geo.h"
 #include <QJsonDocument>
 #include <QJsonObject>
 #include <QFile>
@@ -157,6 +158,16 @@ void Spectrum::loadFile(QString filename)
             mTotalCount += count;
         }
     }
+
+    geo::geodeticToCartesianSimplified(
+                mLatitudeStart,
+                mLongitudeStart,
+                mX1, mY1, mZ1);
+
+    geo::geodeticToCartesianSimplified(
+                mLatitudeEnd,
+                mLongitudeEnd,
+                mX2, mY2, mZ2);
 }
 
 static double GEValue(lua_State* L, double energy)

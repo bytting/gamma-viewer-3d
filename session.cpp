@@ -17,6 +17,7 @@
 #include "session.h"
 #include <stdexcept>
 #include <memory>
+#include <cmath>
 #include <QString>
 #include <QDir>
 #include <QFile>
@@ -87,25 +88,65 @@ void Session::loadPath(QString sessionPath)
     {
         try
         {
-            auto spec = new Spectrum(info.absoluteFilePath());            
+            auto spec = new Spectrum(info.absoluteFilePath());
 
             if(mScriptLoaded)
-            {
-                spec->calculateDoserate(mDetector, L);                
+                spec->calculateDoserate(mDetector, L);
 
-                if(first)
-                {
+            double minX = std::min(spec->x1(), spec->x2());
+            double minY = std::min(spec->y1(), spec->y2());
+            double minZ = std::min(spec->z1(), spec->z2());
+
+            double maxX = std::max(spec->x1(), spec->x2());
+            double maxY = std::max(spec->y1(), spec->y2());
+            double maxZ = std::max(spec->z1(), spec->z2());
+
+            double minAltitude = std::min(spec->altitudeStart(), spec->altitudeEnd());
+            double maxAltitude = std::max(spec->altitudeStart(), spec->altitudeEnd());
+
+            if(first)
+            {
+                mMinDoserate = spec->doserate();
+                mMaxDoserate = spec->doserate();
+
+                mMinX = minX;
+                mMinY = minY;
+                mMinZ = minZ;
+
+                mMaxX = maxX;
+                mMaxY = maxY;
+                mMaxZ = maxZ;
+
+                mMinAltitude = minAltitude;
+                mMaxAltitude = maxAltitude;
+
+                first = false;
+            }
+            else
+            {
+                if(spec->doserate() < mMinDoserate)
                     mMinDoserate = spec->doserate();
+                if(spec->doserate() > mMaxDoserate)
                     mMaxDoserate = spec->doserate();
-                    first = false;
-                }
-                else
-                {
-                    if(spec->doserate() < mMinDoserate)
-                        mMinDoserate = spec->doserate();
-                    if(spec->doserate() > mMaxDoserate)
-                        mMaxDoserate = spec->doserate();
-                }
+
+                if(minX < mMinX)
+                    mMinX = minX;
+                if(minY < mMinY)
+                    mMinY = minY;
+                if(minZ < mMinZ)
+                    mMinZ = minZ;
+
+                if(maxX > mMaxX)
+                    mMaxX = maxX;
+                if(maxY > mMaxY)
+                    mMaxY = maxY;
+                if(maxZ > mMaxZ)
+                    mMaxZ = maxZ;
+
+                if(minAltitude < mMinAltitude)
+                    mMinAltitude = minAltitude;
+                if(maxAltitude > mMaxAltitude)
+                    mMaxAltitude = maxAltitude;
             }
 
             mSpecList.push_back(spec);
@@ -162,6 +203,8 @@ void Session::clear()
     mSpecList.clear();
 
     mMinDoserate = mMaxDoserate = 0.0;
+    mMinX = mMinY = mMinZ = 0.0;
+    mMaxX = mMaxY = mMaxZ = 0.0;
 }
 
 void Session::loadDoserateScript(QString scriptFileName)

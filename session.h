@@ -56,6 +56,16 @@ public:
     double minDoserate() const { return mMinDoserate; }
     double maxDoserate() const { return mMaxDoserate; }
 
+    double minX() const { return mMinX; }
+    double maxX() const { return mMaxX; }
+    double minY() const { return mMinY; }
+    double maxY() const { return mMaxY; }
+    double minZ() const { return mMinZ; }
+    double maxZ() const { return mMaxZ; }
+
+    double minAltitude() const { return mMinAltitude; }
+    double maxAltitude() const { return mMaxAltitude; }
+
     struct DirIsNotASession : public GammanException
     {
         explicit DirIsNotASession(QString dir) noexcept
@@ -86,6 +96,8 @@ private:
     bool mScriptLoaded = false;
     double mMinDoserate = 0.0;
     double mMaxDoserate = 0.0;
+    double mMinX, mMaxX, mMinY, mMaxY, mMinZ, mMaxZ;
+    double mMinAltitude, mMaxAltitude;
 };
 
 } // namespace gamma

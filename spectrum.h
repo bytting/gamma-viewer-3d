@@ -79,6 +79,13 @@ public:
     void calculateDoserate(const Detector &det, lua_State* L);
     double doserate() const { return mDoserate; }
 
+    double x1() const { return mX1; }
+    double x2() const { return mX2; }
+    double y1() const { return mY1; }
+    double y2() const { return mY2; }
+    double z1() const { return mZ1; }
+    double z2() const { return mZ2; }
+
     struct InvalidSpectrumFile : public GammanException
     {
         explicit InvalidSpectrumFile(QString filename) noexcept
@@ -103,6 +110,7 @@ private:
     int mRealtime, mLivetime, mTotalCount;
     ChanList mChannels;
     double mDoserate;
+    double mX1, mX2, mY1, mY2, mZ1, mZ2;
 };
 
 } // namespace gamma

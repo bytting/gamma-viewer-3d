@@ -17,7 +17,6 @@
 #include "gamman3d.h"
 #include "ui_gamman3d.h"
 #include "exceptions.h"
-#include "geo.h"
 #include <QMessageBox>
 #include <QFileDialog>
 #include <QIcon>
@@ -132,67 +131,18 @@ void gamman3d::createScene()
 
 void gamman3d::populateScene()
 {
-    // FIXME: clear scene
+    // FIXME: clear scene    
 
-    double x, y, z;
-    double minX=0, minY=0, minZ=0, maxX=0, maxY=0, maxZ=0;
-    double minAlt = 0, maxAlt = 0;
-    bool first = true;
-
-    for(const auto& spec : session->getSpectrumList())
-    {
-        geo::geodeticToCartesianSimplified(
-                    spec->latitudeStart(),
-                    spec->longitudeStart(),
-                    x, y, z);
-
-        if(first)
-        {
-            minX = maxX = x;
-            minY = maxY = y;
-            minZ = maxZ = z;
-            minAlt = spec->altitudeStart();
-            maxAlt = spec->altitudeStart();
-            first = false;
-        }
-        else
-        {
-            if(x < minX)
-                minX = x;
-            if(y < minY)
-                minY = y;
-            if(z < minZ)
-                minZ = z;
-
-            if(x > maxX)
-                maxX = x;
-            if(y > maxY)
-                maxY = y;
-            if(z > maxZ)
-                maxZ = z;
-
-            if(minAlt > spec->altitudeStart())
-                minAlt = spec->altitudeStart();
-            if(maxAlt < spec->altitudeStart())
-                maxAlt = spec->altitudeStart();
-        }
-    }
-
-    double halfX = (maxX - minX) / 2.0;
-    double halfY = (maxY - minY) / 2.0;
-    double halfZ = (maxZ - minZ) / 2.0;
+    double halfX = (session->maxX() - session->minX()) / 2.0;
+    double halfY = (session->maxY() - session->minY()) / 2.0;
+    double halfZ = (session->maxZ() - session->minZ()) / 2.0;
 
     for(const auto& spec : session->getSpectrumList())
     {
-        geo::geodeticToCartesianSimplified(
-                    spec->latitudeStart(),
-                    spec->longitudeStart(),
-                    x, y, z);
-
-        x -= minX + halfX;
-        y -= minY + halfY;
-        z -= minZ + halfZ;
-        double alt = spec->altitudeStart() - minAlt;
+        double x = spec->x1() - session->minX() + halfX;
+        double y = spec->y1() - session->minY() + halfY;
+        double z = spec->z1() - session->minZ() + halfZ;
+        double alt = spec->altitudeStart() - session->minAltitude();
 
         x *= 1000.0;
         y *= 1000.0;
@@ -203,7 +153,9 @@ void gamman3d::populateScene()
     }
 }
 
-void gamman3d::addSceneNode(const QVector3D &vec, const gad::Spectrum *spec)
+void gamman3d::addSceneNode(
+        const QVector3D &vec,
+        const gad::Spectrum *spec)
 {
     Qt3DCore::QEntity* entity = new Qt3DCore::QEntity(scene);
     entity->addComponent(mesh);
@@ -236,9 +188,10 @@ void gamman3d::makeRainbowRGB(
 {
     double f = (doserate - minDoserate) / (maxDoserate - minDoserate);
 
-    auto a = (1.0 - f) / 0.25;	//invert and group
-    auto X = std::floor(a);	//this is the integer part
-    auto Y = std::floor(255.0 * (a - X)); //fractional part from 0 to 255
+    auto a = (1.0 - f) / 0.25;	// invert and group
+    auto X = std::floor(a);	// the integer part
+    auto Y = std::floor(255.0 * (a - X)); // the fractional part from 0 to 255
+
     switch((int)X)
     {
         case 0: r = 255; g = Y; b = 0; break;
