@@ -153,39 +153,36 @@ void gamman3d::populateScene()
     }
 }
 
-void gamman3d::addSceneNode(
-        const QVector3D &vec,
-        const gad::Spectrum *spec)
+void gamman3d::addSceneNode(const QVector3D &vec,
+                            const gad::Spectrum *spec)
 {
-    Qt3DCore::QEntity* entity = new Qt3DCore::QEntity(scene);
+    Qt3DCore::QEntity *entity = new Qt3DCore::QEntity(scene);
     entity->addComponent(mesh);
 
-    Qt3DCore::QTransform* transform = new Qt3DCore::QTransform(scene);
+    Qt3DCore::QTransform *transform = new Qt3DCore::QTransform(scene);
     transform->setTranslation(vec);
     entity->addComponent(transform);
 
-    int r, g, b;
-    makeRainbowRGB(session->minDoserate(),
-                   session->maxDoserate(),
-                   spec->doserate(),
-                   r, g, b);
+    QColor color = makeRainbowRGB(session->minDoserate(),
+                                  session->maxDoserate(),
+                                  spec->doserate());
 
-    Qt3DExtras::QPhongMaterial* mat = new Qt3DExtras::QPhongMaterial(scene);
-    mat->setDiffuse(QColor(r, g, b));
-    mat->setSpecular(QColor(r, g, b));
-    mat->setAmbient(QColor(r - r / 6, g - g / 6, b - b / 6));
+    Qt3DExtras::QPhongMaterial *mat = new Qt3DExtras::QPhongMaterial(scene);
+    mat->setDiffuse(color);
+    mat->setSpecular(color);
+    mat->setAmbient(QColor(color.red() - color.red() / 6,
+                           color.green() - color.green() / 6,
+                           color.blue() - color.blue() / 6));
     mat->setShininess(6.0f);
     entity->addComponent(mat);
 }
 
-void gamman3d::makeRainbowRGB(
-        double minDoserate,
-        double maxDoserate,
-        double doserate,
-        int &r,
-        int &g,
-        int &b)
+QColor gamman3d::makeRainbowRGB(double minDoserate,
+                                double maxDoserate,
+                                double doserate)
 {
+    QColor color;
+
     double f = (doserate - minDoserate) / (maxDoserate - minDoserate);
 
     auto a = (1.0 - f) / 0.25;	// invert and group
@@ -194,12 +191,24 @@ void gamman3d::makeRainbowRGB(
 
     switch((int)X)
     {
-        case 0: r = 255; g = Y; b = 0; break;
-        case 1: r = 255 - Y; g = 255; b = 0; break;
-        case 2: r = 0; g = 255; b = Y; break;
-        case 3: r = 0; g = 255 - Y; b = 255; break;
-        case 4: r = 0; g = 0; b = 255; break;
+    case 0:
+        color.setRgb(255, Y, 0);
+        break;
+    case 1:
+        color.setRgb(255 - Y, 255, 0);
+        break;
+    case 2:
+        color.setRgb(0, 255, Y);
+        break;
+    case 3:
+        color.setRgb(0, 255 - Y, 255);
+        break;
+    case 4:
+        color.setRgb(0, 0, 255);
+        break;
     }
+
+    return color;
 }
 
 void gamman3d::onExitApplication()

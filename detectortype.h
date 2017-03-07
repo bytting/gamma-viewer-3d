@@ -47,6 +47,6 @@ private:
     QString mGEScript;
 };
 
-} // namespace gamma
+} // namespace gad
 
 #endif // DETECTORTYPE_H

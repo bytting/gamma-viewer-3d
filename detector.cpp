@@ -87,4 +87,4 @@ double Detector::getEnergy(int index) const
     return e;
 }
 
-} // namespace gamma
+} // namespace gad

@@ -78,6 +78,12 @@ public:
             : GammanException("Invalid session file: " + filename) {}
     };
 
+    struct UnableToCreateLuaState : public GammanException
+    {
+        explicit UnableToCreateLuaState(QString source) noexcept
+            : GammanException("Unable to create Lua state: " + source) {}
+    };
+
 private:
 
     void loadSessionFile(QString sessionFile);
@@ -92,14 +98,15 @@ private:
 
     SpecList mSpecList;    
 
-    lua_State* L;
+    lua_State *L = nullptr;
     bool mScriptLoaded = false;
     double mMinDoserate = 0.0;
     double mMaxDoserate = 0.0;
-    double mMinX, mMaxX, mMinY, mMaxY, mMinZ, mMaxZ;
-    double mMinAltitude, mMaxAltitude;
+    double mMinX = 0.0, mMaxX = 0.0, mMinY = 0.0;
+    double mMaxY = 0.0, mMinZ = 0.0, mMaxZ = 0.0;
+    double mMinAltitude = 0.0, mMaxAltitude = 0.0;
 };
 
-} // namespace gamma
+} // namespace gad
 
 #endif // SESSION_H

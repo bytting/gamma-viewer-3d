@@ -209,4 +209,4 @@ void Spectrum::calculateDoserate(const Detector &det, lua_State* L)
     }
 }
 
-} // namespace gamma
+} // namespace gad

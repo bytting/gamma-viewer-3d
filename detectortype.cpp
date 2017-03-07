@@ -48,4 +48,4 @@ void DetectorType::loadJson(const QJsonObject &obj)
     mGEScript = obj.value("GEScript").toString();
 }
 
-} // namespace gamma
+} // namespace gad

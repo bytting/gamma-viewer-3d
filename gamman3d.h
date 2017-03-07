@@ -45,39 +45,34 @@ class gamman3d : public QMainWindow
 
 public:
 
-    explicit gamman3d(QWidget* parent = 0);
+    explicit gamman3d(QWidget *parent = 0);
     ~gamman3d();
 
     void setupWidgets();
-
     void setupSignals();
-
     void createScene();
-
     void populateScene();
 
-    void addSceneNode(const QVector3D &vec, const gad::Spectrum *spec);
+    void addSceneNode(const QVector3D &vec,
+                      const gad::Spectrum *spec);
 
-    void makeRainbowRGB(
-            double minDoserate,
-            double maxDoserate,
-            double doserate,
-            int &r,
-            int &g,
-            int &b);
+    QColor makeRainbowRGB(double minDoserate,
+                          double maxDoserate,
+                          double doserate);
 
 private:
 
-    Ui::gamman3d* ui;
-    QLabel* labelStatus;
-    gad::Session* session;
+    Ui::gamman3d *ui = nullptr;
 
-    Qt3DExtras::Qt3DWindow* view;
-    //Qt3DExtras::Qt3DWindow view;
-    Qt3DCore::QEntity* scene;
-    Qt3DRender::QCamera* camera;
-    Qt3DExtras::QOrbitCameraController* camCtrl;
-    Qt3DExtras::QSphereMesh* mesh;
+    QLabel *labelStatus = nullptr;
+
+    Qt3DExtras::Qt3DWindow *view = nullptr;
+    Qt3DCore::QEntity *scene = nullptr;
+    Qt3DRender::QCamera *camera = nullptr;
+    Qt3DExtras::QOrbitCameraController *camCtrl = nullptr;
+    Qt3DExtras::QSphereMesh *mesh = nullptr;
+
+    gad::Session *session = nullptr;
 
 private slots:
 

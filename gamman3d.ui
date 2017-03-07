@@ -13,6 +13,10 @@
   <property name="windowTitle">
    <string>Gamma Analyzer 3D</string>
   </property>
+  <property name="windowIcon">
+   <iconset resource="resources.qrc">
+    <normaloff>:/res/images/crash.ico</normaloff>:/res/images/crash.ico</iconset>
+  </property>
   <widget class="QWidget" name="centralwidget">
    <layout class="QHBoxLayout" name="horizontalLayout">
     <item>

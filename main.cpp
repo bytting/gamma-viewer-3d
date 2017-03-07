@@ -19,12 +19,12 @@
 #include <QApplication>
 #include <QDebug>
 
-int main(int argc, char* argv[])
+int main(int argc, char *argv[])
 {
     int retVal = 0;
 
-    QApplication* a = new QApplication(argc, argv);
-    gamman3d* w = new gamman3d();
+    QApplication *a = new QApplication(argc, argv);
+    gamman3d *w = new gamman3d();
 
     try
     {

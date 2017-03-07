@@ -64,6 +64,6 @@ private:
     CoefficientList mEnergyCurveCoefficients;
 };
 
-} // namespace gamma
+} // namespace gad
 
 #endif // DETECTOR_H

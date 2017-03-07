@@ -113,6 +113,6 @@ private:
     double mX1, mX2, mY1, mY2, mZ1, mZ2;
 };
 
-} // namespace gamma
+} // namespace gad
 
 #endif // SPECTRUM_H

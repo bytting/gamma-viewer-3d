@@ -32,6 +32,8 @@ namespace gad
 Session::Session()
 {
     L = luaL_newstate();
+    if(!L)
+        throw UnableToCreateLuaState("Session::Session");
     luaL_openlibs(L);
 }
 
@@ -218,4 +220,4 @@ void Session::loadDoserateScript(QString scriptFileName)
     else mScriptLoaded = true;
 }
 
-} // namespace gamma
+} // namespace gad
