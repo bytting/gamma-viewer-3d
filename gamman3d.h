@@ -65,8 +65,10 @@ private:
     gad::Session* session;
 
     Qt3DExtras::Qt3DWindow* view;
+    //Qt3DExtras::Qt3DWindow view;
     Qt3DCore::QEntity* scene;
     Qt3DRender::QCamera* camera;
+    Qt3DExtras::QOrbitCameraController* camCtrl;
     Qt3DExtras::QSphereMesh* mesh;
 
 private slots:

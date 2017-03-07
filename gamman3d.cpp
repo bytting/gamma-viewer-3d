@@ -36,8 +36,13 @@ gamman3d::gamman3d(QWidget *parent)
 
 gamman3d::~gamman3d()
 {
-    //delete scene;
-    //delete view;
+    delete camCtrl;
+    camCtrl = nullptr;
+    delete mesh;
+    mesh = nullptr;
+    delete scene;
+    scene = nullptr;
+    delete view;
     delete session;
     delete ui;
 }
@@ -115,7 +120,7 @@ void gamman3d::createScene()
     mesh = new Qt3DExtras::QSphereMesh(scene);
     mesh->setRadius(0.05f);
 
-    Qt3DExtras::QOrbitCameraController* camCtrl = new Qt3DExtras::QOrbitCameraController(scene);
+    camCtrl = new Qt3DExtras::QOrbitCameraController(scene);
     camCtrl->setLinearSpeed(50.0f);
     camCtrl->setLookSpeed(180.0f);
     camCtrl->setCamera(camera);
@@ -172,9 +177,9 @@ void gamman3d::populateScene()
         }
     }
 
-    double deltaX = (maxX - minX) / 2.0;
-    double deltaY = (maxY - minY) / 2.0;
-    double deltaZ = (maxZ - minZ) / 2.0;
+    double halfX = (maxX - minX) / 2.0;
+    double halfY = (maxY - minY) / 2.0;
+    double halfZ = (maxZ - minZ) / 2.0;
 
     for(const auto& spec : session->getSpectrumList())
     {
@@ -183,9 +188,9 @@ void gamman3d::populateScene()
                     spec->longitudeStart(),
                     x, y, z);
 
-        x -= minX + deltaX;
-        y -= minY + deltaY;
-        z -= minZ + deltaZ;
+        x -= minX + halfX;
+        y -= minY + halfY;
+        z -= minZ + halfZ;
         double alt = spec->altitudeStart() - minAlt;
 
         x *= 1000.0;
@@ -216,9 +221,7 @@ void gamman3d::addSceneNode(const QVector3D &vec)
 
 void gamman3d::onExitApplication()
 {
-    //view->disconnect();
-    //view->close();
-    this->close();
+    QWidget::close();
 }
 
 void gamman3d::onOpenSession()
@@ -258,8 +261,7 @@ void gamman3d::onCloseSession()
 {
     try
     {
-        scene->childNodes().clear();
-        session->clear();
+        //session->clear(); // FIXME
         labelStatus->setText("");
     }
     catch(const std::exception& e)
