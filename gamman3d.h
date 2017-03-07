@@ -58,7 +58,8 @@ public:
 
     QColor makeRainbowRGB(double minDoserate,
                           double maxDoserate,
-                          double doserate);
+                          double doserate,
+                          bool useNaturalLogarithm = false);
 
 private:
 

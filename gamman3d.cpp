@@ -131,11 +131,15 @@ void gamman3d::createScene()
 
 void gamman3d::populateScene()
 {
-    // FIXME: clear scene    
+    // FIXME: clear scene
 
     double halfX = (session->maxX() - session->minX()) / 2.0;
     double halfY = (session->maxY() - session->minY()) / 2.0;
     double halfZ = (session->maxZ() - session->minZ()) / 2.0;
+
+    QVector3D viewPoint;
+    int viewNodeIndex = session->getSpectrumList().size() / 2;
+    int idx = 0;
 
     for(const auto& spec : session->getSpectrumList())
     {
@@ -150,7 +154,17 @@ void gamman3d::populateScene()
         alt /= 10.0;
 
         addSceneNode(QVector3D(x, alt, y), spec);
+
+        if(idx++ == viewNodeIndex)
+        {
+            viewPoint.setX(x);
+            viewPoint.setY(alt);
+            viewPoint.setZ(y);
+        }
     }
+
+    camera->setPosition(QVector3D(0.0f, 0.0f, std::max(halfX, halfY) * 6000.0f));
+    camera->setViewCenter(viewPoint);
 }
 
 void gamman3d::addSceneNode(const QVector3D &vec,
@@ -165,7 +179,8 @@ void gamman3d::addSceneNode(const QVector3D &vec,
 
     QColor color = makeRainbowRGB(session->minDoserate(),
                                   session->maxDoserate(),
-                                  spec->doserate());
+                                  spec->doserate(),
+                                  true);
 
     Qt3DExtras::QPhongMaterial *mat = new Qt3DExtras::QPhongMaterial(scene);
     mat->setDiffuse(color);
@@ -179,9 +194,17 @@ void gamman3d::addSceneNode(const QVector3D &vec,
 
 QColor gamman3d::makeRainbowRGB(double minDoserate,
                                 double maxDoserate,
-                                double doserate)
+                                double doserate,
+                                bool useNaturalLogarithm)
 {
     QColor color;
+
+    if(useNaturalLogarithm)
+    {
+        minDoserate = std::log(minDoserate);
+        maxDoserate = std::log(maxDoserate);
+        doserate = std::log(doserate);
+    }
 
     double f = (doserate - minDoserate) / (maxDoserate - minDoserate);
 
