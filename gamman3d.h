@@ -35,6 +35,7 @@
 #include <Qt3DExtras/QPhongMaterial>
 #include <Qt3DExtras/QDiffuseMapMaterial>
 #include <Qt3DExtras/QOrbitCameraController>
+#include <Qt3DExtras/QNormalDiffuseSpecularMapMaterial>
 
 namespace Ui {
 class gamman3d;
@@ -51,7 +52,7 @@ public:
 
     void setupWidgets();
     void setupSignals();
-    void createScene();
+    void setupScene();
     void populateScene();
 
     void addSceneNode(const QVector3D &vec,
@@ -74,7 +75,7 @@ private:
     Qt3DCore::QEntity *sceneEntity = nullptr;
     Qt3DRender::QCamera *camera = nullptr;
     Qt3DExtras::QOrbitCameraController *cameraController = nullptr;
-    Qt3DExtras::QSphereMesh *spectrumMesh = nullptr;
+    Qt3DExtras::QSphereMesh *spectrumMesh = nullptr;    
 
     gad::Session *session = nullptr;
 
