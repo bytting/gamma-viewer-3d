@@ -18,6 +18,7 @@
 #include "ui_gamman3d.h"
 #include "exceptions.h"
 #include "planeentity.h"
+#include "spectrumentity.h"
 #include <QMessageBox>
 #include <QFileDialog>
 #include <QIcon>
@@ -38,9 +39,7 @@ gamman3d::gamman3d(QWidget *parent)
 gamman3d::~gamman3d()
 {    
     delete cameraController;
-    cameraController = nullptr;
-    delete spectrumMesh;
-    spectrumMesh = nullptr;
+    cameraController = nullptr;    
     delete sceneEntity;
     sceneEntity = nullptr;
     delete fwdRenderer;
@@ -131,10 +130,7 @@ void gamman3d::setupScene()
 
     view->setActiveFrameGraph(sortPolicy);
 
-    sceneEntity = new Qt3DCore::QEntity();
-
-    spectrumMesh = new Qt3DExtras::QSphereMesh(sceneEntity);
-    spectrumMesh->setRadius(0.3f);
+    sceneEntity = new Qt3DCore::QEntity();    
 
     cameraController = new Qt3DExtras::QOrbitCameraController(sceneEntity);
     cameraController->setLinearSpeed(50.0f);
@@ -195,9 +191,14 @@ void gamman3d::populateScene()
         x *= 10000.0;
         y *= 10000.0;
         z *= 10000.0;
-        //alt /= 10.0;
+        //alt /= 10.0;        
 
-        addSceneNode(QVector3D(x, alt, -y), spec);
+        SpectrumEntity *entity = new SpectrumEntity(
+                    sceneEntity,
+                    QVector3D(x, alt, -y),
+                    session->minDoserate(),
+                    session->maxDoserate(),
+                    spec->doserate());
 
         if(!viewPointCounter--)
         {
@@ -207,78 +208,8 @@ void gamman3d::populateScene()
         }
     }
 
-    camera->setPosition(
-                QVector3D(0.0f, 0.0f, std::max(halfX, halfY) * 60000.0f));
-
+    camera->setPosition(QVector3D(0.0f, 0.0f, std::max(halfX, halfY) * 60000.0f));
     camera->setViewCenter(viewPoint);
-}
-
-void gamman3d::addSceneNode(const QVector3D &vec,
-                            const gad::Spectrum *spec)
-{
-    Qt3DCore::QEntity *entity = new Qt3DCore::QEntity(sceneEntity);
-    entity->addComponent(spectrumMesh);
-
-    Qt3DCore::QTransform *transform = new Qt3DCore::QTransform(sceneEntity);
-    transform->setTranslation(vec);
-    entity->addComponent(transform);
-
-    QColor color = makeRainbowRGB(session->minDoserate(),
-                                  session->maxDoserate(),
-                                  spec->doserate(),
-                                  true);
-
-    Qt3DExtras::QPhongMaterial *spectrumMaterial =
-            new Qt3DExtras::QPhongMaterial(sceneEntity);
-    spectrumMaterial->setDiffuse(color);
-    spectrumMaterial->setSpecular(color);
-    spectrumMaterial->setAmbient(QColor(color.red() - color.red() / 6,
-                           color.green() - color.green() / 6,
-                           color.blue() - color.blue() / 6));
-    spectrumMaterial->setShininess(5.0f);
-    entity->addComponent(spectrumMaterial);
-}
-
-QColor gamman3d::makeRainbowRGB(double minDoserate,
-                                double maxDoserate,
-                                double doserate,
-                                bool useNaturalLogarithm)
-{
-    QColor color;
-
-    if(useNaturalLogarithm)
-    {
-        minDoserate = std::log(minDoserate);
-        maxDoserate = std::log(maxDoserate);
-        doserate = std::log(doserate);
-    }
-
-    double f = (doserate - minDoserate) / (maxDoserate - minDoserate);
-
-    auto a = (1.0 - f) / 0.25;	// invert and group
-    auto X = std::floor(a);	// the integer part
-    auto Y = std::floor(255.0 * (a - X)); // the fractional part from 0 to 255
-
-    switch((int)X)
-    {
-    case 0:
-        color.setRgb(255, Y, 0);
-        break;
-    case 1:
-        color.setRgb(255 - Y, 255, 0);
-        break;
-    case 2:
-        color.setRgb(0, 255, Y);
-        break;
-    case 3:
-        color.setRgb(0, 255 - Y, 255);
-        break;
-    case 4:
-        color.setRgb(0, 0, 255);
-        break;
-    }
-
-    return color;
 }
 
 void gamman3d::onExitApplication()

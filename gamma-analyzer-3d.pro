@@ -51,7 +51,8 @@ SOURCES += \
     lua/lutf8lib.c \
     lua/lvm.c \
     lua/lzio.c \
-    planeentity.cpp
+    planeentity.cpp \
+    spectrumentity.cpp
 
 HEADERS += \
     gamman3d.h \
@@ -86,7 +87,8 @@ HEADERS += \
     lua/lundump.h \
     lua/lvm.h \
     lua/lzio.h \
-    planeentity.h
+    planeentity.h \
+    spectrumentity.h
 
 FORMS += \
     gamman3d.ui
