@@ -16,6 +16,7 @@
 
 #include "spectrumentity.h"
 #include <Qt3DExtras/QPhongMaterial>
+#include <cmath>
 
 SpectrumEntity::SpectrumEntity(
         Qt3DCore::QNode *parent,
