@@ -36,16 +36,16 @@ gamman3d::gamman3d(QWidget *parent)
 
 gamman3d::~gamman3d()
 {
-    delete camCtrl;
-    camCtrl = nullptr;
-    delete mesh;
-    mesh = nullptr;
-    delete scene;
-    scene = nullptr;
-    delete renderer;
-    renderer = nullptr;
-    delete policy;
-    policy = nullptr;
+    delete cameraController;
+    cameraController = nullptr;
+    delete spectrumMesh;
+    spectrumMesh = nullptr;
+    delete sceneEntity;
+    sceneEntity = nullptr;
+    delete fwdRenderer;
+    fwdRenderer = nullptr;
+    delete sortPolicy;
+    sortPolicy = nullptr;
     delete view;
     delete session;
     delete ui;
@@ -108,19 +108,6 @@ void gamman3d::createScene()
     auto containerScene = QWidget::createWindowContainer(view);
     ui->layoutScene->addWidget(containerScene);
 
-    policy = new Qt3DRender::QSortPolicy();
-    policy->setSortTypes(QVector<Qt3DRender::QSortPolicy::SortType>(
-        {Qt3DRender::QSortPolicy::BackToFront}
-    ));
-    renderer = new Qt3DExtras::QForwardRenderer(policy);
-    renderer->setCamera(view->camera());
-    renderer->setSurface(view);
-    renderer->setClearColor(ui->pageScene->palette().color(QWidget::backgroundRole()));
-
-    view->setActiveFrameGraph(policy);
-
-    scene = new Qt3DCore::QEntity();
-
     camera = view->camera();
     camera->setProjectionType(Qt3DRender::QCameraLens::PerspectiveProjection);
     camera->setAspectRatio(view->width() / view->height());
@@ -130,15 +117,29 @@ void gamman3d::createScene()
     camera->setNearPlane(0.01f);
     camera->setFarPlane(100000.0f);
 
-    mesh = new Qt3DExtras::QSphereMesh(scene);
-    mesh->setRadius(0.05f);
+    sortPolicy = new Qt3DRender::QSortPolicy();
+    sortPolicy->setSortTypes(QVector<Qt3DRender::QSortPolicy::SortType>(
+        {Qt3DRender::QSortPolicy::BackToFront}
+    ));
+    fwdRenderer = new Qt3DExtras::QForwardRenderer(sortPolicy);
+    fwdRenderer->setCamera(camera);
+    fwdRenderer->setSurface(view);
+    fwdRenderer->setClearColor(ui->pageScene->palette().color(
+                                   QWidget::backgroundRole()));
 
-    camCtrl = new Qt3DExtras::QOrbitCameraController(scene);
-    camCtrl->setLinearSpeed(50.0f);
-    camCtrl->setLookSpeed(180.0f);
-    camCtrl->setCamera(camera);
+    view->setActiveFrameGraph(sortPolicy);
 
-    view->setRootEntity(scene);
+    sceneEntity = new Qt3DCore::QEntity();
+
+    spectrumMesh = new Qt3DExtras::QSphereMesh(sceneEntity);
+    spectrumMesh->setRadius(0.05f);
+
+    cameraController = new Qt3DExtras::QOrbitCameraController(sceneEntity);
+    cameraController->setLinearSpeed(50.0f);
+    cameraController->setLookSpeed(180.0f);
+    cameraController->setCamera(camera);
+
+    view->setRootEntity(sceneEntity);
     view->show();
 }
 
@@ -165,27 +166,29 @@ void gamman3d::populateScene()
         z *= 1000.0;
         alt /= 10.0;
 
-        addSceneNode(QVector3D(x, alt, y), spec);
+        addSceneNode(QVector3D(x, alt, -y), spec);
 
         if(!viewPointCounter--)
         {
             viewPoint.setX(x);
             viewPoint.setY(alt);
-            viewPoint.setZ(y);
+            viewPoint.setZ(-y);
         }
     }
 
-    camera->setPosition(QVector3D(0.0f, 0.0f, std::max(halfX, halfY) * 6000.0f));
+    camera->setPosition(
+                QVector3D(0.0f, 0.0f, std::max(halfX, halfY) * 6000.0f));
+
     camera->setViewCenter(viewPoint);
 }
 
 void gamman3d::addSceneNode(const QVector3D &vec,
                             const gad::Spectrum *spec)
 {
-    Qt3DCore::QEntity *entity = new Qt3DCore::QEntity(scene);
-    entity->addComponent(mesh);
+    Qt3DCore::QEntity *entity = new Qt3DCore::QEntity(sceneEntity);
+    entity->addComponent(spectrumMesh);
 
-    Qt3DCore::QTransform *transform = new Qt3DCore::QTransform(scene);
+    Qt3DCore::QTransform *transform = new Qt3DCore::QTransform(sceneEntity);
     transform->setTranslation(vec);
     entity->addComponent(transform);
 
@@ -194,14 +197,15 @@ void gamman3d::addSceneNode(const QVector3D &vec,
                                   spec->doserate(),
                                   true);
 
-    Qt3DExtras::QPhongMaterial *mat = new Qt3DExtras::QPhongMaterial(scene);
-    mat->setDiffuse(color);
-    mat->setSpecular(color);
-    mat->setAmbient(QColor(color.red() - color.red() / 6,
+    Qt3DExtras::QPhongMaterial *spectrumMaterial =
+            new Qt3DExtras::QPhongMaterial(sceneEntity);
+    spectrumMaterial->setDiffuse(color);
+    spectrumMaterial->setSpecular(color);
+    spectrumMaterial->setAmbient(QColor(color.red() - color.red() / 6,
                            color.green() - color.green() / 6,
                            color.blue() - color.blue() / 6));
-    mat->setShininess(5.0f);
-    entity->addComponent(mat);
+    spectrumMaterial->setShininess(5.0f);
+    entity->addComponent(spectrumMaterial);
 }
 
 QColor gamman3d::makeRainbowRGB(double minDoserate,

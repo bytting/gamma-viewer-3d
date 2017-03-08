@@ -69,12 +69,12 @@ private:
     QLabel *labelStatus = nullptr;
 
     Qt3DExtras::Qt3DWindow *view = nullptr;
-    Qt3DExtras::QForwardRenderer *renderer = nullptr;
-    Qt3DRender::QSortPolicy *policy = nullptr;
-    Qt3DCore::QEntity *scene = nullptr;
+    Qt3DExtras::QForwardRenderer *fwdRenderer = nullptr;
+    Qt3DRender::QSortPolicy *sortPolicy = nullptr;
+    Qt3DCore::QEntity *sceneEntity = nullptr;
     Qt3DRender::QCamera *camera = nullptr;
-    Qt3DExtras::QOrbitCameraController *camCtrl = nullptr;
-    Qt3DExtras::QSphereMesh *mesh = nullptr;
+    Qt3DExtras::QOrbitCameraController *cameraController = nullptr;
+    Qt3DExtras::QSphereMesh *spectrumMesh = nullptr;
 
     gad::Session *session = nullptr;
 
