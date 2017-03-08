@@ -17,7 +17,7 @@
 #include "gamman3d.h"
 #include "ui_gamman3d.h"
 #include "exceptions.h"
-#include "planeentity.h"
+//#include "planeentity.h"
 #include "spectrumentity.h"
 #include <QMessageBox>
 #include <QFileDialog>
@@ -37,9 +37,11 @@ gamman3d::gamman3d(QWidget *parent)
 }
 
 gamman3d::~gamman3d()
-{    
+{
+    delete grid;
+    grid = nullptr;
     delete cameraController;
-    cameraController = nullptr;    
+    cameraController = nullptr;
     delete sceneEntity;
     sceneEntity = nullptr;
     delete fwdRenderer;
@@ -112,7 +114,7 @@ void gamman3d::setupScene()
     camera->setProjectionType(Qt3DRender::QCameraLens::PerspectiveProjection);
     camera->setAspectRatio(view->width() / view->height());
     //camera->setUpVector(QVector3D(0.0f, 1.0f, 0.0f));
-    camera->setPosition(QVector3D(0.0f, 0.0f, 40.0f));
+    camera->setPosition(QVector3D(0.0f, 20.0f, 40.0f));
     camera->setViewCenter(QVector3D(0.0f, 0.0f, 0.0f));
     camera->setNearPlane(0.01f);
     camera->setFarPlane(100000.0f);
@@ -125,46 +127,19 @@ void gamman3d::setupScene()
     fwdRenderer = new Qt3DExtras::QForwardRenderer(sortPolicy);
     fwdRenderer->setCamera(camera);
     fwdRenderer->setSurface(view);
-    fwdRenderer->setClearColor(
-                ui->pageScene->palette().color(QWidget::backgroundRole()));
+    //fwdRenderer->setClearColor(ui->pageScene->palette().color(QWidget::backgroundRole()));
+    fwdRenderer->setClearColor(Qt::black);
 
     view->setActiveFrameGraph(sortPolicy);
 
-    sceneEntity = new Qt3DCore::QEntity();    
+    sceneEntity = new Qt3DCore::QEntity();
 
     cameraController = new Qt3DExtras::QOrbitCameraController(sceneEntity);
     cameraController->setLinearSpeed(50.0f);
     cameraController->setLookSpeed(180.0f);
     cameraController->setCamera(camera);
 
-
-
-    // Scene floor
-    PlaneEntity *planeEntity = new PlaneEntity(sceneEntity);
-    planeEntity->mesh()->setHeight(100.0f);
-    planeEntity->mesh()->setWidth(100.0f);
-    planeEntity->mesh()->setMeshResolution(QSize(20, 20));
-
-    Qt3DExtras::QNormalDiffuseSpecularMapMaterial *normalDiffuseSpecularMapMaterial = new Qt3DExtras::QNormalDiffuseSpecularMapMaterial();
-    normalDiffuseSpecularMapMaterial->setTextureScale(10.0f);
-    normalDiffuseSpecularMapMaterial->setShininess(80.0f);
-    normalDiffuseSpecularMapMaterial->setAmbient(QColor::fromRgbF(0.4f, 0.4f, 0.4f, 1.0f));
-
-    /*Qt3DRender::QTextureImage *diffuseImage = new Qt3DRender::QTextureImage();
-    diffuseImage->setSource(QUrl(QStringLiteral("qrc:/assets/textures/pattern_09/diffuse.webp")));
-    normalDiffuseSpecularMapMaterial->diffuse()->addTextureImage(diffuseImage);
-
-    Qt3DRender::QTextureImage *specularImage = new Qt3DRender::QTextureImage();
-    specularImage->setSource(QUrl(QStringLiteral("qrc:/assets/textures/pattern_09/specular.webp")));
-    normalDiffuseSpecularMapMaterial->specular()->addTextureImage(specularImage);
-
-    Qt3DRender::QTextureImage *normalImage = new Qt3DRender::QTextureImage();
-    normalImage->setSource(QUrl((QStringLiteral("qrc:/assets/textures/pattern_09/normal.webp"))));
-    normalDiffuseSpecularMapMaterial->normal()->addTextureImage(normalImage);*/
-
-    planeEntity->addComponent(normalDiffuseSpecularMapMaterial);
-
-
+    grid = new GridEntity(sceneEntity, 10, 10.0f);
 
     view->setRootEntity(sceneEntity);
     view->show();
@@ -173,6 +148,7 @@ void gamman3d::setupScene()
 void gamman3d::populateScene()
 {
     // FIXME: clear scene
+    // FIXME: problem with negative coordinates?
 
     double halfX = (session->maxX() - session->minX()) / 2.0;
     double halfY = (session->maxY() - session->minY()) / 2.0;
@@ -183,15 +159,15 @@ void gamman3d::populateScene()
 
     for(const auto& spec : session->getSpectrumList())
     {
-        double x = spec->x1() - session->minX() + halfX;
-        double y = spec->y1() - session->minY() + halfY;
-        double z = spec->z1() - session->minZ() + halfZ;
+        double x = spec->x1() - session->minX() - halfX;
+        double y = spec->y1() - session->minY() - halfY;
+        double z = spec->z1() - session->minZ() - halfZ;
         double alt = spec->altitudeStart() - session->minAltitude();
 
         x *= 10000.0;
         y *= 10000.0;
         z *= 10000.0;
-        //alt /= 10.0;        
+        //alt /= 10.0;
 
         SpectrumEntity *entity = new SpectrumEntity(
                     sceneEntity,
@@ -208,7 +184,7 @@ void gamman3d::populateScene()
         }
     }
 
-    camera->setPosition(QVector3D(0.0f, 0.0f, std::max(halfX, halfY) * 60000.0f));
+    camera->setPosition(QVector3D(0.0f, 20.0f, 50.0f));
     camera->setViewCenter(viewPoint);
 }
 

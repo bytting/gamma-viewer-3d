@@ -19,6 +19,7 @@
 
 #include "spectrum.h"
 #include "session.h"
+#include "gridentity.h"
 #include <QMainWindow>
 #include <QLabel>
 #include <Qt3DCore/QEntity>
@@ -49,7 +50,7 @@ public:
     void setupWidgets();
     void setupSignals();
     void setupScene();
-    void populateScene();    
+    void populateScene();
 
     QColor makeRainbowRGB(double minDoserate,
                           double maxDoserate,
@@ -67,7 +68,8 @@ private:
     Qt3DRender::QSortPolicy *sortPolicy = nullptr;
     Qt3DCore::QEntity *sceneEntity = nullptr;
     Qt3DRender::QCamera *camera = nullptr;
-    Qt3DExtras::QOrbitCameraController *cameraController = nullptr;    
+    Qt3DExtras::QOrbitCameraController *cameraController = nullptr;
+    GridEntity *grid = nullptr;
 
     gad::Session *session = nullptr;
 
