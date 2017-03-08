@@ -105,7 +105,9 @@ void gamman3d::createScene()
     ui->layoutScene->addWidget(containerScene);
 
     view->defaultFrameGraph()->setClearColor(
-                ui->pageScene->palette().color(QWidget::backgroundRole()));
+                ui->pageScene->palette().color(
+                    QWidget::backgroundRole()));
+
     scene = new Qt3DCore::QEntity();
 
     camera = view->camera();
@@ -138,8 +140,7 @@ void gamman3d::populateScene()
     double halfZ = (session->maxZ() - session->minZ()) / 2.0;
 
     QVector3D viewPoint;
-    int viewNodeIndex = session->getSpectrumList().size() / 2;
-    int idx = 0;
+    int viewPointCounter = session->getSpectrumList().size() / 2;
 
     for(const auto& spec : session->getSpectrumList())
     {
@@ -155,7 +156,7 @@ void gamman3d::populateScene()
 
         addSceneNode(QVector3D(x, alt, y), spec);
 
-        if(idx++ == viewNodeIndex)
+        if(!viewPointCounter--)
         {
             viewPoint.setX(x);
             viewPoint.setY(alt);
