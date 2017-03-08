@@ -42,6 +42,10 @@ gamman3d::~gamman3d()
     mesh = nullptr;
     delete scene;
     scene = nullptr;
+    delete renderer;
+    renderer = nullptr;
+    delete policy;
+    policy = nullptr;
     delete view;
     delete session;
     delete ui;
@@ -104,9 +108,16 @@ void gamman3d::createScene()
     auto containerScene = QWidget::createWindowContainer(view);
     ui->layoutScene->addWidget(containerScene);
 
-    view->defaultFrameGraph()->setClearColor(
-                ui->pageScene->palette().color(
-                    QWidget::backgroundRole()));
+    policy = new Qt3DRender::QSortPolicy();
+    policy->setSortTypes(QVector<Qt3DRender::QSortPolicy::SortType>(
+        {Qt3DRender::QSortPolicy::BackToFront}
+    ));
+    renderer = new Qt3DExtras::QForwardRenderer(policy);
+    renderer->setCamera(view->camera());
+    renderer->setSurface(view);
+    renderer->setClearColor(ui->pageScene->palette().color(QWidget::backgroundRole()));
+
+    view->setActiveFrameGraph(policy);
 
     scene = new Qt3DCore::QEntity();
 

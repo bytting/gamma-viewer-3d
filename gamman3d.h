@@ -28,6 +28,7 @@
 #include <Qt3DRender/QCameraLens>
 #include <Qt3DRender/QRenderAspect>
 #include <Qt3DExtras/QForwardRenderer>
+#include <Qt3DRender/QSortPolicy>
 #include <Qt3DInput/QInputAspect>
 #include <Qt3DExtras/Qt3DWindow>
 #include <Qt3DExtras/QSphereMesh>
@@ -68,6 +69,8 @@ private:
     QLabel *labelStatus = nullptr;
 
     Qt3DExtras::Qt3DWindow *view = nullptr;
+    Qt3DExtras::QForwardRenderer *renderer = nullptr;
+    Qt3DRender::QSortPolicy *policy = nullptr;
     Qt3DCore::QEntity *scene = nullptr;
     Qt3DRender::QCamera *camera = nullptr;
     Qt3DExtras::QOrbitCameraController *camCtrl = nullptr;
