@@ -5,14 +5,9 @@
 #include <Qt3DCore/QTransform>
 #include <Qt3DRender/QAttribute>
 #include <Qt3DRender/QBuffer>
-#include <Qt3DRender/QCamera>
-#include <Qt3DRender/QCameraLens>
 #include <Qt3DRender/QGeometryRenderer>
 #include <Qt3DRender/QGeometry>
 #include <Qt3DExtras/QPhongMaterial>
-#include <Qt3DExtras/QOrbitCameraController>
-#include <Qt3DExtras/QForwardRenderer>
-#include <Qt3DExtras/Qt3DWindow>
 
 class GridEntity
 {

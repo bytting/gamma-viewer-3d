@@ -38,8 +38,8 @@ gamman3d::gamman3d(QWidget *parent)
 
 gamman3d::~gamman3d()
 {
-    //delete grid;
-    //grid = nullptr;
+    delete grid;
+    grid = nullptr;
     delete cameraController;
     cameraController = nullptr;
     delete sceneEntity;
@@ -139,7 +139,7 @@ void gamman3d::setupScene()
     cameraController->setLookSpeed(180.0f);
     cameraController->setCamera(camera);
 
-    //grid = new GridEntity(sceneEntity, 10, 10.0f);
+    grid = new GridEntity(sceneEntity, 10, 10.0f);
 
     view->setRootEntity(sceneEntity);
     view->show();
@@ -174,7 +174,7 @@ void gamman3d::populateScene()
                     spec->doserate());
     }
 
-    camera->setPosition(QVector3D(0.0f, 20.0f, 50.0f));
+    camera->setPosition(QVector3D(0.0f, 20.0f, 80.0f));
     camera->setViewCenter(QVector3D(0.0f, 0.0f, 0.0f));
 }
 
@@ -306,7 +306,7 @@ void gamman3d::onSetScript()
     {
         QString scriptFileName = QFileDialog::getOpenFileName(
                     this,
-                    tr("Open Lua script"),
+                    tr("Load doserate script"),
                     QDir::homePath(),
                     tr("Lua script (*.lua)"));
 
