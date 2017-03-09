@@ -99,8 +99,8 @@ void gamman3d::setupSignals()
 void gamman3d::setupScene()
 {
     view = new Qt3DExtras::Qt3DWindow();
-    auto containerScene = QWidget::createWindowContainer(view);
-    ui->layoutScene->addWidget(containerScene);
+    mContainerScene = QWidget::createWindowContainer(view, this);
+    ui->layoutScene->addWidget(mContainerScene);
 
     camera = view->camera();
     camera->setProjectionType(Qt3DRender::QCameraLens::PerspectiveProjection);

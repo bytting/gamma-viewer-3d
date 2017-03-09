@@ -21,6 +21,7 @@
 #include "session.h"
 #include "gridentity.h"
 #include <QMainWindow>
+#include <QWidget>
 #include <QLabel>
 #include <Qt3DCore/QEntity>
 #include <Qt3DRender/QCamera>
@@ -64,6 +65,7 @@ private:
     QLabel *labelStatus = nullptr;
 
     Qt3DExtras::Qt3DWindow *view = nullptr;
+    QWidget *mContainerScene = nullptr;
     Qt3DExtras::QForwardRenderer *fwdRenderer = nullptr;
     Qt3DRender::QSortPolicy *sortPolicy = nullptr;
     Qt3DCore::QEntity *sceneEntity = nullptr;
