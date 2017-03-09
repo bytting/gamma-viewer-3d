@@ -69,7 +69,6 @@ private:
     Qt3DCore::QEntity *sceneEntity = nullptr;
     Qt3DRender::QCamera *camera = nullptr;
     Qt3DExtras::QOrbitCameraController *cameraController = nullptr;
-    GridEntity *grid = nullptr;
 
     gad::Session *session = nullptr;
 

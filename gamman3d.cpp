@@ -38,16 +38,8 @@ gamman3d::gamman3d(QWidget *parent)
 
 gamman3d::~gamman3d()
 {
-    delete grid;
-    grid = nullptr;
-    delete cameraController;
-    cameraController = nullptr;
     delete sceneEntity;
-    sceneEntity = nullptr;
-    delete fwdRenderer;
-    fwdRenderer = nullptr;
     delete sortPolicy;
-    sortPolicy = nullptr;
     delete view;
     delete session;
     delete ui;
@@ -139,7 +131,7 @@ void gamman3d::setupScene()
     cameraController->setLookSpeed(180.0f);
     cameraController->setCamera(camera);
 
-    grid = new GridEntity(sceneEntity, 10, 10.0f);
+    new GridEntity(sceneEntity, 10, 10.0f);
 
     view->setRootEntity(sceneEntity);
     view->show();
@@ -166,12 +158,11 @@ void gamman3d::populateScene()
         z *= 10000.0;
         //alt /= 10.0;
 
-        auto *entity = new SpectrumEntity(
-                    sceneEntity,
-                    QVector3D(x, alt, -y),
-                    session->minDoserate(),
-                    session->maxDoserate(),
-                    spec->doserate());
+        new SpectrumEntity(sceneEntity,
+                           QVector3D(x, alt, -y),
+                           session->minDoserate(),
+                           session->maxDoserate(),
+                           spec->doserate());
     }
 
     camera->setPosition(QVector3D(0.0f, 20.0f, 80.0f));
