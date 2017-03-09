@@ -19,27 +19,36 @@
 
 #include <QColor>
 #include <Qt3DCore/QEntity>
-#include <Qt3DCore/QTransform>
 #include <Qt3DExtras/QSphereMesh>
+#include <Qt3DCore/QTransform>
+#include <Qt3DExtras/QPhongMaterial>
 
 class SpectrumEntity : public Qt3DCore::QEntity
 {
 public:
 
-    SpectrumEntity(Qt3DCore::QNode *parent, const QVector3D &pos, double minDoserate, double maxDoserate, double doserate);
+    SpectrumEntity(Qt3DCore::QNode *parent,
+                   const QVector3D &pos,
+                   double minDoserate,
+                   double maxDoserate,
+                   double doserate,
+                   bool useLogarithmicColor = true);
     ~SpectrumEntity();
 
-    Qt3DExtras::QSphereMesh *mesh() const;
+    Qt3DExtras::QSphereMesh *mesh() const { return mMesh; }
+    Qt3DCore::QTransform *transform() const { return mTransform; }
+    Qt3DExtras::QPhongMaterial *material() const { return mMaterial; }
 
     QColor makeRainbowRGB(double minDoserate,
                           double maxDoserate,
                           double doserate,
-                          bool useNaturalLogarithm);
+                          bool useLogarithmicColor);
 
 private:
 
     Qt3DExtras::QSphereMesh *mMesh;
     Qt3DCore::QTransform *mTransform;
+    Qt3DExtras::QPhongMaterial *mMaterial;
 };
 
 #endif // SPECTRUMENTITY_H

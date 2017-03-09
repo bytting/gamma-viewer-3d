@@ -15,18 +15,18 @@
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "spectrumentity.h"
-#include <Qt3DExtras/QPhongMaterial>
 #include <cmath>
 
-SpectrumEntity::SpectrumEntity(
-        Qt3DCore::QNode *parent,
-        const QVector3D &pos,
-        double minDoserate,
-        double maxDoserate,
-        double doserate)
-    : Qt3DCore::QEntity(new Qt3DCore::QEntity(parent)),
+SpectrumEntity::SpectrumEntity(Qt3DCore::QNode *parent,
+                               const QVector3D &pos,
+                               double minDoserate,
+                               double maxDoserate,
+                               double doserate,
+                               bool useLogarithmicColor)
+    : Qt3DCore::QEntity(parent),
       mMesh(new Qt3DExtras::QSphereMesh(parent)),
-      mTransform(new Qt3DCore::QTransform(parent))
+      mTransform(new Qt3DCore::QTransform(parent)),
+      mMaterial(new Qt3DExtras::QPhongMaterial(parent))
 {
     mMesh->setRadius(0.3f);
     addComponent(mMesh);
@@ -37,37 +37,29 @@ SpectrumEntity::SpectrumEntity(
     QColor color = makeRainbowRGB(minDoserate,
                                   maxDoserate,
                                   doserate,
-                                  true);
+                                  useLogarithmicColor);
 
-    Qt3DExtras::QPhongMaterial *spectrumMaterial =
-            new Qt3DExtras::QPhongMaterial(parent);
-
-    spectrumMaterial->setDiffuse(color);
-    spectrumMaterial->setSpecular(color);
-    spectrumMaterial->setAmbient(QColor(color.red() - color.red() / 6,
-                           color.green() - color.green() / 6,
-                           color.blue() - color.blue() / 6));
-    spectrumMaterial->setShininess(5.0f);
-    addComponent(spectrumMaterial);
+    mMaterial->setDiffuse(color);
+    mMaterial->setSpecular(color);
+    mMaterial->setAmbient(QColor(color.red() - color.red() / 6,
+                                 color.green() - color.green() / 6,
+                                 color.blue() - color.blue() / 6));
+    mMaterial->setShininess(5.0f);
+    addComponent(mMaterial);
 }
 
 SpectrumEntity::~SpectrumEntity()
 {
 }
 
-Qt3DExtras::QSphereMesh* SpectrumEntity::mesh() const
-{
-    return mMesh;
-}
-
 QColor SpectrumEntity::makeRainbowRGB(double minDoserate,
-                                double maxDoserate,
-                                double doserate,
-                                bool useNaturalLogarithm)
+                                      double maxDoserate,
+                                      double doserate,
+                                      bool useLogarithmicColor)
 {
     QColor color;
 
-    if(useNaturalLogarithm)
+    if(useLogarithmicColor)
     {
         minDoserate = std::log(minDoserate);
         maxDoserate = std::log(maxDoserate);

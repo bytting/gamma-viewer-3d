@@ -51,7 +51,6 @@ SOURCES += \
     lua/lutf8lib.c \
     lua/lvm.c \
     lua/lzio.c \
-    planeentity.cpp \
     spectrumentity.cpp \
     gridentity.cpp
 
@@ -88,7 +87,6 @@ HEADERS += \
     lua/lundump.h \
     lua/lvm.h \
     lua/lzio.h \
-    planeentity.h \
     spectrumentity.h \
     gridentity.h
 
