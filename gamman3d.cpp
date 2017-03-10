@@ -139,12 +139,11 @@ void gamman3d::setupScene()
 
 void gamman3d::populateScene()
 {
-    // FIXME: clear scene
-    // FIXME: problem with negative coordinates?
+    // FIXME: clear scene    
 
     double halfX = (session->maxX() - session->minX()) / 2.0;
     double halfY = (session->maxY() - session->minY()) / 2.0;
-    double halfZ = (session->maxZ() - session->minZ()) / 2.0;
+    double halfZ = (session->maxZ() - session->minZ()) / 2.0;    
 
     for(const auto& spec : session->getSpectrumList())
     {

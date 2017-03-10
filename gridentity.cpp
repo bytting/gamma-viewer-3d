@@ -84,9 +84,9 @@ GridEntity::GridEntity(Qt3DCore::QEntity *parent,
 
     mMaterial->setAmbient(QColor(255, 255, 255));
 
-    parent->addComponent(mMesh);
-    parent->addComponent(mMaterial);
-    parent->addComponent(mTransform);
+    addComponent(mMesh);
+    addComponent(mMaterial);
+    addComponent(mTransform);
 }
 
 GridEntity::~GridEntity()
