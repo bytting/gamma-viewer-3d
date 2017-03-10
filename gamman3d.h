@@ -51,12 +51,7 @@ public:
     void setupWidgets();
     void setupSignals();
     void setupScene();
-    void populateScene();
-
-    QColor makeRainbowRGB(double minDoserate,
-                          double maxDoserate,
-                          double doserate,
-                          bool useNaturalLogarithm = false);
+    void populateScene();    
 
 private:
 
