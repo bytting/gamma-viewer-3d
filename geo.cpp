@@ -17,7 +17,7 @@
 #include "geo.h"
 #include <cmath>
 
-namespace geo
+namespace Geo
 {
 
 void geodeticToCartesianSimplified(
@@ -59,4 +59,4 @@ void geodeticToCartesian(
     z = (rad * S + h) * sinLat;
 }
 
-} // namespace geo
+} // namespace Geo

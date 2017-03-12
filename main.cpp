@@ -21,24 +21,16 @@
 
 int main(int argc, char *argv[])
 {
-    int retVal = 0;
-
-    QApplication *a = new QApplication(argc, argv);
-    gamman3d *w = new gamman3d();
-
     try
     {
-        w->show();
-        retVal = a->exec();
+        QApplication a(argc, argv);
+        gamman3d w;
+        w.show();
+        return a.exec();
     }
     catch(const std::exception& e)
     {
         qDebug() << e.what();
-        retVal = 1;
+        return 1;
     }
-
-    delete w;
-    delete a;
-
-    return retVal;
 }

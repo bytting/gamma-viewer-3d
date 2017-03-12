@@ -19,7 +19,7 @@
 #include <QJsonArray>
 #include <cmath>
 
-namespace gad
+namespace Gamma
 {
 
 Detector::Detector(const QJsonObject &obj)
@@ -87,4 +87,4 @@ double Detector::getEnergy(int index) const
     return e;
 }
 
-} // namespace gad
+} // namespace Gamma

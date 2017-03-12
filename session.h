@@ -32,7 +32,7 @@ extern "C"
 #include "lua/lauxlib.h"
 }
 
-namespace gad
+namespace Gamma
 {
 
 typedef std::vector<Spectrum*> SpecList;
@@ -100,7 +100,7 @@ private:
     DetectorType mDetectorType;
     Detector mDetector;
 
-    SpecList mSpecList;    
+    SpecList mSpecList;
 
     lua_State *L = nullptr;
     bool mScriptLoaded = false;
@@ -111,6 +111,6 @@ private:
     double mMinAltitude = 0.0, mMaxAltitude = 0.0;
 };
 
-} // namespace gad
+} // namespace Gamma
 
 #endif // SESSION_H

@@ -23,7 +23,7 @@
 
 using namespace std;
 
-namespace gad
+namespace Gamma
 {
 
 Spectrum::Spectrum(QString filename)
@@ -159,12 +159,12 @@ void Spectrum::loadFile(QString filename)
         }
     }
 
-    geo::geodeticToCartesianSimplified(
+    Geo::geodeticToCartesianSimplified(
                 mLatitudeStart,
                 mLongitudeStart,
                 mX1, mY1, mZ1);
 
-    geo::geodeticToCartesianSimplified(
+    Geo::geodeticToCartesianSimplified(
                 mLatitudeEnd,
                 mLongitudeEnd,
                 mX2, mY2, mZ2);
@@ -209,4 +209,4 @@ void Spectrum::calculateDoserate(const Detector &det, lua_State* L)
     }
 }
 
-} // namespace gad
+} // namespace Gamma

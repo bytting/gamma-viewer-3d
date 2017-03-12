@@ -20,7 +20,7 @@
 #include <QString>
 #include <QJsonObject>
 
-namespace gad
+namespace Gamma
 {
 
 class DetectorType
@@ -47,6 +47,6 @@ private:
     QString mGEScript;
 };
 
-} // namespace gad
+} // namespace Gamma
 
 #endif // DETECTORTYPE_H

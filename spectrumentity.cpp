@@ -15,14 +15,11 @@
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "spectrumentity.h"
-#include <cmath>
 
-SpectrumEntity::SpectrumEntity(Qt3DCore::QNode *parent,
-                               const QVector3D &pos,
-                               double minDoserate,
-                               double maxDoserate,
-                               double doserate,
-                               bool useLogarithmicColor)
+SpectrumEntity::SpectrumEntity(
+        Qt3DCore::QNode *parent,
+        const QVector3D &pos,
+        const QColor &color)
     : Qt3DCore::QEntity(parent),
       mMesh(new Qt3DExtras::QSphereMesh(parent)),
       mTransform(new Qt3DCore::QTransform(parent)),
@@ -34,62 +31,17 @@ SpectrumEntity::SpectrumEntity(Qt3DCore::QNode *parent,
     mTransform->setTranslation(pos);
     addComponent(mTransform);
 
-    QColor color = makeRainbowRGB(minDoserate,
-                                  maxDoserate,
-                                  doserate,
-                                  useLogarithmicColor);
-
     mMaterial->setDiffuse(color);
     mMaterial->setSpecular(color);
-    mMaterial->setAmbient(QColor(color.red() - color.red() / 6,
-                                 color.green() - color.green() / 6,
-                                 color.blue() - color.blue() / 6));
+    QColor ambientColor(
+                color.red() - color.red() / 6,
+                color.green() - color.green() / 6,
+                color.blue() - color.blue() / 6);
+    mMaterial->setAmbient(ambientColor);
     mMaterial->setShininess(5.0f);
     addComponent(mMaterial);
 }
 
 SpectrumEntity::~SpectrumEntity()
 {
-}
-
-QColor SpectrumEntity::makeRainbowRGB(double minDoserate,
-                                      double maxDoserate,
-                                      double doserate,
-                                      bool useLogarithmicColor)
-{
-    QColor color;
-
-    if(useLogarithmicColor)
-    {
-        minDoserate = std::log(minDoserate);
-        maxDoserate = std::log(maxDoserate);
-        doserate = std::log(doserate);
-    }
-
-    double f = (doserate - minDoserate) / (maxDoserate - minDoserate);
-
-    auto a = (1.0 - f) / 0.25;	// invert and group
-    auto X = std::floor(a);	// the integer part
-    auto Y = std::floor(255.0 * (a - X)); // the fractional part from 0 to 255
-
-    switch((int)X)
-    {
-    case 0:
-        color.setRgb(255, Y, 0);
-        break;
-    case 1:
-        color.setRgb(255 - Y, 255, 0);
-        break;
-    case 2:
-        color.setRgb(0, 255, Y);
-        break;
-    case 3:
-        color.setRgb(0, 255 - Y, 255);
-        break;
-    case 4:
-        color.setRgb(0, 0, 255);
-        break;
-    }
-
-    return color;
 }

@@ -21,7 +21,7 @@
 #include <QJsonObject>
 #include <vector>
 
-namespace gad
+namespace Gamma
 {
 
 typedef std::vector<double> CoefficientList;
@@ -64,6 +64,6 @@ private:
     CoefficientList mEnergyCurveCoefficients;
 };
 
-} // namespace gad
+} // namespace Gamma
 
 #endif // DETECTOR_H

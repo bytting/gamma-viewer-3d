@@ -26,7 +26,7 @@
 #include <QJsonObject>
 #include <QDebug>
 
-namespace gad
+namespace Gamma
 {
 
 Session::Session()
@@ -85,7 +85,7 @@ void Session::loadPath(QString sessionPath)
 
     const auto entryInfoList = spectrumDir.entryInfoList(
                 QStringList() << "*.json",
-                QDir::NoDotAndDotDot | QDir::Files);    
+                QDir::NoDotAndDotDot | QDir::Files);
 
     bool first = true;
     for(const auto& info : entryInfoList)
@@ -105,10 +105,12 @@ void Session::loadPath(QString sessionPath)
             double maxY = std::max(spec->y1(), spec->y2());
             double maxZ = std::max(spec->z1(), spec->z2());
 
-            double minAltitude = std::min(spec->altitudeStart(),
-                                          spec->altitudeEnd());
-            double maxAltitude = std::max(spec->altitudeStart(),
-                                          spec->altitudeEnd());
+            double minAltitude = std::min(
+                        spec->altitudeStart(),
+                        spec->altitudeEnd());
+            double maxAltitude = std::max(
+                        spec->altitudeStart(),
+                        spec->altitudeEnd());
 
             if(first)
             {
@@ -221,4 +223,4 @@ void Session::clear()
     mMinAltitude = mMaxAltitude = 0.0;
 }
 
-} // namespace gad
+} // namespace Gamma

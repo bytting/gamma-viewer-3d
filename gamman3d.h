@@ -27,9 +27,11 @@
 #include <Qt3DRender/QCamera>
 #include <Qt3DRender/QCameraLens>
 #include <Qt3DRender/QRenderAspect>
-#include <Qt3DExtras/QForwardRenderer>
 #include <Qt3DRender/QSortPolicy>
+#include <Qt3DRender/QObjectPicker>
+#include <Qt3DRender/QPickEvent>
 #include <Qt3DInput/QInputAspect>
+#include <Qt3DExtras/QForwardRenderer>
 #include <Qt3DExtras/Qt3DWindow>
 #include <Qt3DExtras/QDiffuseMapMaterial>
 #include <Qt3DExtras/QOrbitCameraController>
@@ -51,23 +53,25 @@ public:
     void setupWidgets();
     void setupSignals();
     void setupScene();
-    void populateScene();    
+    void populateScene();
+    void releaseModel(Qt3DCore::QNode *model);
 
 private:
 
     Ui::gamman3d *ui = nullptr;
 
-    QLabel *labelStatus = nullptr;
+    QLabel *mLabelStatus = nullptr;
 
-    Qt3DExtras::Qt3DWindow *view = nullptr;
+    Qt3DExtras::Qt3DWindow *mView = nullptr;
     QWidget *mContainerScene = nullptr;
-    Qt3DExtras::QForwardRenderer *fwdRenderer = nullptr;
-    Qt3DRender::QSortPolicy *sortPolicy = nullptr;
-    Qt3DCore::QEntity *sceneEntity = nullptr;
-    Qt3DRender::QCamera *camera = nullptr;
-    Qt3DExtras::QOrbitCameraController *cameraController = nullptr;
+    Qt3DExtras::QForwardRenderer *mRenderer = nullptr;
+    Qt3DRender::QSortPolicy *mSortPolicy = nullptr;
+    Qt3DCore::QEntity *mRootEntity = nullptr;
+    Qt3DCore::QEntity *mSceneEntity = nullptr;
+    Qt3DRender::QCamera *mCamera = nullptr;
+    Qt3DExtras::QOrbitCameraController *mCameraController = nullptr;
 
-    gad::Session *session = nullptr;
+    Gamma::Session *mSession = nullptr;
 
 private slots:
 
@@ -78,6 +82,7 @@ private slots:
     void onShowScene();
     void onShowSettings();
     void onSetScript();
+    void onPicked(Qt3DRender::QPickEvent *evt);
 };
 
 #endif // GAMMAN3D_H

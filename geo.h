@@ -17,7 +17,7 @@
 #ifndef GEO_H
 #define GEO_H
 
-namespace geo
+namespace Geo
 {
 
 template<typename T>
@@ -43,6 +43,6 @@ void geodeticToCartesian(
         double &y,
         double &z);
 
-} // namespace geo
+} // namespace Geo
 
 #endif // GEO_H

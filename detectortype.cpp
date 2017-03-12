@@ -17,7 +17,7 @@
 #include "detectortype.h"
 #include "exceptions.h"
 
-namespace gad
+namespace Gamma
 {
 
 DetectorType::DetectorType(const QJsonObject &obj)
@@ -48,4 +48,4 @@ void DetectorType::loadJson(const QJsonObject &obj)
     mGEScript = obj.value("GEScript").toString();
 }
 
-} // namespace gad
+} // namespace Gamma

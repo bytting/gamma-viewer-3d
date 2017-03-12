@@ -14,35 +14,20 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef SPECTRUMENTITY_H
-#define SPECTRUMENTITY_H
+#ifndef PALETTE_H
+#define PALETTE_H
 
 #include <QColor>
-#include <Qt3DCore/QEntity>
-#include <Qt3DExtras/QSphereMesh>
-#include <Qt3DCore/QTransform>
-#include <Qt3DExtras/QPhongMaterial>
 
-class SpectrumEntity : public Qt3DCore::QEntity
+namespace Palette
 {
-public:
 
-    SpectrumEntity(
-            Qt3DCore::QNode *parent,
-            const QVector3D &pos,
-            const QColor &color);
+QColor makeRainbowRGB(
+        double minValue,
+        double maxValue,
+        double value,
+        bool useLogarithmicColor = false);
 
-    ~SpectrumEntity();
+} // namespace Palette
 
-    Qt3DExtras::QSphereMesh *mesh() const { return mMesh; }
-    Qt3DCore::QTransform *transform() const { return mTransform; }
-    Qt3DExtras::QPhongMaterial *material() const { return mMaterial; }
-
-private:
-
-    Qt3DExtras::QSphereMesh *mMesh;
-    Qt3DCore::QTransform *mTransform;
-    Qt3DExtras::QPhongMaterial *mMaterial;
-};
-
-#endif // SPECTRUMENTITY_H
+#endif // PALETTE_H

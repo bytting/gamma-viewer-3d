@@ -30,7 +30,7 @@ extern "C"
 #include "lua/lauxlib.h"
 }
 
-namespace gad
+namespace Gamma
 {
 
 class Spectrum
@@ -113,6 +113,6 @@ private:
     double mX1, mX2, mY1, mY2, mZ1, mZ2;
 };
 
-} // namespace gad
+} // namespace Gamma
 
 #endif // SPECTRUM_H

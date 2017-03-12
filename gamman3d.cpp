@@ -17,7 +17,7 @@
 #include "gamman3d.h"
 #include "ui_gamman3d.h"
 #include "exceptions.h"
-//#include "planeentity.h"
+#include "palette.h"
 #include "spectrumentity.h"
 #include <QMessageBox>
 #include <QFileDialog>
@@ -28,27 +28,27 @@
 gamman3d::gamman3d(QWidget *parent)
     : QMainWindow(parent),
       ui(new Ui::gamman3d),
-      session(new gad::Session())
+      mSession(new Gamma::Session())
 {
     ui->setupUi(this);
     setupWidgets();
-    setupSignals();
     setupScene();
+    setupSignals();
 }
 
 gamman3d::~gamman3d()
 {
-    delete sceneEntity;
-    delete sortPolicy;
-    delete view;
-    delete session;
+    //delete sceneEntity;
+    //delete sortPolicy;
+    //delete view;
+    delete mSession;
     delete ui;
 }
 
 void gamman3d::setupWidgets()
 {
-    labelStatus = new QLabel(ui->status);
-    statusBar()->addWidget(labelStatus);
+    mLabelStatus = new QLabel(ui->status);
+    statusBar()->addWidget(mLabelStatus);
 }
 
 void gamman3d::setupSignals()
@@ -98,78 +98,107 @@ void gamman3d::setupSignals()
 
 void gamman3d::setupScene()
 {
-    view = new Qt3DExtras::Qt3DWindow();
-    mContainerScene = QWidget::createWindowContainer(view, this);
+    mView = new Qt3DExtras::Qt3DWindow();
+    mContainerScene = QWidget::createWindowContainer(mView, this);
     ui->layoutScene->addWidget(mContainerScene);
 
-    camera = view->camera();
-    camera->setProjectionType(Qt3DRender::QCameraLens::PerspectiveProjection);
-    camera->setAspectRatio(view->width() / view->height());
-    //camera->setUpVector(QVector3D(0.0f, 1.0f, 0.0f));
-    camera->setPosition(QVector3D(0.0f, 20.0f, 40.0f));
-    camera->setViewCenter(QVector3D(0.0f, 0.0f, 0.0f));
-    camera->setNearPlane(0.01f);
-    camera->setFarPlane(100000.0f);
+    mCamera = mView->camera();
+    mCamera->setProjectionType(Qt3DRender::QCameraLens::PerspectiveProjection);
+    mCamera->setAspectRatio(mView->width() / mView->height());
+    mCamera->setUpVector(QVector3D(0.0f, 1.0f, 0.0f));
+    mCamera->setPosition(QVector3D(0.0f, 20.0f, 80.0f));
+    mCamera->setViewCenter(QVector3D(0.0f, 0.0f, 0.0f));
+    mCamera->setNearPlane(0.01f);
+    mCamera->setFarPlane(100000.0f);
 
-    sortPolicy = new Qt3DRender::QSortPolicy();
-    sortPolicy->setSortTypes(QVector<Qt3DRender::QSortPolicy::SortType>(
+    mSortPolicy = new Qt3DRender::QSortPolicy();
+    mSortPolicy->setSortTypes(QVector<Qt3DRender::QSortPolicy::SortType>(
         {Qt3DRender::QSortPolicy::BackToFront}
     ));
 
-    fwdRenderer = new Qt3DExtras::QForwardRenderer(sortPolicy);
-    fwdRenderer->setCamera(camera);
-    fwdRenderer->setSurface(view);
+    mRenderer = new Qt3DExtras::QForwardRenderer(mSortPolicy);
+    mRenderer->setCamera(mCamera);
+    mRenderer->setSurface(mView);
     //fwdRenderer->setClearColor(ui->pageScene->palette().color(QWidget::backgroundRole()));
-    fwdRenderer->setClearColor(Qt::black);
+    mRenderer->setClearColor(Qt::black);
 
-    view->setActiveFrameGraph(sortPolicy);
+    mView->setActiveFrameGraph(mSortPolicy);
 
-    sceneEntity = new Qt3DCore::QEntity();
+    mRootEntity = new Qt3DCore::QEntity();
+    mSceneEntity = new Qt3DCore::QEntity(mRootEntity);
 
-    cameraController = new Qt3DExtras::QOrbitCameraController(sceneEntity);
-    cameraController->setLinearSpeed(50.0f);
-    cameraController->setLookSpeed(180.0f);
-    cameraController->setCamera(camera);
+    mCameraController = new Qt3DExtras::QOrbitCameraController(mSceneEntity);
+    mCameraController->setLinearSpeed(50.0f);
+    mCameraController->setLookSpeed(180.0f);
+    mCameraController->setCamera(mCamera);
 
-    new GridEntity(sceneEntity, 10, 10.0f);
+    new GridEntity(mSceneEntity, 10, 10.0f);
 
-    view->setRootEntity(sceneEntity);
-    view->show();
+    mView->setRootEntity(mRootEntity);
+    mView->show();
 }
 
 void gamman3d::populateScene()
 {
-    // FIXME: clear scene    
+    // FIXME: clear scene
 
-    double halfX = (session->maxX() - session->minX()) / 2.0;
-    double halfY = (session->maxY() - session->minY()) / 2.0;
-    double halfZ = (session->maxZ() - session->minZ()) / 2.0;    
+    double halfX = (mSession->maxX() - mSession->minX()) / 2.0;
+    double halfY = (mSession->maxY() - mSession->minY()) / 2.0;
 
-    for(const auto& spec : session->getSpectrumList())
+    for(const auto& spec : mSession->getSpectrumList())
     {
-        double x = spec->x1() - session->minX() - halfX;
-        double y = spec->y1() - session->minY() - halfY;
-        double z = spec->z1() - session->minZ() - halfZ;
-        double alt = spec->altitudeStart() - session->minAltitude();
+        QVector3D position(
+                    (spec->x1() - mSession->minX() - halfX) * 10000.0,
+                    spec->altitudeStart() - mSession->minAltitude(),
+                    (spec->y1() - mSession->minY() - halfY) * -10000.0);
 
-        x *= 10000.0;
-        y *= 10000.0;
-        z *= 10000.0;
-        //alt /= 10.0;
+        QColor color = Palette::makeRainbowRGB(
+                    mSession->minDoserate(),
+                    mSession->maxDoserate(),
+                    spec->doserate(),
+                    true);
 
-        new SpectrumEntity(sceneEntity,
-                           QVector3D(x, alt, -y),
-                           session->minDoserate(),
-                           session->maxDoserate(),
-                           spec->doserate());
+        SpectrumEntity *entity = new SpectrumEntity(mSceneEntity, position, color);
+
+        Qt3DRender::QObjectPicker *picker = new Qt3DRender::QObjectPicker(entity);
+        picker->setHoverEnabled(false);
+        //picker->setObjectName(QStringLiteral("picker_") + entity->objectName());
+        entity->addComponent(picker);
+        connect(picker, &Qt3DRender::QObjectPicker::pressed, this, &gamman3d::onPicked);
     }
 
-    camera->setPosition(QVector3D(0.0f, 20.0f, 80.0f));
-    camera->setViewCenter(QVector3D(0.0f, 0.0f, 0.0f));
+    mCamera->setUpVector(QVector3D(0.0f, 1.0f, 0.0f));
+    mCamera->setPosition(QVector3D(0.0f, 20.0f, 80.0f));
+    mCamera->setViewCenter(QVector3D(0.0f, 0.0f, 0.0f));
+}
+
+void gamman3d::releaseModel(Qt3DCore::QNode *model)
+{
+    Qt3DCore::QEntity *entity = dynamic_cast<Qt3DCore::QEntity*>(model);
+
+    if(entity)
+    {
+        Qt3DCore::QComponentVector components = entity->components();
+
+        Q_FOREACH(Qt3DCore::QComponent* component, components)
+        {
+            entity->removeComponent(component);
+            delete component;
+        }
+    }
+
+    Qt3DCore::QNodeVector nodes = model->childNodes();
+
+    Q_FOREACH(Qt3DCore::QNode *node, nodes)
+    {
+        releaseModel(node);
+        delete node;
+    }
 }
 
 void gamman3d::onExitApplication()
 {
+    //releaseModel(sceneEntity);
     QWidget::close();
 }
 
@@ -188,11 +217,11 @@ void gamman3d::onOpenSession()
 
         sessionDir = QDir::toNativeSeparators(sessionDir);
 
-        session->loadPath(sessionDir);
+        mSession->loadPath(sessionDir);
 
         populateScene();
 
-        labelStatus->setText(QStringLiteral("Session: ") + sessionDir);
+        mLabelStatus->setText(QStringLiteral("Session: ") + sessionDir);
     }
     catch(const GammanException& e)
     {
@@ -210,8 +239,8 @@ void gamman3d::onCloseSession()
 {
     try
     {
-        //session->clear(); // FIXME
-        labelStatus->setText("");
+        //mSession->clear(); // FIXME
+        mLabelStatus->setText("");
     }
     catch(const std::exception& e)
     {
@@ -304,11 +333,18 @@ void gamman3d::onSetScript()
 
         if(QFile::exists(scriptFileName))
         {
-            session->loadDoserateScript(scriptFileName);
+            mSession->loadDoserateScript(scriptFileName);
         }
     }
     catch(const std::exception& e)
     {
         qDebug() << e.what();
     }
+}
+
+void gamman3d::onPicked(Qt3DRender::QPickEvent *evt)
+{
+    //Qt3DCore::QEntity *pressedEntity = qobject_cast<Qt3DCore::QEntity *>(sender()->parent());
+
+    qDebug() << "Picked";
 }
