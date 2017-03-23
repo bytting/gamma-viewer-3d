@@ -109,7 +109,7 @@ private:
     QDateTime mGpsTimeStart, mGpsTimeEnd;
     int mRealtime, mLivetime, mTotalCount;
     ChanList mChannels;
-    double mDoserate;
+    double mDoserate = 0.0;
     double mX1, mX2, mY1, mY2, mZ1, mZ2;
 };
 

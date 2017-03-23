@@ -111,21 +111,16 @@ void gamman3d::setupScene()
     mCamera->setNearPlane(0.01f);
     mCamera->setFarPlane(100000.0f);
 
-    mSortPolicy = new Qt3DRender::QSortPolicy();
-    mSortPolicy->setSortTypes(QVector<Qt3DRender::QSortPolicy::SortType>(
-        {Qt3DRender::QSortPolicy::BackToFront}
-    ));
+    mView->defaultFrameGraph()->setClearColor(QColor(32, 32, 32));
 
-    mRenderer = new Qt3DExtras::QForwardRenderer(mSortPolicy);
-    mRenderer->setCamera(mCamera);
-    mRenderer->setSurface(mView);
-    //fwdRenderer->setClearColor(ui->pageScene->palette().color(QWidget::backgroundRole()));
-    mRenderer->setClearColor(Qt::black);
+    mRenderSettings = new Qt3DRender::QRenderSettings();
+    mRenderSettings->pickingSettings()->setPickMethod(Qt3DRender::QPickingSettings::TrianglePicking);
+    mRenderSettings->pickingSettings()->setPickResultMode(Qt3DRender::QPickingSettings::NearestPick);
+    mRenderSettings->setActiveFrameGraph(mView->defaultFrameGraph());
 
-    mView->setActiveFrameGraph(mSortPolicy);
-
-    mRootEntity = new Qt3DCore::QEntity();
-    mSceneEntity = new Qt3DCore::QEntity(mRootEntity);
+    mSceneEntity = new Qt3DCore::QEntity();
+    mSceneEntity->addComponent(mRenderSettings);
+    //mSceneEntity->addComponent(new Qt3DInput::QInputSettings());
 
     mCameraController = new Qt3DExtras::QOrbitCameraController(mSceneEntity);
     mCameraController->setLinearSpeed(50.0f);
@@ -134,7 +129,7 @@ void gamman3d::setupScene()
 
     new GridEntity(mSceneEntity, 10, 10.0f);
 
-    mView->setRootEntity(mRootEntity);
+    mView->setRootEntity(mSceneEntity);
     mView->show();
 }
 
@@ -147,24 +142,25 @@ void gamman3d::populateScene()
 
     for(const auto& spec : mSession->getSpectrumList())
     {
-        QVector3D position(
-                    (spec->x1() - mSession->minX() - halfX) * 10000.0,
-                    spec->altitudeStart() - mSession->minAltitude(),
-                    (spec->y1() - mSession->minY() - halfY) * -10000.0);
+        QVector3D position((spec->x1() - mSession->minX() - halfX) * 10000.0,
+                           spec->altitudeStart() - mSession->minAltitude(),
+                           (spec->y1() - mSession->minY() - halfY) * -10000.0);
 
-        QColor color = Palette::makeRainbowRGB(
-                    mSession->minDoserate(),
-                    mSession->maxDoserate(),
-                    spec->doserate(),
-                    true);
+        QColor color = Palette::makeRainbowRGB(mSession->minDoserate(),
+                                               mSession->maxDoserate(),
+                                               spec->doserate(),
+                                               true);
 
         SpectrumEntity *entity = new SpectrumEntity(mSceneEntity, position, color);
 
         Qt3DRender::QObjectPicker *picker = new Qt3DRender::QObjectPicker(entity);
         picker->setHoverEnabled(false);
-        //picker->setObjectName(QStringLiteral("picker_") + entity->objectName());
+        picker->setEnabled(true);
+
+        QObject::connect(picker, &Qt3DRender::QObjectPicker::pressed,
+                         this, &gamman3d::onPicked);
+
         entity->addComponent(picker);
-        connect(picker, &Qt3DRender::QObjectPicker::pressed, this, &gamman3d::onPicked);
     }
 
     mCamera->setUpVector(QVector3D(0.0f, 1.0f, 0.0f));
@@ -344,7 +340,7 @@ void gamman3d::onSetScript()
 
 void gamman3d::onPicked(Qt3DRender::QPickEvent *evt)
 {
-    //Qt3DCore::QEntity *pressedEntity = qobject_cast<Qt3DCore::QEntity *>(sender()->parent());
+    Qt3DCore::QEntity *entity = qobject_cast<Qt3DCore::QEntity*>(sender()->parent());
 
-    qDebug() << "Picked";
+    qDebug() << "Picked " << entity->id().id();
 }

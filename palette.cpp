@@ -20,12 +20,14 @@
 namespace Palette
 {
 
-QColor makeRainbowRGB(
-        double minValue,
-        double maxValue,
-        double value,
-        bool useLogarithmicColor)
+QColor makeRainbowRGB(double minValue,
+                      double maxValue,
+                      double value,
+                      bool useLogarithmicColor)
 {
+    if(value == 0.0)
+        return QColor(0, 255, 0);
+
     QColor color;
 
     if(useLogarithmicColor)

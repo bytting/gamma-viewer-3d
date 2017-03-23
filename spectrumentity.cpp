@@ -16,16 +16,15 @@
 
 #include "spectrumentity.h"
 
-SpectrumEntity::SpectrumEntity(
-        Qt3DCore::QNode *parent,
-        const QVector3D &pos,
-        const QColor &color)
+SpectrumEntity::SpectrumEntity(Qt3DCore::QNode *parent,
+                               const QVector3D &pos,
+                               const QColor &color)
     : Qt3DCore::QEntity(parent),
       mMesh(new Qt3DExtras::QSphereMesh(parent)),
       mTransform(new Qt3DCore::QTransform(parent)),
       mMaterial(new Qt3DExtras::QPhongMaterial(parent))
 {
-    mMesh->setRadius(0.3f);
+    mMesh->setRadius(0.4f);
     addComponent(mMesh);
 
     mTransform->setTranslation(pos);

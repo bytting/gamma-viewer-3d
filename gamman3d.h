@@ -28,9 +28,11 @@
 #include <Qt3DRender/QCameraLens>
 #include <Qt3DRender/QRenderAspect>
 #include <Qt3DRender/QSortPolicy>
+#include <Qt3DRender/QRenderSettings>
 #include <Qt3DRender/QObjectPicker>
 #include <Qt3DRender/QPickEvent>
 #include <Qt3DInput/QInputAspect>
+#include <Qt3DInput/QInputSettings>
 #include <Qt3DExtras/QForwardRenderer>
 #include <Qt3DExtras/Qt3DWindow>
 #include <Qt3DExtras/QDiffuseMapMaterial>
@@ -66,7 +68,7 @@ private:
     QWidget *mContainerScene = nullptr;
     Qt3DExtras::QForwardRenderer *mRenderer = nullptr;
     Qt3DRender::QSortPolicy *mSortPolicy = nullptr;
-    Qt3DCore::QEntity *mRootEntity = nullptr;
+    Qt3DRender::QRenderSettings *mRenderSettings = nullptr;
     Qt3DCore::QEntity *mSceneEntity = nullptr;
     Qt3DRender::QCamera *mCamera = nullptr;
     Qt3DExtras::QOrbitCameraController *mCameraController = nullptr;
