@@ -16,17 +16,16 @@
 
 #include "gridentity.h"
 
-GridEntity::GridEntity(
-        Qt3DCore::QEntity *parent,
-        unsigned int count,
-        float interval)
+GridEntity::GridEntity(Qt3DCore::QEntity *parent,
+                       unsigned int count,
+                       float interval)
     : Qt3DCore::QEntity(parent),
-      mMesh(new Qt3DRender::QGeometryRenderer(parent)),
-      mGeometry(new Qt3DRender::QGeometry(parent)),
-      mDataBuffer(new Qt3DRender::QBuffer(Qt3DRender::QBuffer::VertexBuffer, parent)),
-      mPositionAttribute(new Qt3DRender::QAttribute(parent)),
-      mMaterial(new Qt3DExtras::QPhongMaterial(parent)),
-      mTransform(new Qt3DCore::QTransform(parent))
+      mMesh(new Qt3DRender::QGeometryRenderer(this)),
+      mGeometry(new Qt3DRender::QGeometry(this)),
+      mDataBuffer(new Qt3DRender::QBuffer(Qt3DRender::QBuffer::VertexBuffer, this)),
+      mPositionAttribute(new Qt3DRender::QAttribute(this)),
+      mMaterial(new Qt3DExtras::QPhongMaterial(this)),
+      mTransform(new Qt3DCore::QTransform(this))
 
 {
     int halfCount = count / 2;

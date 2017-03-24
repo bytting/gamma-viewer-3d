@@ -117,13 +117,20 @@ void gamman3d::setupScene()
 
     mRenderSettings = new Qt3DRender::QRenderSettings();
     mRenderSettings->pickingSettings()->setPickMethod(Qt3DRender::QPickingSettings::TrianglePicking);
+    //mRenderSettings->pickingSettings()->setPickMethod(Qt3DRender::QPickingSettings::BoundingVolumePicking);
     mRenderSettings->pickingSettings()->setPickResultMode(Qt3DRender::QPickingSettings::NearestPick);
     mRenderSettings->setActiveFrameGraph(mView->defaultFrameGraph());
 
     mSceneEntity = new Qt3DCore::QEntity();
     mSceneEntity->addComponent(mRenderSettings);
-    mSceneEntity->setObjectName(QStringLiteral("scene entity"));
+    mSceneEntity->setObjectName(QStringLiteral("scene entity"));    
     //mSceneEntity->addComponent(new Qt3DInput::QInputSettings());
+
+    Qt3DCore::QTransform *rootTransform = new Qt3DCore::QTransform(mSceneEntity);
+    rootTransform->setTranslation(QVector3D(0, 0, 0));
+    rootTransform->setScale(1);
+    rootTransform->setScale3D(QVector3D(1, 1, 1));
+    mSceneEntity->addComponent(rootTransform);
 
     mCameraController = new Qt3DExtras::QOrbitCameraController(mSceneEntity);
     mCameraController->setLinearSpeed(50.0f);
@@ -148,6 +155,8 @@ void gamman3d::populateScene()
         QVector3D position((spec->x1() - mSession->minX() - halfX) * 10000.0,
                            spec->altitudeStart() - mSession->minAltitude(),
                            (spec->y1() - mSession->minY() - halfY) * -10000.0);
+
+        qDebug() << "x: " << position.x() << "y: " << position.y() << "z: " << position.z();
 
         QColor color = Palette::makeRainbowRGB(mSession->minDoserate(),
                                                mSession->maxDoserate(),

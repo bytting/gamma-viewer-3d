@@ -20,14 +20,16 @@ SpectrumEntity::SpectrumEntity(Qt3DCore::QNode *parent,
                                const QVector3D &pos,
                                const QColor &color)
     : Qt3DCore::QEntity(parent),
-      mMesh(new Qt3DExtras::QSphereMesh(parent)),
-      mTransform(new Qt3DCore::QTransform(parent)),
-      mMaterial(new Qt3DExtras::QPhongMaterial(parent))
+      mMesh(new Qt3DExtras::QSphereMesh(this)),
+      mTransform(new Qt3DCore::QTransform(this)),
+      mMaterial(new Qt3DExtras::QPhongMaterial(this))
 {
-    mMesh->setRadius(0.4f);
+    mMesh->setRadius(0.5f);
     addComponent(mMesh);
 
     mTransform->setTranslation(pos);
+    mTransform->setScale(1);
+    mTransform->setScale3D(QVector3D(1, 1, 1));
     addComponent(mTransform);
 
     mMaterial->setDiffuse(color);
