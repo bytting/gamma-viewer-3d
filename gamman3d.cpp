@@ -104,7 +104,9 @@ void gamman3d::setupScene()
 
     mCamera = mView->camera();
     mCamera->setProjectionType(Qt3DRender::QCameraLens::PerspectiveProjection);
-    mCamera->setAspectRatio(mView->width() / mView->height());
+    //mCamera->setAspectRatio(mView->width() / mView->height());
+    mCamera->setAspectRatio(16 / 9);
+    mCamera->setFieldOfView(45);
     mCamera->setUpVector(QVector3D(0.0f, 1.0f, 0.0f));
     mCamera->setPosition(QVector3D(0.0f, 20.0f, 80.0f));
     mCamera->setViewCenter(QVector3D(0.0f, 0.0f, 0.0f));
@@ -120,6 +122,7 @@ void gamman3d::setupScene()
 
     mSceneEntity = new Qt3DCore::QEntity();
     mSceneEntity->addComponent(mRenderSettings);
+    mSceneEntity->setObjectName(QStringLiteral("scene entity"));
     //mSceneEntity->addComponent(new Qt3DInput::QInputSettings());
 
     mCameraController = new Qt3DExtras::QOrbitCameraController(mSceneEntity);
@@ -152,6 +155,7 @@ void gamman3d::populateScene()
                                                true);
 
         SpectrumEntity *entity = new SpectrumEntity(mSceneEntity, position, color);
+        entity->setObjectName(QStringLiteral("entity ") + QString::number(spec->sessionIndex()));
 
         Qt3DRender::QObjectPicker *picker = new Qt3DRender::QObjectPicker(entity);
         picker->setHoverEnabled(false);
@@ -342,5 +346,5 @@ void gamman3d::onPicked(Qt3DRender::QPickEvent *evt)
 {
     Qt3DCore::QEntity *entity = qobject_cast<Qt3DCore::QEntity*>(sender()->parent());
 
-    qDebug() << "Picked " << entity->id().id();
+    qDebug() << "Picked " << entity->objectName();
 }
