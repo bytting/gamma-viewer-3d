@@ -45,7 +45,7 @@ public:
     void setupWidgets();
     void setupSignals();
     void setupScene();
-    void populateScene();    
+    void populateScene();
 
 private:
 
@@ -54,7 +54,7 @@ private:
     QLabel *mLabelStatus = nullptr;
 
     Qt3DExtras::Qt3DWindow *mView = nullptr;
-    QWidget *mContainerScene = nullptr;    
+    QWidget *mContainerScene = nullptr;
     Qt3DCore::QEntity *mSceneEntity = nullptr;
     Qt3DRender::QCamera *mCamera = nullptr;
     Qt3DExtras::QOrbitCameraController *mCameraController = nullptr;
@@ -65,7 +65,7 @@ private slots:
 
     void onExitApplication();
     void onOpenSession();
-    void onCloseSession();    
+    void onCloseSession();
     void onShowScene();
     void onShowSettings();
     void onSetScript();

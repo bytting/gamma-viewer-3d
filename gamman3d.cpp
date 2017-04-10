@@ -31,6 +31,9 @@ gamman3d::gamman3d(QWidget *parent)
       mSession(new Gamma::Session())
 {
     ui->setupUi(this);
+
+    ui->menuView->addAction(ui->dockInfo->toggleViewAction());
+
     setupWidgets();
     setupScene();
     setupSignals();
@@ -110,9 +113,9 @@ void gamman3d::populateScene()
 
     for(const auto& spec : mSession->getSpectrumList())
     {
-        QVector3D position((spec->x1() - mSession->minX() - halfX) * 10000.0,
+        QVector3D position((spec->x1() - mSession->minX() - halfX) * 20000.0,
                            spec->altitudeStart() - mSession->minAltitude(),
-                           (spec->y1() - mSession->minY() - halfY) * -10000.0);
+                           (spec->y1() - mSession->minY() - halfY) * -20000.0);
 
         //qDebug() << "x: " << position.x() << "y: " << position.y() << "z: " << position.z();
 
@@ -239,7 +242,17 @@ void gamman3d::onPicked(Qt3DRender::QPickEvent *evt)
     if(!entity)
         return;
 
-    qDebug() << "Picked " << entity->objectName();
+    QString name = entity->objectName();
+    QStringList items = name.split(" ");
+
+    int specIndex = items[1].toInt();
+    const Gamma::Spectrum *spec = mSession->getSpectrum(specIndex);
+
+    ui->labelSpectrumId->setText(QStringLiteral("Session Id: ") +
+                                 QString::number(spec->sessionIndex()));
+
+    ui->labelLatitude->setText(QStringLiteral("Latitude: ") +
+                               QString::number(spec->latitudeStart()));
 
     //mCamera->setViewCenter(entity->transform()->translation());
 }
