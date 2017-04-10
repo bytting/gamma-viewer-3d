@@ -53,7 +53,7 @@ SOURCES += \
     lua/lzio.c \
     spectrumentity.cpp \
     gridentity.cpp \
-    palette.cpp
+    colorspectrum.cpp
 
 HEADERS += \
     gamman3d.h \
@@ -90,7 +90,7 @@ HEADERS += \
     lua/lzio.h \
     spectrumentity.h \
     gridentity.h \
-    palette.h
+    colorspectrum.h
 
 FORMS += \
     gamman3d.ui

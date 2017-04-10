@@ -32,6 +32,12 @@ struct IndexOutOfBounds : public GammanException
         : GammanException("Index out of bounds: " + source) {}
 };
 
+struct NumericRangeError : public GammanException
+{
+    explicit NumericRangeError(QString source) noexcept
+        : GammanException("Numeric range error: " + source) {}
+};
+
 struct DirDoesNotExist : public GammanException
 {
     explicit DirDoesNotExist(QString dir) noexcept

@@ -17,7 +17,7 @@
 #include "gamman3d.h"
 #include "ui_gamman3d.h"
 #include "exceptions.h"
-#include "palette.h"
+#include "colorspectrum.h"
 #include "spectrumentity.h"
 #include <QMessageBox>
 #include <QFileDialog>
@@ -111,7 +111,10 @@ void gamman3d::setupScene()
 
 void gamman3d::populateScene()
 {
-    // FIXME: clear scene
+    // FIXME: clear scene    
+
+    Gamma::ColorSpectrum colorSpectrum(mSession->minDoserate(),
+                                       mSession->maxDoserate());
 
     double halfX = (mSession->maxX() - mSession->minX()) / 2.0;
     double halfY = (mSession->maxY() - mSession->minY()) / 2.0;
@@ -122,14 +125,13 @@ void gamman3d::populateScene()
                            spec->altitudeStart() - mSession->minAltitude(),
                            (spec->y1() - mSession->minY() - halfY) * -10000.0);
 
-        //qDebug() << "x: " << position.x() << "y: " << position.y() << "z: " << position.z();
+        //qDebug() << "x: " << position.x() << "y: " << position.y() << "z: " << position.z();        
 
-        QColor color = Palette::makeRainbowRGB(mSession->minDoserate(),
-                                               mSession->maxDoserate(),
-                                               spec->doserate(),
-                                               true);
+        SpectrumEntity *entity = new SpectrumEntity(
+                    mSceneEntity,
+                    position,
+                    colorSpectrum.colorFromValue(spec->doserate()));
 
-        SpectrumEntity *entity = new SpectrumEntity(mSceneEntity, position, color);
         entity->setObjectName(QStringLiteral("entity ") + QString::number(spec->sessionIndex()));
 
         Qt3DRender::QObjectPicker *picker = new Qt3DRender::QObjectPicker(entity);
