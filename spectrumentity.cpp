@@ -25,20 +25,19 @@ SpectrumEntity::SpectrumEntity(Qt3DCore::QNode *parent,
       mMaterial(new Qt3DExtras::QPhongMaterial(this)),
       mPicker(new Qt3DRender::QObjectPicker(this))
 {
-    mMesh->setRadius(0.5f);    
-    addComponent(mMesh);    
+    mMesh->setRadius(0.5f);
+    addComponent(mMesh);
 
-    mTransform->setTranslation(pos);    
+    mTransform->setTranslation(pos);
     addComponent(mTransform);
 
     mMaterial->setDiffuse(color);
-    mMaterial->setSpecular(color);
-    QColor ambientColor(
-                color.red() - color.red() / 6,
-                color.green() - color.green() / 6,
-                color.blue() - color.blue() / 6);
+    mMaterial->setSpecular(QColor(20, 20, 20));
+    QColor ambientColor(color.red() - color.red() / 10,
+                        color.green() - color.green() / 10,
+                        color.blue() - color.blue() / 10);
     mMaterial->setAmbient(ambientColor);
-    mMaterial->setShininess(5.0f);
+    mMaterial->setShininess(3.0f);
     addComponent(mMaterial);
 
     mPicker->setHoverEnabled(false);

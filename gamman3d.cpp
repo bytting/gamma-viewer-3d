@@ -37,7 +37,7 @@ gamman3d::gamman3d(QWidget *parent)
 }
 
 gamman3d::~gamman3d()
-{    
+{
     delete mSession;
     delete ui;
 }
@@ -87,7 +87,7 @@ void gamman3d::setupScene()
     mContainerScene = QWidget::createWindowContainer(mView, this);
     ui->layoutScene->addWidget(mContainerScene);
 
-    mView->defaultFrameGraph()->setClearColor(QColor(32, 32, 32));
+    mView->defaultFrameGraph()->setClearColor(QColor(27, 48, 46));
 
     mCamera = mView->camera();
     mCamera->setProjectionType(Qt3DRender::QCameraLens::PerspectiveProjection);
@@ -111,7 +111,7 @@ void gamman3d::setupScene()
 
 void gamman3d::populateScene()
 {
-    // FIXME: clear scene    
+    // FIXME: clear scene
 
     Palette::ColorSpectrum colorSpectrum(mSession->minDoserate(),
                                          mSession->maxDoserate());
@@ -125,7 +125,7 @@ void gamman3d::populateScene()
                            spec->altitudeStart() - mSession->minAltitude(),
                            (spec->y1() - mSession->minY() - halfY) * -10000.0);
 
-        //qDebug() << "x: " << position.x() << "y: " << position.y() << "z: " << position.z();        
+        //qDebug() << "x: " << position.x() << "y: " << position.y() << "z: " << position.z();
 
         SpectrumEntity *entity = new SpectrumEntity(
                     mSceneEntity,
@@ -141,7 +141,7 @@ void gamman3d::populateScene()
                     &Qt3DRender::QObjectPicker::pressed,
                     this,
                     &gamman3d::onPicked);
-    }    
+    }
 
     mCamera->setUpVector(QVector3D(0.0f, 1.0f, 0.0f));
     mCamera->setPosition(QVector3D(0.0f, 20.0f, 80.0f));
@@ -149,7 +149,7 @@ void gamman3d::populateScene()
 }
 
 void gamman3d::onExitApplication()
-{    
+{
     QWidget::close();
 }
 
