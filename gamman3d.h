@@ -25,7 +25,6 @@
 #include <QLabel>
 #include <Qt3DCore/QEntity>
 #include <Qt3DRender/QCamera>
-#include <Qt3DRender/QObjectPicker>
 #include <Qt3DRender/QPickEvent>
 #include <Qt3DExtras/Qt3DWindow>
 #include <Qt3DExtras/QOrbitCameraController>

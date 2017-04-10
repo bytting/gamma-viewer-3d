@@ -132,14 +132,15 @@ void gamman3d::populateScene()
                     position,
                     colorSpectrum.colorFromValue(spec->doserate()));
 
-        entity->setObjectName(QStringLiteral("entity ") + QString::number(spec->sessionIndex()));
+        entity->setObjectName(
+                    QStringLiteral("entity ") +
+                    QString::number(spec->sessionIndex()));
 
-        Qt3DRender::QObjectPicker *picker = new Qt3DRender::QObjectPicker(entity);
-        picker->setHoverEnabled(false);
-        picker->setEnabled(true);
-        QObject::connect(picker, &Qt3DRender::QObjectPicker::pressed,
-                         this, &gamman3d::onPicked);
-        entity->addComponent(picker);
+        QObject::connect(
+                    entity->picker(),
+                    &Qt3DRender::QObjectPicker::pressed,
+                    this,
+                    &gamman3d::onPicked);
     }    
 
     mCamera->setUpVector(QVector3D(0.0f, 1.0f, 0.0f));

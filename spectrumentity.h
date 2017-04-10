@@ -22,6 +22,7 @@
 #include <Qt3DExtras/QSphereMesh>
 #include <Qt3DCore/QTransform>
 #include <Qt3DExtras/QPhongMaterial>
+#include <Qt3DRender/QObjectPicker>
 
 class SpectrumEntity : public Qt3DCore::QEntity
 {
@@ -36,12 +37,14 @@ public:
     Qt3DExtras::QSphereMesh *mesh() const { return mMesh; }
     Qt3DCore::QTransform *transform() const { return mTransform; }
     Qt3DExtras::QPhongMaterial *material() const { return mMaterial; }
+    Qt3DRender::QObjectPicker *picker() const { return mPicker; }
 
 private:
 
     Qt3DExtras::QSphereMesh *mMesh;
     Qt3DCore::QTransform *mTransform;
     Qt3DExtras::QPhongMaterial *mMaterial;
+    Qt3DRender::QObjectPicker *mPicker;
 };
 
 #endif // SPECTRUMENTITY_H
