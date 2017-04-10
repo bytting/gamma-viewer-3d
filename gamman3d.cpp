@@ -91,14 +91,10 @@ void gamman3d::setupScene()
 
     mCamera = mView->camera();
     mCamera->setProjectionType(Qt3DRender::QCameraLens::PerspectiveProjection);
-    //mCamera->setProjectionType(Qt3DRender::QCameraLens::OrthographicProjection); // FIXME: Picking works...
-    mCamera->setAspectRatio(mView->width() / mView->height());
-    mCamera->setFieldOfView(45);
+    mCamera->lens()->setPerspectiveProjection(45.0, mView->width() / mView->height(), 0.1, 10000.0);
     mCamera->setUpVector(QVector3D(0.0f, 1.0f, 0.0f));
     mCamera->setPosition(QVector3D(0.0f, 20.0f, 80.0f));
     mCamera->setViewCenter(QVector3D(0.0f, 0.0f, 0.0f));
-    mCamera->setNearPlane(0.01f);
-    mCamera->setFarPlane(100000.0f);
 
     mSceneEntity = new Qt3DCore::QEntity();
 
