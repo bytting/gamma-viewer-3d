@@ -113,8 +113,8 @@ void gamman3d::populateScene()
 {
     // FIXME: clear scene    
 
-    Gamma::ColorSpectrum colorSpectrum(mSession->minDoserate(),
-                                       mSession->maxDoserate());
+    Palette::ColorSpectrum colorSpectrum(mSession->minDoserate(),
+                                         mSession->maxDoserate());
 
     double halfX = (mSession->maxX() - mSession->minX()) / 2.0;
     double halfY = (mSession->maxY() - mSession->minY()) / 2.0;
@@ -248,7 +248,15 @@ void gamman3d::onSetScript()
 
 void gamman3d::onPicked(Qt3DRender::QPickEvent *evt)
 {
-    Qt3DCore::QEntity *entity = qobject_cast<Qt3DCore::QEntity*>(sender()->parent());
+    if(evt->button() != Qt3DRender::QPickEvent::LeftButton)
+        return;
 
-    qDebug() << "Picked " << entity->objectName();    
+    //Qt3DCore::QEntity *entity = qobject_cast<Qt3DCore::QEntity*>(sender()->parent());
+    SpectrumEntity *entity = dynamic_cast<SpectrumEntity*>(sender()->parent());
+    if(!entity)
+        return;
+
+    qDebug() << "Picked " << entity->objectName();
+
+    //mCamera->setViewCenter(entity->transform()->translation());
 }
