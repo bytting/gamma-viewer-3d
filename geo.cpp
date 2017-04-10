@@ -20,12 +20,8 @@
 namespace Geo
 {
 
-void geodeticToCartesianSimplified(
-        double lat,
-        double lon,
-        double &x,
-        double &y,
-        double &z)
+void geodeticToCartesianSimplified(double lat, double lon,
+                                   double &x, double &y, double &z)
 {
     auto cosLat = std::cos(degToRad<double>(lat));
     auto sinLat = std::sin(degToRad<double>(lat));
@@ -37,12 +33,8 @@ void geodeticToCartesianSimplified(
     z = rad * sinLat;
 }
 
-void geodeticToCartesian(
-        double lat,
-        double lon,
-        double &x,
-        double &y,
-        double &z)
+void geodeticToCartesian(double lat, double lon,
+                         double &x, double &y, double &z)
 {
     auto cosLat = std::cos(degToRad<double>(lat));
     auto sinLat = std::sin(degToRad<double>(lat));

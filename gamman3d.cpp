@@ -50,35 +50,23 @@ void gamman3d::setupWidgets()
 
 void gamman3d::setupSignals()
 {
-    QObject::connect(ui->actionOpenSession,
-                     &QAction::triggered,
-                     this,
-                     &gamman3d::onOpenSession);
+    QObject::connect(ui->actionOpenSession, &QAction::triggered,
+                     this, &gamman3d::onOpenSession);
 
-    QObject::connect(ui->actionCloseSession,
-                     &QAction::triggered,
-                     this,
-                     &gamman3d::onCloseSession);
+    QObject::connect(ui->actionCloseSession, &QAction::triggered,
+                     this, &gamman3d::onCloseSession);
 
-    QObject::connect(ui->actionExit,
-                     &QAction::triggered,
-                     this,
-                     &gamman3d::onExitApplication);
+    QObject::connect(ui->actionExit, &QAction::triggered,
+                     this, &gamman3d::onExitApplication);
 
-    QObject::connect(ui->actionShowScene,
-                     &QAction::triggered,
-                     this,
-                     &gamman3d::onShowScene);
+    QObject::connect(ui->actionShowScene, &QAction::triggered,
+                     this, &gamman3d::onShowScene);
 
-    QObject::connect(ui->actionShowSettings,
-                     &QAction::triggered,
-                     this,
-                     &gamman3d::onShowSettings);
+    QObject::connect(ui->actionShowSettings, &QAction::triggered,
+                     this, &gamman3d::onShowSettings);
 
-    QObject::connect(ui->actionLoadDoserateScript,
-                     &QAction::triggered,
-                     this,
-                     &gamman3d::onSetScript);
+    QObject::connect(ui->actionLoadDoserateScript, &QAction::triggered,
+                     this, &gamman3d::onSetScript);
 }
 
 void gamman3d::setupScene()
@@ -91,7 +79,8 @@ void gamman3d::setupScene()
 
     mCamera = mView->camera();
     mCamera->setProjectionType(Qt3DRender::QCameraLens::PerspectiveProjection);
-    mCamera->lens()->setPerspectiveProjection(45.0, mView->width() / mView->height(), 0.1, 10000.0);
+    mCamera->lens()->setPerspectiveProjection(
+                45.0, mView->width() / mView->height(), 0.3, 100000.0);
     mCamera->setUpVector(QVector3D(0.0f, 1.0f, 0.0f));
     mCamera->setPosition(QVector3D(0.0f, 20.0f, 80.0f));
     mCamera->setViewCenter(QVector3D(0.0f, 0.0f, 0.0f));
@@ -103,7 +92,7 @@ void gamman3d::setupScene()
     mCameraController->setLookSpeed(180.0f);
     mCameraController->setCamera(mCamera);
 
-    new GridEntity(mSceneEntity, 10, 10.0f);
+    new GridEntity(mSceneEntity, 10, 10.0f, QColor(255, 255, 255));
 
     mView->setRootEntity(mSceneEntity);
     mView->show();
@@ -127,20 +116,14 @@ void gamman3d::populateScene()
 
         //qDebug() << "x: " << position.x() << "y: " << position.y() << "z: " << position.z();
 
-        SpectrumEntity *entity = new SpectrumEntity(
-                    mSceneEntity,
-                    position,
+        SpectrumEntity *entity = new SpectrumEntity(mSceneEntity, position,
                     colorSpectrum.colorFromValue(spec->doserate()));
 
-        entity->setObjectName(
-                    QStringLiteral("entity ") +
-                    QString::number(spec->sessionIndex()));
+        entity->setObjectName(QStringLiteral("entity ") +
+                              QString::number(spec->sessionIndex()));
 
-        QObject::connect(
-                    entity->picker(),
-                    &Qt3DRender::QObjectPicker::pressed,
-                    this,
-                    &gamman3d::onPicked);
+        QObject::connect(entity->picker(), &Qt3DRender::QObjectPicker::pressed,
+                         this, &gamman3d::onPicked);
     }
 
     mCamera->setUpVector(QVector3D(0.0f, 1.0f, 0.0f));

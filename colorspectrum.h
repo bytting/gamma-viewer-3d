@@ -26,21 +26,18 @@ class ColorSpectrum
 {
 public:
 
-    ColorSpectrum(double minValue, double maxValue, bool useLogarithmicScale = true);
-
-    void setMinValue(double min) { mMinValue = min; }
-    void setMaxValue(double max) { mMaxValue = max; }
-    void setMinMaxValues(double min, double max);
+    ColorSpectrum(double minValue, double maxValue,
+                  bool useLogarithmicScale = true);
 
     double minValue() const { return mMinValue; }
     double maxValue() const { return mMaxValue; }
-
     bool useLogarithmicScale() const { return mUseLogarithmicScale; }
-    void setUseLogarithmicScale(bool state) { mUseLogarithmicScale = state; }
 
     QColor colorFromValue(double value);
 
 private:
+
+    void setMinMaxValues(double min, double max);
 
     double mMinValue = 0.0;
     double mMaxValue = 0.0;

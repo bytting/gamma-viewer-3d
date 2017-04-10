@@ -16,8 +16,7 @@
 
 #include "spectrumentity.h"
 
-SpectrumEntity::SpectrumEntity(Qt3DCore::QNode *parent,
-                               const QVector3D &pos,
+SpectrumEntity::SpectrumEntity(Qt3DCore::QNode *parent, const QVector3D &pos,
                                const QColor &color)
     : Qt3DCore::QEntity(parent),
       mMesh(new Qt3DExtras::QSphereMesh(this)),

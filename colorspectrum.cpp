@@ -21,10 +21,11 @@
 namespace Palette
 {
 
-ColorSpectrum::ColorSpectrum(double minValue, double maxValue, bool useLogarithmicScale)
+ColorSpectrum::ColorSpectrum(double minValue, double maxValue,
+                             bool useLogarithmicScale)
 {
     setMinMaxValues(minValue, maxValue);
-    setUseLogarithmicScale(useLogarithmicScale);
+    mUseLogarithmicScale = useLogarithmicScale;
 }
 
 void ColorSpectrum::setMinMaxValues(double minValue, double maxValue)
@@ -32,8 +33,8 @@ void ColorSpectrum::setMinMaxValues(double minValue, double maxValue)
     if(minValue > maxValue)
         throw NumericRangeError("ColorSpectrum::setMinMaxValues: minValue > maxValue");
 
-    setMinValue(minValue);
-    setMaxValue(maxValue);
+    mMinValue = minValue;
+    mMaxValue = maxValue;
 }
 
 QColor ColorSpectrum::colorFromValue(double value)

@@ -17,6 +17,7 @@
 #ifndef GRIDENTITY_H
 #define GRIDENTITY_H
 
+#include <QColor>
 #include <Qt3DCore/QEntity>
 #include <Qt3DCore/QTransform>
 #include <Qt3DRender/QAttribute>
@@ -30,9 +31,8 @@ class GridEntity : public Qt3DCore::QEntity
 
 public:
 
-    GridEntity(Qt3DCore::QEntity *parent,
-               unsigned int count,
-               float interval);
+    GridEntity(Qt3DCore::QEntity *parent, unsigned int count,
+               float interval, const QColor &color);
 
     virtual ~GridEntity();
 

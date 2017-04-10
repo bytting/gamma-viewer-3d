@@ -16,9 +16,8 @@
 
 #include "gridentity.h"
 
-GridEntity::GridEntity(Qt3DCore::QEntity *parent,
-                       unsigned int count,
-                       float interval)
+GridEntity::GridEntity(Qt3DCore::QEntity *parent, unsigned int count,
+                       float interval, const QColor &color)
     : Qt3DCore::QEntity(parent),
       mMesh(new Qt3DRender::QGeometryRenderer(this)),
       mGeometry(new Qt3DRender::QGeometry(this)),
@@ -80,9 +79,9 @@ GridEntity::GridEntity(Qt3DCore::QEntity *parent,
     mMesh->setFirstInstance(0);
     mMesh->setVertexCount(numVerts);
     mMesh->setPrimitiveType(Qt3DRender::QGeometryRenderer::Lines);
-    mMesh->setGeometry(mGeometry);    
+    mMesh->setGeometry(mGeometry);
 
-    mMaterial->setAmbient(QColor(255, 255, 255));
+    mMaterial->setAmbient(color);
 
     addComponent(mMesh);
     addComponent(mMaterial);

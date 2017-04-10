@@ -159,15 +159,11 @@ void Spectrum::loadFile(QString filename)
         }
     }
 
-    Geo::geodeticToCartesianSimplified(
-                mLatitudeStart,
-                mLongitudeStart,
-                mX1, mY1, mZ1);
+    Geo::geodeticToCartesianSimplified(mLatitudeStart, mLongitudeStart,
+                                       mX1, mY1, mZ1);
 
-    Geo::geodeticToCartesianSimplified(
-                mLatitudeEnd,
-                mLongitudeEnd,
-                mX2, mY2, mZ2);
+    Geo::geodeticToCartesianSimplified(mLatitudeEnd, mLongitudeEnd,
+                                       mX2, mY2, mZ2);
 }
 
 static double GEValue(lua_State* L, double energy)
@@ -204,7 +200,7 @@ void Spectrum::calculateDoserate(const Detector &det, lua_State* L)
         if (E < 0.05) // Energies below 0.05 are invalid
             continue;
         double GE = GEValue(L, E / 1000.0);
-        double chanDose = GE * (cps * 60.0);
+        double chanDose = GE * cps * 60.0;
         mDoserate += chanDose;
     }
 }
