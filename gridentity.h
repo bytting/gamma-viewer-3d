@@ -30,12 +30,11 @@ class GridEntity : public Qt3DCore::QEntity
 
 public:
 
-    GridEntity(
-            Qt3DCore::QEntity *parent,
-            unsigned int count,
-            float interval);
+    GridEntity(Qt3DCore::QEntity *parent,
+               unsigned int count,
+               float interval);
 
-    ~GridEntity();
+    virtual ~GridEntity();
 
     Qt3DCore::QTransform *transform() const { return mTransform; }
     Qt3DExtras::QPhongMaterial *material() const { return mMaterial; }

@@ -80,7 +80,7 @@ GridEntity::GridEntity(Qt3DCore::QEntity *parent,
     mMesh->setFirstInstance(0);
     mMesh->setVertexCount(numVerts);
     mMesh->setPrimitiveType(Qt3DRender::QGeometryRenderer::Lines);
-    mMesh->setGeometry(mGeometry);
+    mMesh->setGeometry(mGeometry);    
 
     mMaterial->setAmbient(QColor(255, 255, 255));
 

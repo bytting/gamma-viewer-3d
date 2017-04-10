@@ -27,12 +27,11 @@ class SpectrumEntity : public Qt3DCore::QEntity
 {
 public:
 
-    SpectrumEntity(
-            Qt3DCore::QNode *parent,
-            const QVector3D &pos,
-            const QColor &color);
+    SpectrumEntity(Qt3DCore::QNode *parent,
+                   const QVector3D &pos,
+                   const QColor &color);
 
-    ~SpectrumEntity();
+    virtual ~SpectrumEntity();
 
     Qt3DExtras::QSphereMesh *mesh() const { return mMesh; }
     Qt3DCore::QTransform *transform() const { return mTransform; }

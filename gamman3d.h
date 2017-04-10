@@ -25,19 +25,10 @@
 #include <QLabel>
 #include <Qt3DCore/QEntity>
 #include <Qt3DRender/QCamera>
-#include <Qt3DRender/QCameraLens>
-#include <Qt3DRender/QRenderAspect>
-#include <Qt3DRender/QSortPolicy>
-#include <Qt3DRender/QRenderSettings>
 #include <Qt3DRender/QObjectPicker>
 #include <Qt3DRender/QPickEvent>
-#include <Qt3DInput/QInputAspect>
-#include <Qt3DInput/QInputSettings>
-#include <Qt3DExtras/QForwardRenderer>
 #include <Qt3DExtras/Qt3DWindow>
-#include <Qt3DExtras/QDiffuseMapMaterial>
 #include <Qt3DExtras/QOrbitCameraController>
-#include <Qt3DExtras/QNormalDiffuseSpecularMapMaterial>
 
 namespace Ui {
 class gamman3d;
@@ -55,8 +46,7 @@ public:
     void setupWidgets();
     void setupSignals();
     void setupScene();
-    void populateScene();
-    void releaseModel(Qt3DCore::QNode *model);
+    void populateScene();    
 
 private:
 
@@ -65,10 +55,7 @@ private:
     QLabel *mLabelStatus = nullptr;
 
     Qt3DExtras::Qt3DWindow *mView = nullptr;
-    QWidget *mContainerScene = nullptr;
-    Qt3DExtras::QForwardRenderer *mRenderer = nullptr;
-    Qt3DRender::QSortPolicy *mSortPolicy = nullptr;
-    Qt3DRender::QRenderSettings *mRenderSettings = nullptr;
+    QWidget *mContainerScene = nullptr;    
     Qt3DCore::QEntity *mSceneEntity = nullptr;
     Qt3DRender::QCamera *mCamera = nullptr;
     Qt3DExtras::QOrbitCameraController *mCameraController = nullptr;
@@ -79,8 +66,7 @@ private slots:
 
     void onExitApplication();
     void onOpenSession();
-    void onCloseSession();
-    void onSceneNodeSelected(int idx);
+    void onCloseSession();    
     void onShowScene();
     void onShowSettings();
     void onSetScript();
