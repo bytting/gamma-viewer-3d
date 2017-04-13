@@ -57,6 +57,8 @@ public:
 
     void clear();
 
+    QString name() const { return mName; }
+
     double minDoserate() const { return mMinDoserate; }
     double maxDoserate() const { return mMaxDoserate; }
 

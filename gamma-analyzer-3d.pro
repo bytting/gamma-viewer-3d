@@ -6,19 +6,19 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 TARGET = gamma-analyzer-3d
 TEMPLATE = app
 
-CONFIG += c++14
-
+# The following define makes your compiler emit warnings if you use
+# any feature of Qt which as been marked as deprecated (the exact warnings
+# depend on your compiler). Please consult the documentation of the
+# deprecated API in order to know how to port your code away from it.
 DEFINES += QT_DEPRECATED_WARNINGS
 
-SOURCES += \
-    main.cpp\
-    gamman3d.cpp \
-    spectrum.cpp \
-    session.cpp \
-    geo.cpp \
-    detectortype.cpp \
-    detector.cpp \
-    lua/lapi.c \
+# You can also make your code fail to compile if you use deprecated APIs.
+# In order to do so, uncomment the following line.
+# You can also select to disable deprecated APIs only up to a certain version of Qt.
+#DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
+
+
+SOURCES += lua/lapi.c \
     lua/lauxlib.c \
     lua/lbaselib.c \
     lua/lbitlib.c \
@@ -51,19 +51,17 @@ SOURCES += \
     lua/lutf8lib.c \
     lua/lvm.c \
     lua/lzio.c \
-    spectrumentity.cpp \
-    gridentity.cpp \
-    colorspectrum.cpp
+    main.cpp \
+    gammaanalyzer3d.cpp \
+    session.cpp \
+    spectrum.cpp \
+    geo.cpp \
+    detector.cpp \
+    detectortype.cpp \
+    colorspectrum.cpp \
+    scene.cpp
 
-HEADERS += \
-    gamman3d.h \
-    session.h \
-    spectrum.h \
-    geo.h \
-    exceptions.h \
-    detectortype.h \
-    detector.h \
-    lua/lapi.h \
+HEADERS += lua/lapi.h \
     lua/lauxlib.h \
     lua/lcode.h \
     lua/lctype.h \
@@ -88,12 +86,19 @@ HEADERS += \
     lua/lundump.h \
     lua/lvm.h \
     lua/lzio.h \
-    spectrumentity.h \
-    gridentity.h \
-    colorspectrum.h
+    gammaanalyzer3d.h \
+    session.h \
+    spectrum.h \
+    geo.h \
+    detector.h \
+    detectortype.h \
+    exceptions.h \
+    colorspectrum.h \
+    scene.h
 
-FORMS += \
-    gamman3d.ui
+FORMS += gammaanalyzer3d.ui
+
+DISTFILES +=
 
 RESOURCES += \
     resources.qrc

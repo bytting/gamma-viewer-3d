@@ -14,36 +14,28 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef SPECTRUMENTITY_H
-#define SPECTRUMENTITY_H
+#ifndef SCENE_H
+#define SCENE_H
 
+#include "session.h"
 #include <QColor>
+#include <QVector3D>
+#include <Qt3DExtras/Qt3DWindow>
 #include <Qt3DCore/QEntity>
-#include <Qt3DExtras/QSphereMesh>
-#include <Qt3DCore/QTransform>
-#include <Qt3DExtras/QPhongMaterial>
 #include <Qt3DRender/QObjectPicker>
 
-class SpectrumEntity : public Qt3DCore::QEntity
-{
-public:
+Qt3DCore::QEntity* createScene(Qt3DExtras::Qt3DWindow *win);
 
-    SpectrumEntity(Qt3DCore::QNode *parent, const QVector3D &pos,
-                   const QColor &color);
+Qt3DCore::QEntity* createGrid(unsigned int count,
+                              float interval,
+                              const QColor &color,
+                              Qt3DCore::QEntity* parent);
 
-    virtual ~SpectrumEntity();
+Qt3DCore::QEntity* createSpectrum(QString name,
+                                  const QVector3D &pos,
+                                  const QColor &color,
+                                  Qt3DCore::QEntity *parent);
 
-    Qt3DExtras::QSphereMesh *mesh() const { return mMesh; }
-    Qt3DCore::QTransform *transform() const { return mTransform; }
-    Qt3DExtras::QPhongMaterial *material() const { return mMaterial; }
-    Qt3DRender::QObjectPicker *picker() const { return mPicker; }
+Qt3DRender::QObjectPicker *createPicker(Qt3DCore::QEntity* parent);
 
-private:
-
-    Qt3DExtras::QSphereMesh *mMesh;
-    Qt3DCore::QTransform *mTransform;
-    Qt3DExtras::QPhongMaterial *mMaterial;
-    Qt3DRender::QObjectPicker *mPicker;
-};
-
-#endif // SPECTRUMENTITY_H
+#endif // SCENE_H

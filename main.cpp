@@ -14,23 +14,14 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-#include "gamman3d.h"
-#include <exception>
+#include "gammaanalyzer3d.h"
 #include <QApplication>
-#include <QDebug>
 
 int main(int argc, char *argv[])
 {
-    try
-    {
-        QApplication a(argc, argv);
-        gamman3d w;
-        w.show();
-        return a.exec();
-    }
-    catch(const std::exception& e)
-    {
-        qDebug() << e.what();
-        return 1;
-    }
+    QApplication a(argc, argv);
+    GammaAnalyzer3D w;
+    w.show();
+
+    return a.exec();
 }
