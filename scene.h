@@ -26,7 +26,7 @@
 
 struct Scene
 {
-    Scene(const QColor &clearColor);
+    explicit Scene(const QColor &clearColor);
     ~Scene();
 
     Gamma::Session *session = nullptr;

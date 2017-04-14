@@ -16,13 +16,9 @@
 
 #include "gridentity.h"
 
-GridEntity::GridEntity(
-        unsigned int count,
-        float interval,
-        const QColor &color,
-        Qt3DCore::QEntity *parent)
-    :
-      Qt3DCore::QEntity(parent),
+GridEntityXZ::GridEntityXZ(float y, unsigned int count, float interval,
+                           const QColor &color, Qt3DCore::QEntity *parent)
+    : Qt3DCore::QEntity(parent),
       mMesh(new Qt3DRender::QGeometryRenderer(this)),
       mGeometry(new Qt3DRender::QGeometry(this)),
       mDataBuffer(new Qt3DRender::QBuffer(Qt3DRender::QBuffer::VertexBuffer, this)),
@@ -31,7 +27,7 @@ GridEntity::GridEntity(
       mTransform(new Qt3DCore::QTransform(this))
 {
     int halfCount = count / 2;
-    int numVerts = (halfCount * 4) * 2;
+    int numVerts = halfCount * 4 * 2; // number of lines * number of points per line
     float halfLength = interval * (float)halfCount;
 
     QByteArray vertexBufferData;
@@ -43,11 +39,11 @@ GridEntity::GridEntity(
     for(; i < (numVerts * 3) / 2; i += 6)
     {
         ptr[i] = x;
-        ptr[i+1] = 0.0f;
+        ptr[i+1] = y;
         ptr[i+2] = -halfLength;
 
         ptr[i+3] = x;
-        ptr[i+4] = 0.0f;
+        ptr[i+4] = y;
         ptr[i+5] = halfLength - interval;
 
         x += interval;
@@ -57,11 +53,11 @@ GridEntity::GridEntity(
     for(; i < numVerts * 3; i += 6)
     {
         ptr[i] = -halfLength;
-        ptr[i+1] = 0.0f;
+        ptr[i+1] = y;
         ptr[i+2] = z;
 
         ptr[i+3] = halfLength - interval;
-        ptr[i+4] = 0.0f;
+        ptr[i+4] = y;
         ptr[i+5] = z;
 
         z += interval;
@@ -91,8 +87,18 @@ GridEntity::GridEntity(
     addComponent(mTransform);
 }
 
-GridEntity::~GridEntity()
+GridEntityXZ::~GridEntityXZ()
 {
+    Q_FOREACH(Qt3DCore::QNode* node, childNodes())
+    {
+        Qt3DCore::QEntity *entity = qobject_cast<Qt3DCore::QEntity*>(node);
+        if(entity)
+        {
+            entity->components().clear();
+            entity->deleteLater();
+        }
+    }
+
     mTransform->deleteLater();
     mMaterial->deleteLater();
     mPositionAttribute->deleteLater();

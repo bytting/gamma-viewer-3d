@@ -20,18 +20,17 @@
 #include <Qt3DExtras/QForwardRenderer>
 
 Scene::Scene(const QColor &clearColor)
+    : session(new Gamma::Session()),
+      window(new Qt3DExtras::Qt3DWindow),
+      root(new Qt3DCore::QEntity)
 {
-    session = new Gamma::Session();
-    window = new Qt3DExtras::Qt3DWindow;
     window->defaultFrameGraph()->setClearColor(clearColor);
 
     camera = window->camera();
-    camera->lens()->setPerspectiveProjection(45.0f, 16.0f/9.0f, 0.1f, 10000.0f);
+    camera->lens()->setPerspectiveProjection(45.0f, 16.0f / 9.0f, 0.1f, 10000.0f);
     camera->setUpVector(QVector3D(0.0, 1.0, 0.0));
     camera->setPosition(QVector3D(0, 20, 100.0f));
     camera->setViewCenter(QVector3D(0, 0, 0));
-
-    root = new Qt3DCore::QEntity;
 
     cameraController = new Qt3DExtras::QOrbitCameraController(root);
     cameraController->setLinearSpeed(50.0f);

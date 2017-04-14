@@ -16,10 +16,8 @@
 
 #include "spectrumentity.h"
 
-SpectrumEntity::SpectrumEntity(const QVector3D &pos,
-                               const QColor &color,
-                               Gamma::Spectrum *spec,
-                               Qt3DCore::QEntity *parent)
+SpectrumEntity::SpectrumEntity(const QVector3D &pos, const QColor &color,
+                               Gamma::Spectrum *spec, Qt3DCore::QEntity *parent)
     : Qt3DCore::QEntity(parent),
       mMesh(new Qt3DExtras::QSphereMesh(this)),
       mTransform(new Qt3DCore::QTransform(this)),
@@ -49,6 +47,16 @@ SpectrumEntity::SpectrumEntity(const QVector3D &pos,
 
 SpectrumEntity::~SpectrumEntity()
 {
+    Q_FOREACH(Qt3DCore::QNode* node, childNodes())
+    {
+        Qt3DCore::QEntity *entity = qobject_cast<Qt3DCore::QEntity*>(node);
+        if(entity)
+        {
+            entity->components().clear();
+            entity->deleteLater();
+        }
+    }
+
     mSpectrum = nullptr;
     mPicker->disconnect();
     mPicker->deleteLater();

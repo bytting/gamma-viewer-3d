@@ -102,7 +102,7 @@ void GammaAnalyzer3D::onOpenSession()
         scene->session->loadPath(sessionDir);
         scene->window->setTitle(scene->session->name());
 
-        new GridEntity(10, 10.0, QColor(255, 255, 255), scene->root);
+        new GridEntityXZ(0.0f, 10, 10.0f, QColor(255, 255, 255), scene->root);
 
         Palette::ColorSpectrum colorSpectrum(
                     scene->session->minDoserate(),

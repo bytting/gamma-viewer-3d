@@ -26,21 +26,20 @@
 #include <Qt3DRender/QGeometry>
 #include <Qt3DExtras/QPhongMaterial>
 
-class GridEntity : public Qt3DCore::QEntity
+class GridEntityXZ : public Qt3DCore::QEntity
 {
     Q_OBJECT
 
 public:
 
-    GridEntity(unsigned int count,
-               float interval,
-               const QColor &color,
-               Qt3DCore::QEntity *parent);
+    GridEntityXZ(float y, unsigned int count, float interval,
+                 const QColor &color, Qt3DCore::QEntity *parent);
 
-    virtual ~GridEntity();
+    virtual ~GridEntityXZ();
 
-    Qt3DCore::QTransform *transform() const { return mTransform; }
+    Qt3DRender::QGeometryRenderer *mesh() const { return mMesh; }
     Qt3DExtras::QPhongMaterial *material() const { return mMaterial; }
+    Qt3DCore::QTransform *transform() const { return mTransform; }
 
 private:
 
