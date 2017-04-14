@@ -18,24 +18,19 @@
 #define SCENE_H
 
 #include "session.h"
-#include <QColor>
-#include <QVector3D>
 #include <Qt3DExtras/Qt3DWindow>
+#include <Qt3DRender/QCamera>
 #include <Qt3DCore/QEntity>
-#include <Qt3DRender/QObjectPicker>
 
-Qt3DCore::QEntity* createScene(Qt3DExtras::Qt3DWindow *win);
+struct Scene
+{
+    Scene();
+    ~Scene();
 
-Qt3DCore::QEntity* createGrid(unsigned int count,
-                              float interval,
-                              const QColor &color,
-                              Qt3DCore::QEntity* parent);
-
-Qt3DCore::QEntity* createSpectrum(QString name,
-                                  const QVector3D &pos,
-                                  const QColor &color,
-                                  Qt3DCore::QEntity *parent);
-
-Qt3DRender::QObjectPicker *createPicker(Qt3DCore::QEntity* parent);
+    Gamma::Session *session = nullptr;
+    Qt3DExtras::Qt3DWindow *window = nullptr;
+    Qt3DRender::QCamera *camera = nullptr;
+    Qt3DCore::QEntity *root = nullptr;
+};
 
 #endif // SCENE_H

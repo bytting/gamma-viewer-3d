@@ -19,12 +19,10 @@
 
 #include <QMainWindow>
 #include <QString>
-#include <Qt3DExtras/Qt3DWindow>
 #include <Qt3DRender/QPickEvent>
-#include <vector>
+#include <map>
 #include "exceptions.h"
-#include "spectrum.h"
-#include "session.h"
+#include "scene.h"
 
 namespace Ui {
 class GammaAnalyzer3D;
@@ -42,8 +40,7 @@ public:
 private:
 
     Ui::GammaAnalyzer3D *ui;
-    std::vector<Gamma::Session*> sessions;
-    std::vector<Qt3DExtras::Qt3DWindow*> windows;
+    std::map<QString, Scene*> scenes;
     QString doserateScript;
 
     void setupSignals();

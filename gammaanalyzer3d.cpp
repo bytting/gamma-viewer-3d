@@ -17,6 +17,8 @@
 #include "gammaanalyzer3d.h"
 #include "ui_gammaanalyzer3d.h"
 #include "colorspectrum.h"
+#include "gridentity.h"
+#include "spectrumentity.h"
 #include "scene.h"
 #include <QDir>
 #include <QFileDialog>
@@ -59,16 +61,9 @@ void GammaAnalyzer3D::onApplicationExit()
 {
     try
     {
-        for(Qt3DExtras::Qt3DWindow *win : windows)
-        {
-            win->destroy();
-            delete win;
-        }
-        windows.clear();
-
-        for(Gamma::Session* session : sessions)
-            delete session;
-        sessions.clear();
+        for(auto &p : scenes)
+            delete p.second;
+        scenes.clear();
 
         QApplication::exit();
     }
@@ -93,51 +88,49 @@ void GammaAnalyzer3D::onOpenSession()
 
         sessionDir = QDir::toNativeSeparators(sessionDir);
 
-        Gamma::Session *session = new Gamma::Session();
+        Scene *scene = new Scene();
+
         if(QFile::exists(doserateScript))
-            session->loadDoserateScript(doserateScript);
-        session->loadPath(sessionDir);
+            scene->session->loadDoserateScript(doserateScript);
+        scene->session->loadPath(sessionDir);
+        scene->window->setTitle(scene->session->name());
 
-        sessions.push_back(session);
+        new GridEntity(10, 10.0, QColor(255, 255, 255), scene->root);
 
-        Qt3DExtras::Qt3DWindow *win = new Qt3DExtras::Qt3DWindow;
-        win->setTitle(session->name());
+        Palette::ColorSpectrum colorSpectrum(
+                    scene->session->minDoserate(),
+                    scene->session->maxDoserate());
 
-        Qt3DCore::QEntity *scene = createScene(win);
+        double halfX = (scene->session->maxX() - scene->session->minX()) / 2.0;
+        double halfY = (scene->session->maxY() - scene->session->minY()) / 2.0;
 
-        createGrid(10, 10.0, QColor(255, 255, 255), scene);
-
-        Palette::ColorSpectrum colorSpectrum(session->minDoserate(),
-                                             session->maxDoserate());
-
-        double halfX = (session->maxX() - session->minX()) / 2.0;
-        double halfY = (session->maxY() - session->minY()) / 2.0;
-
-        for(const auto& spec : session->getSpectrumList())
+        for(auto spec : scene->session->getSpectrumList())
         {
-            QVector3D position((spec->x1() - session->minX() - halfX) * 20000.0,
-                               spec->altitudeStart() - session->minAltitude(),
-                               (spec->y1() - session->minY() - halfY) * -20000.0);
+            QVector3D position(
+                        (spec->x1() - scene->session->minX() - halfX) * 20000.0,
+                        spec->altitudeStart() - scene->session->minAltitude(),
+                        (spec->y1() - scene->session->minY() - halfY) * -20000.0);
 
-            Qt3DCore::QEntity *entity = createSpectrum(spec->sessionName() + " " + QString::number(spec->sessionIndex()),
-                                                       position,
-                                                       colorSpectrum.colorFromValue(spec->doserate()),
-                                                       scene);
+            SpectrumEntity *entity = new SpectrumEntity(
+                        position,
+                        colorSpectrum.colorFromValue(spec->doserate()),
+                        spec,
+                        scene->root);
 
-            Qt3DRender::QObjectPicker *picker = createPicker(entity);
-
-            QObject::connect(picker, &Qt3DRender::QObjectPicker::pressed,
-                             this, &GammaAnalyzer3D::onPicked);
+            QObject::connect(
+                        entity->picker(),
+                        &Qt3DRender::QObjectPicker::pressed,
+                        this,
+                        &GammaAnalyzer3D::onPicked);
         }
 
-        win->camera()->setUpVector(QVector3D(0.0, 1.0, 0.0));
-        win->camera()->setPosition(QVector3D(0, 20, 100.0f));
-        win->camera()->setViewCenter(QVector3D(0, 0, 0));
+        scene->camera->setUpVector(QVector3D(0.0, 1.0, 0.0));
+        scene->camera->setPosition(QVector3D(0, 20, 100.0f));
+        scene->camera->setViewCenter(QVector3D(0, 0, 0));
 
-        win->setRootEntity(scene);
-        win->show();
+        scene->window->show();
 
-        windows.push_back(win);
+        scenes[scene->session->name()] = scene;
     }
     catch(const std::exception& e)
     {
@@ -171,11 +164,15 @@ void GammaAnalyzer3D::onPicked(Qt3DRender::QPickEvent *evt)
         if(evt->button() != Qt3DRender::QPickEvent::LeftButton)
             return;
 
-        Qt3DCore::QEntity *entity = qobject_cast<Qt3DCore::QEntity*>(sender()->parent());
+        SpectrumEntity *entity = qobject_cast<SpectrumEntity*>(sender()->parent());
         if(!entity)
             return;
 
-        ui->lblSpectrum->setText("Selected spectrum: " + entity->objectName());
+        Gamma::Spectrum *spec = entity->spectrum();
+
+        ui->lblSpectrum->setText("Selected spectrum: " +
+                                 spec->sessionName() + " " +
+                                 QString::number(spec->sessionIndex()));
     }
     catch(const std::exception& e)
     {

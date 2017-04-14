@@ -59,7 +59,9 @@ SOURCES += lua/lapi.c \
     detector.cpp \
     detectortype.cpp \
     colorspectrum.cpp \
-    scene.cpp
+    scene.cpp \
+    spectrumentity.cpp \
+    gridentity.cpp
 
 HEADERS += lua/lapi.h \
     lua/lauxlib.h \
@@ -94,7 +96,9 @@ HEADERS += lua/lapi.h \
     detectortype.h \
     exceptions.h \
     colorspectrum.h \
-    scene.h
+    scene.h \
+    spectrumentity.h \
+    gridentity.h
 
 FORMS += gammaanalyzer3d.ui
 
