@@ -62,7 +62,24 @@ void GammaAnalyzer3D::onApplicationExit()
     try
     {
         for(auto &p : scenes)
-            delete p.second;
+        {
+            Scene *scene = p.second;
+
+            // disconnect spectrum entity pickers
+            Q_FOREACH(Qt3DCore::QNode* node, scene->root->childNodes())
+            {
+                SpectrumEntity *specEntity = qobject_cast<SpectrumEntity*>(node);
+                if(specEntity)
+                    QObject::disconnect(
+                                specEntity->picker(),
+                                &Qt3DRender::QObjectPicker::pressed,
+                                this,
+                                &GammaAnalyzer3D::onPicked);
+            }
+
+            delete scene;
+        }
+
         scenes.clear();
 
         QApplication::exit();
@@ -179,6 +196,11 @@ void GammaAnalyzer3D::onPicked(Qt3DRender::QPickEvent *evt)
         ui->lblSpectrum->setText("Selected spectrum: " +
                                  spec->sessionName() + " " +
                                  QString::number(spec->sessionIndex()));
+        ui->lblLatitude->setText("Latitude: " + QString::number(spec->latitudeStart()));
+        ui->lblLongitude->setText("Longitude: " + QString::number(spec->longitudeStart()));
+        ui->lblAltitude->setText("Altitude: " + QString::number(spec->altitudeStart()));
+        ui->lblRealtime->setText("Real time: " + QString::number(spec->realtime()));
+        ui->lblDoserate->setText("Doserate: " + QString::number(spec->doserate()));
     }
     catch(const std::exception& e)
     {
