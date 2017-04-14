@@ -32,8 +32,12 @@ class GridEntityXZ : public Qt3DCore::QEntity
 
 public:
 
-    GridEntityXZ(float y, unsigned int count, float interval,
-                 const QColor &color, Qt3DCore::QEntity *parent);
+    GridEntityXZ(
+            float y,
+            unsigned int count,
+            float interval,
+            const QColor &color,
+            Qt3DCore::QEntity *parent);
 
     virtual ~GridEntityXZ();
 

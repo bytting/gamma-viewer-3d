@@ -37,7 +37,7 @@ void ColorSpectrum::setMinMaxValues(double minValue, double maxValue)
     mMaxValue = maxValue;
 }
 
-QColor ColorSpectrum::colorFromValue(double value)
+QColor ColorSpectrum::operator() (double value)
 {
     if(value == 0.0)
         return QColor(0, 255, 0);
@@ -79,6 +79,11 @@ QColor ColorSpectrum::colorFromValue(double value)
     }
 
     return color;
+}
+
+QColor ColorSpectrum::colorFromValue(double value)
+{
+    return operator()(value);
 }
 
 } // namespace Palette

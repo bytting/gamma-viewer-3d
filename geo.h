@@ -29,11 +29,19 @@ T degToRad(T deg)
     return deg * pi<T> / static_cast<T>(180);
 }
 
-void geodeticToCartesianSimplified(double lat, double lon,
-                                   double &x, double &y, double &z);
+void geodeticToCartesianSimplified(
+        double lat,
+        double lon,
+        double &x,
+        double &y,
+        double &z);
 
-void geodeticToCartesian(double lat, double lon,
-                         double &x, double &y, double &z);
+void geodeticToCartesian(
+        double lat,
+        double lon,
+        double &x,
+        double &y,
+        double &z);
 
 } // namespace Geo
 

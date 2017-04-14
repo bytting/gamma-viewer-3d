@@ -33,6 +33,8 @@ public:
     double maxValue() const { return mMaxValue; }
     bool useLogarithmicScale() const { return mUseLogarithmicScale; }
 
+    QColor operator() (double value);
+
     QColor colorFromValue(double value);
 
 private:

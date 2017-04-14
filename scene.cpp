@@ -20,7 +20,8 @@
 #include <Qt3DExtras/QForwardRenderer>
 
 Scene::Scene(const QColor &clearColor)
-    : session(new Gamma::Session()),
+    :
+      session(new Gamma::Session()),
       window(new Qt3DExtras::Qt3DWindow),
       root(new Qt3DCore::QEntity)
 {

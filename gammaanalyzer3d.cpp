@@ -47,21 +47,30 @@ GammaAnalyzer3D::~GammaAnalyzer3D()
 
 void GammaAnalyzer3D::setupSignals()
 {
-    QObject::connect(ui->actionExit, &QAction::triggered,
-                     this, &GammaAnalyzer3D::onApplicationExit);
+    QObject::connect(
+                ui->actionExit,
+                &QAction::triggered,
+                this,
+                &GammaAnalyzer3D::onApplicationExit);
 
-    QObject::connect(ui->actionLoadDoserateScript, &QAction::triggered,
-                     this, &GammaAnalyzer3D::onLoadDoserateScript);
+    QObject::connect(
+                ui->actionLoadDoserateScript,
+                &QAction::triggered,
+                this,
+                &GammaAnalyzer3D::onLoadDoserateScript);
 
-    QObject::connect(ui->actionOpenSession, &QAction::triggered,
-                     this, &GammaAnalyzer3D::onOpenSession);
+    QObject::connect(
+                ui->actionOpenSession,
+                &QAction::triggered,
+                this,
+                &GammaAnalyzer3D::onOpenSession);
 }
 
 void GammaAnalyzer3D::onApplicationExit()
 {
     try
     {
-        for(auto &p : scenes)
+        for(auto p : scenes)
             delete p.second;
 
         scenes.clear();
@@ -82,16 +91,16 @@ void GammaAnalyzer3D::onOpenSession()
                     this,
                     tr("Open session directory"),
                     QDir::homePath(),
-                    QFileDialog::ShowDirsOnly |
-                    QFileDialog::DontResolveSymlinks);
+                    QFileDialog::ShowDirsOnly | QFileDialog::DontResolveSymlinks);
         if(sessionDir.isEmpty())
             return;
 
         sessionDir = QDir::toNativeSeparators(sessionDir);
 
-        if(scenes.find(sessionDir) != scenes.end())
+        auto it = scenes.find(sessionDir);
+        if(it != scenes.end())
         {
-            QMessageBox::information(this, "Information", "Session already loaded");
+            it->second->window->show();
             return;
         }
 
@@ -114,13 +123,13 @@ void GammaAnalyzer3D::onOpenSession()
         for(auto spec : scene->session->getSpectrumList())
         {
             QVector3D position(
-                        (spec->x1() - scene->session->minX() - halfX) * 20000.0,
+                        (spec->x1() - scene->session->minX() - halfX) * 15000.0,
                         spec->altitudeStart() - scene->session->minAltitude(),
-                        (spec->y1() - scene->session->minY() - halfY) * -20000.0);
+                        (spec->y1() - scene->session->minY() - halfY) * -15000.0);
 
             SpectrumEntity *entity = new SpectrumEntity(
                         position,
-                        colorSpectrum.colorFromValue(spec->doserate()),
+                        colorSpectrum(spec->doserate()),
                         spec,
                         scene->root);
 
@@ -177,9 +186,9 @@ void GammaAnalyzer3D::onPicked(Qt3DRender::QPickEvent *evt)
 
         Gamma::Spectrum *spec = entity->spectrum();
 
-        ui->lblSpectrum->setText("Selected spectrum: " +
-                                 spec->sessionName() + " " +
-                                 QString::number(spec->sessionIndex()));
+        ui->lblSpectrum->setText(
+                    "Selected spectrum: " + spec->sessionName() + " " +
+                    QString::number(spec->sessionIndex()));
         ui->lblLatitude->setText("Latitude: " + QString::number(spec->latitudeStart()));
         ui->lblLongitude->setText("Longitude: " + QString::number(spec->longitudeStart()));
         ui->lblAltitude->setText("Altitude: " + QString::number(spec->altitudeStart()));

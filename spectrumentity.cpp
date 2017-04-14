@@ -16,9 +16,13 @@
 
 #include "spectrumentity.h"
 
-SpectrumEntity::SpectrumEntity(const QVector3D &pos, const QColor &color,
-                               Gamma::Spectrum *spec, Qt3DCore::QEntity *parent)
-    : Qt3DCore::QEntity(parent),
+SpectrumEntity::SpectrumEntity(
+        const QVector3D &pos,
+        const QColor &color,
+        Gamma::Spectrum *spec,
+        Qt3DCore::QEntity *parent)
+    :
+      Qt3DCore::QEntity(parent),
       mMesh(new Qt3DExtras::QSphereMesh(this)),
       mTransform(new Qt3DCore::QTransform(this)),
       mMaterial(new Qt3DExtras::QPhongMaterial(this)),
@@ -33,9 +37,10 @@ SpectrumEntity::SpectrumEntity(const QVector3D &pos, const QColor &color,
 
     mMaterial->setDiffuse(color);
     mMaterial->setSpecular(QColor(20, 20, 20));
-    QColor ambientColor(color.red() - color.red() / 10,
-                        color.green() - color.green() / 10,
-                        color.blue() - color.blue() / 10);
+    QColor ambientColor(
+                color.red() - color.red() / 10,
+                color.green() - color.green() / 10,
+                color.blue() - color.blue() / 10);
     mMaterial->setAmbient(ambientColor);
     mMaterial->setShininess(3.0f);
     addComponent(mMaterial);
