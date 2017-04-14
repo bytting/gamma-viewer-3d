@@ -46,8 +46,11 @@ Scene::~Scene()
     Q_FOREACH(Qt3DCore::QNode* node, root->childNodes())
     {
         Qt3DCore::QEntity *entity = qobject_cast<Qt3DCore::QEntity*>(node);
-        entity->components().clear();
-        entity->deleteLater();
+        if(entity)
+        {
+            entity->components().clear();
+            entity->deleteLater();
+        }
     }
 
     root->components().clear();

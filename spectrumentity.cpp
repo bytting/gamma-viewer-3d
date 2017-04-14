@@ -50,6 +50,7 @@ SpectrumEntity::SpectrumEntity(const QVector3D &pos,
 SpectrumEntity::~SpectrumEntity()
 {
     mSpectrum = nullptr;
+    mPicker->disconnect();
     mPicker->deleteLater();
     mMaterial->deleteLater();
     mTransform->deleteLater();

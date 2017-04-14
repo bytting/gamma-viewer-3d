@@ -62,23 +62,7 @@ void GammaAnalyzer3D::onApplicationExit()
     try
     {
         for(auto &p : scenes)
-        {
-            Scene *scene = p.second;
-
-            // disconnect spectrum entity pickers
-            Q_FOREACH(Qt3DCore::QNode* node, scene->root->childNodes())
-            {
-                SpectrumEntity *specEntity = qobject_cast<SpectrumEntity*>(node);
-                if(specEntity)
-                    QObject::disconnect(
-                                specEntity->picker(),
-                                &Qt3DRender::QObjectPicker::pressed,
-                                this,
-                                &GammaAnalyzer3D::onPicked);
-            }
-
-            delete scene;
-        }
+            delete p.second;
 
         scenes.clear();
 
