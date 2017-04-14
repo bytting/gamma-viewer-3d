@@ -212,7 +212,7 @@ void Session::loadDoserateScript(QString scriptFileName)
 
 void Session::clear()
 {
-    for(auto& spec: mSpecList)
+    for(auto& spec : mSpecList)
         delete spec;
 
     mSpecList.clear();

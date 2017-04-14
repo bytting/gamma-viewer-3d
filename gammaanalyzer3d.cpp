@@ -94,7 +94,7 @@ void GammaAnalyzer3D::onOpenSession()
             return;
         }
 
-        Scene *scene = new Scene();
+        Scene *scene = new Scene(QColor(27, 48, 46));
 
         if(QFile::exists(doserateScript))
             scene->session->loadDoserateScript(doserateScript);

@@ -27,7 +27,7 @@ SpectrumEntity::SpectrumEntity(const QVector3D &pos,
       mPicker(new Qt3DRender::QObjectPicker(this)),
       mSpectrum(spec)
 {
-    //mMesh->setRadius(0.8f);
+    mMesh->setRadius(0.8f);
     addComponent(mMesh);
 
     mTransform->setTranslation(pos);
@@ -49,4 +49,9 @@ SpectrumEntity::SpectrumEntity(const QVector3D &pos,
 
 SpectrumEntity::~SpectrumEntity()
 {
+    mSpectrum = nullptr;
+    mPicker->deleteLater();
+    mMaterial->deleteLater();
+    mTransform->deleteLater();
+    mMesh->deleteLater();
 }

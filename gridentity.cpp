@@ -16,18 +16,19 @@
 
 #include "gridentity.h"
 
-GridEntity::GridEntity(unsigned int count,
-                       float interval,
-                       const QColor &color,
-                       Qt3DCore::QEntity *parent)
-    : Qt3DCore::QEntity(parent),
+GridEntity::GridEntity(
+        unsigned int count,
+        float interval,
+        const QColor &color,
+        Qt3DCore::QEntity *parent)
+    :
+      Qt3DCore::QEntity(parent),
       mMesh(new Qt3DRender::QGeometryRenderer(this)),
       mGeometry(new Qt3DRender::QGeometry(this)),
       mDataBuffer(new Qt3DRender::QBuffer(Qt3DRender::QBuffer::VertexBuffer, this)),
       mPositionAttribute(new Qt3DRender::QAttribute(this)),
       mMaterial(new Qt3DExtras::QPhongMaterial(this)),
       mTransform(new Qt3DCore::QTransform(this))
-
 {
     int halfCount = count / 2;
     int numVerts = (halfCount * 4) * 2;
@@ -92,4 +93,10 @@ GridEntity::GridEntity(unsigned int count,
 
 GridEntity::~GridEntity()
 {
+    mTransform->deleteLater();
+    mMaterial->deleteLater();
+    mPositionAttribute->deleteLater();
+    mDataBuffer->deleteLater();
+    mGeometry->deleteLater();
+    mMesh->deleteLater();
 }

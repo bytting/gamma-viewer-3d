@@ -15,16 +15,15 @@
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "scene.h"
-#include <QColor>
 #include <QVector3D>
 #include <Qt3DRender/QCameraLens>
 #include <Qt3DExtras/QForwardRenderer>
 
-Scene::Scene()
+Scene::Scene(const QColor &clearColor)
 {
     session = new Gamma::Session();
     window = new Qt3DExtras::Qt3DWindow;
-    window->defaultFrameGraph()->setClearColor(QColor(27, 48, 46));
+    window->defaultFrameGraph()->setClearColor(clearColor);
 
     camera = window->camera();
     camera->lens()->setPerspectiveProjection(45.0f, 16.0f/9.0f, 0.1f, 10000.0f);
@@ -44,12 +43,21 @@ Scene::Scene()
 
 Scene::~Scene()
 {
-    delete root;
-    root = nullptr;
+    Q_FOREACH(Qt3DCore::QNode* node, root->childNodes())
+    {
+        Qt3DCore::QEntity *entity = qobject_cast<Qt3DCore::QEntity*>(node);
+        entity->components().clear();
+        entity->deleteLater();
+    }
+
+    root->components().clear();
+    root->deleteLater();
+    cameraController->setCamera(nullptr);
+    cameraController->deleteLater();
     camera = nullptr;
+    window->hide();
     window->destroy();
-    delete window;
-    window = nullptr;
+    window->deleteLater();
     delete session;
 }
 

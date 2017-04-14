@@ -18,6 +18,7 @@
 #define SCENE_H
 
 #include "session.h"
+#include <QColor>
 #include <Qt3DExtras/Qt3DWindow>
 #include <Qt3DRender/QCamera>
 #include <Qt3DExtras/QOrbitCameraController>
@@ -25,7 +26,7 @@
 
 struct Scene
 {
-    Scene();
+    Scene(const QColor &clearColor);
     ~Scene();
 
     Gamma::Session *session = nullptr;
