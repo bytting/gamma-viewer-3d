@@ -28,6 +28,7 @@
 
 class GridEntity : public Qt3DCore::QEntity
 {
+    Q_OBJECT
 
 public:
 

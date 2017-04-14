@@ -18,7 +18,6 @@
 #include <QColor>
 #include <QVector3D>
 #include <Qt3DRender/QCameraLens>
-#include <Qt3DExtras/QOrbitCameraController>
 #include <Qt3DExtras/QForwardRenderer>
 
 Scene::Scene()
@@ -34,10 +33,11 @@ Scene::Scene()
     camera->setViewCenter(QVector3D(0, 0, 0));
 
     root = new Qt3DCore::QEntity;
-    Qt3DExtras::QOrbitCameraController *camController = new Qt3DExtras::QOrbitCameraController(root);
-    camController->setLinearSpeed(50.0f);
-    camController->setLookSpeed(180.0f);
-    camController->setCamera(camera);
+
+    cameraController = new Qt3DExtras::QOrbitCameraController(root);
+    cameraController->setLinearSpeed(50.0f);
+    cameraController->setLookSpeed(180.0f);
+    cameraController->setCamera(camera);
 
     window->setRootEntity(root);
 }

@@ -20,6 +20,7 @@
 #include "session.h"
 #include <Qt3DExtras/Qt3DWindow>
 #include <Qt3DRender/QCamera>
+#include <Qt3DExtras/QOrbitCameraController>
 #include <Qt3DCore/QEntity>
 
 struct Scene
@@ -30,6 +31,7 @@ struct Scene
     Gamma::Session *session = nullptr;
     Qt3DExtras::Qt3DWindow *window = nullptr;
     Qt3DRender::QCamera *camera = nullptr;
+    Qt3DExtras::QOrbitCameraController *cameraController = nullptr;
     Qt3DCore::QEntity *root = nullptr;
 };
 

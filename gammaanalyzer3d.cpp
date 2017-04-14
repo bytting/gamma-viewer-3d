@@ -88,6 +88,12 @@ void GammaAnalyzer3D::onOpenSession()
 
         sessionDir = QDir::toNativeSeparators(sessionDir);
 
+        if(scenes.find(sessionDir) != scenes.end())
+        {
+            QMessageBox::information(this, "Information", "Session already loaded");
+            return;
+        }
+
         Scene *scene = new Scene();
 
         if(QFile::exists(doserateScript))
@@ -130,7 +136,7 @@ void GammaAnalyzer3D::onOpenSession()
 
         scene->window->show();
 
-        scenes[scene->session->name()] = scene;
+        scenes[sessionDir] = scene;
     }
     catch(const std::exception& e)
     {
