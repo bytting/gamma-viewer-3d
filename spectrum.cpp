@@ -64,7 +64,7 @@ void Spectrum::loadFile(QString filename)
     auto args = obj.value("arguments").toObject();
 
     mChannels.clear();
-    mTotalCount = 0;
+    //mTotalCount = 0;
 
     if(args.contains("session_name"))
         mSessionName = args.value("session_name").toString();
@@ -72,14 +72,14 @@ void Spectrum::loadFile(QString filename)
     if(args.contains("session_index"))
         mSessionIndex = args.value("session_index").toInt();
 
-    if(args.contains("iterations"))
+    /*if(args.contains("iterations"))
         mSessionIterations = args.value("iterations").toInt();
 
     if(args.contains("preview"))
         mSessionPreview = args.value("preview").toInt();
 
     if(args.contains("delay"))
-        mSessionDelay = args.value("delay").toDouble();
+        mSessionDelay = args.value("delay").toDouble();*/
 
     if(args.contains("realtime"))
         mRealtime = args.value("realtime").toInt();
@@ -90,31 +90,31 @@ void Spectrum::loadFile(QString filename)
     if(args.contains("latitude_start"))
         mLatitudeStart = args.value("latitude_start").toDouble();
 
-    if(args.contains("latitude_start_err"))
+    /*if(args.contains("latitude_start_err"))
         mLatitudeStartErr = args.value("latitude_start_err").toDouble();
 
     if(args.contains("latitude_end"))
         mLatitudeEnd = args.value("latitude_end").toDouble();
 
     if(args.contains("latitude_end_err"))
-        mLatitudeEndErr = args.value("latitude_end_err").toDouble();
+        mLatitudeEndErr = args.value("latitude_end_err").toDouble();*/
 
     if(args.contains("longitude_start"))
         mLongitudeStart = args.value("longitude_start").toDouble();
 
-    if(args.contains("longitude_start_err"))
+    /*if(args.contains("longitude_start_err"))
         mLongitudeStartErr = args.value("longitude_start_err").toDouble();
 
     if(args.contains("longitude_end"))
         mLongitudeEnd = args.value("longitude_end").toDouble();
 
     if(args.contains("longitude_end_err"))
-        mLongitudeEndErr = args.value("longitude_end_err").toDouble();
+        mLongitudeEndErr = args.value("longitude_end_err").toDouble();*/
 
     if(args.contains("altitude_start"))
         mAltitudeStart = args.value("altitude_start").toDouble();
 
-    if(args.contains("altitude_start_err"))
+    /*if(args.contains("altitude_start_err"))
         mAltitudeStartErr = args.value("altitude_start_err").toDouble();
 
     if(args.contains("altitude_end"))
@@ -133,37 +133,37 @@ void Spectrum::loadFile(QString filename)
         mGpsSpeedEnd = args.value("gps_speed_end").toDouble();
 
     if(args.contains("gps_speed_end_err"))
-        mGpsSpeedEndErr = args.value("gps_speed_end_err").toDouble();
+        mGpsSpeedEndErr = args.value("gps_speed_end_err").toDouble();*/
 
     if(args.contains("gps_time_start"))
         mGpsTimeStart = QDateTime::fromString(
                     args.value("gps_time_start").toString(),
                     Qt::DateFormat::ISODate);
 
-    if(args.contains("gps_time_end"))
+    /*if(args.contains("gps_time_end"))
         mGpsTimeEnd = QDateTime::fromString(
                     args.value("gps_time_end").toString(),
-                    Qt::DateFormat::ISODate);
+                    Qt::DateFormat::ISODate);*/
 
     if(args.contains("channels"))
     {
-        QString strChans = args.value("channels").toString();
-        QStringList strChanList = strChans.split(' ',
+        auto strChans = args.value("channels").toString();
+        auto strChanList = strChans.split(' ',
                     QString::SplitBehavior::SkipEmptyParts);
 
-        Q_FOREACH(QString chan, strChanList)
+        for(auto chan : strChanList)
         {
             int count = chan.toInt();
             mChannels.push_back(count);
-            mTotalCount += count;
+            //mTotalCount += count;
         }
     }
 
     Geo::geodeticToCartesianSimplified(mLatitudeStart, mLongitudeStart,
                                        mX1, mY1, mZ1);
 
-    Geo::geodeticToCartesianSimplified(mLatitudeEnd, mLongitudeEnd,
-                                       mX2, mY2, mZ2);
+    /*Geo::geodeticToCartesianSimplified(mLatitudeEnd, mLongitudeEnd,
+                                       mX2, mY2, mZ2);*/
 }
 
 static double GEValue(lua_State* L, double energy)

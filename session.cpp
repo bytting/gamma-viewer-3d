@@ -65,16 +65,16 @@ const SpecList& Session::getSpectrumList() const
 
 void Session::loadPath(QString sessionPath)
 {
-    QDir sessionDir(sessionPath);
+    const QDir sessionDir(sessionPath);
     if(!sessionDir.exists())
         throw DirDoesNotExist(sessionDir.absolutePath());
 
-    QDir spectrumDir(sessionPath + QDir::separator() +
+    const QDir spectrumDir(sessionPath + QDir::separator() +
                      QStringLiteral("json"));
     if (!spectrumDir.exists())
         throw DirIsNotASession(spectrumDir.absolutePath());
 
-    QString sessionFile = sessionPath + QDir::separator() +
+    const auto sessionFile = sessionPath + QDir::separator() +
             QStringLiteral("session.json");
     if(!QFile::exists(sessionFile))
         throw DirIsNotASession(sessionDir.absolutePath());
@@ -97,36 +97,42 @@ void Session::loadPath(QString sessionPath)
             if(mScriptLoaded)
                 spec->calculateDoserate(mDetector, L);
 
-            double minX = std::min(spec->x1(), spec->x2());
+            /*double minX = std::min(spec->x1(), spec->x2());
             double minY = std::min(spec->y1(), spec->y2());
             double minZ = std::min(spec->z1(), spec->z2());
 
             double maxX = std::max(spec->x1(), spec->x2());
             double maxY = std::max(spec->y1(), spec->y2());
-            double maxZ = std::max(spec->z1(), spec->z2());
+            double maxZ = std::max(spec->z1(), spec->z2());*/
 
-            double minAltitude = std::min(
+            /*double minAltitude = std::min(
                         spec->altitudeStart(),
                         spec->altitudeEnd());
             double maxAltitude = std::max(
                         spec->altitudeStart(),
-                        spec->altitudeEnd());
+                        spec->altitudeEnd());*/
 
             if(first)
             {
                 mMinDoserate = spec->doserate();
                 mMaxDoserate = spec->doserate();
 
-                mMinX = minX;
+                /*mMinX = minX;
                 mMinY = minY;
                 mMinZ = minZ;
 
                 mMaxX = maxX;
                 mMaxY = maxY;
-                mMaxZ = maxZ;
+                mMaxZ = maxZ;*/
 
-                mMinAltitude = minAltitude;
-                mMaxAltitude = maxAltitude;
+                mMinX = mMaxX = spec->x1();
+                mMinY = mMaxY = spec->y1();
+                mMinZ = mMaxZ = spec->z1();
+
+                /*mMinAltitude = minAltitude;
+                mMaxAltitude = maxAltitude;*/
+
+                mMinAltitude = mMaxAltitude = spec->altitudeStart();
 
                 first = false;
             }
@@ -137,7 +143,7 @@ void Session::loadPath(QString sessionPath)
                 if(spec->doserate() > mMaxDoserate)
                     mMaxDoserate = spec->doserate();
 
-                if(minX < mMinX)
+                /*if(minX < mMinX)
                     mMinX = minX;
                 if(minY < mMinY)
                     mMinY = minY;
@@ -149,12 +155,31 @@ void Session::loadPath(QString sessionPath)
                 if(maxY > mMaxY)
                     mMaxY = maxY;
                 if(maxZ > mMaxZ)
-                    mMaxZ = maxZ;
+                    mMaxZ = maxZ;*/
 
-                if(minAltitude < mMinAltitude)
+                if(mMinX > spec->x1())
+                    mMinX = spec->x1();
+                if(mMinY > spec->y1())
+                    mMinY = spec->y1();
+                if(mMinZ > spec->z1())
+                    mMinZ = spec->z1();
+
+                if(mMaxX < spec->x1())
+                    mMaxX = spec->x1();
+                if(mMaxY < spec->y1())
+                    mMaxY = spec->y1();
+                if(mMaxZ < spec->z1())
+                    mMaxZ = spec->z1();
+
+                /*if(minAltitude < mMinAltitude)
                     mMinAltitude = minAltitude;
                 if(maxAltitude > mMaxAltitude)
-                    mMaxAltitude = maxAltitude;
+                    mMaxAltitude = maxAltitude;*/
+
+                if(mMinAltitude > spec->altitudeStart())
+                    mMinAltitude = spec->altitudeStart();
+                if(mMaxAltitude < spec->altitudeStart())
+                    mMaxAltitude = spec->altitudeStart();
             }
 
             mSpecList.push_back(spec);
@@ -212,7 +237,7 @@ void Session::loadDoserateScript(QString scriptFileName)
 
 void Session::clear()
 {
-    for(auto& spec : mSpecList)
+    for(auto spec : mSpecList)
         delete spec;
 
     mSpecList.clear();

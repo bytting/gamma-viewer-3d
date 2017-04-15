@@ -43,34 +43,34 @@ public:
     explicit Spectrum(QString filename);
     virtual ~Spectrum() {}
 
-    bool isPreview() const { return mSessionPreview > 0; }
+    //bool isPreview() const { return mSessionPreview > 0; }
 
     QString sessionName() const { return mSessionName; }
     int sessionIndex() const { return mSessionIndex; }
-    int sessionIterations() const { return mSessionIterations; }
-    double sessionDelay() const { return mSessionDelay; }
+    //int sessionIterations() const { return mSessionIterations; }
+    //double sessionDelay() const { return mSessionDelay; }
 
     double latitudeStart() const { return mLatitudeStart; }
-    double latitudeStartErr() const { return mLatitudeStartErr; }
-    double latitudeEnd() const { return mLatitudeEnd; }
-    double latitudeEndErr() const { return mLatitudeEndErr; }
+    //double latitudeStartErr() const { return mLatitudeStartErr; }
+    //double latitudeEnd() const { return mLatitudeEnd; }
+    //double latitudeEndErr() const { return mLatitudeEndErr; }
     double longitudeStart() const { return mLongitudeStart; }
-    double longitudeStartErr() const { return mLongitudeStartErr; }
-    double longitudeEnd() const { return mLongitudeEnd; }
-    double longitudeEndErr() const { return mLongitudeEndErr; }
+    //double longitudeStartErr() const { return mLongitudeStartErr; }
+    //double longitudeEnd() const { return mLongitudeEnd; }
+    //double longitudeEndErr() const { return mLongitudeEndErr; }
     double altitudeStart() const { return mAltitudeStart; }
-    double altitudeStartErr() const { return mAltitudeStartErr; }
-    double altitudeEnd() const { return mAltitudeEnd; }
-    double altitudeEndErr() const { return mAltitudeEndErr; }
-    double gpsSpeedStart() const { return mGpsSpeedStart; }
-    double gpsSpeedStartErr() const { return mGpsSpeedStartErr; }
-    double gpsSpeedEnd() const { return mGpsSpeedEnd; }
-    double gpsSpeedEndErr() const { return mGpsSpeedEndErr; }
+    //double altitudeStartErr() const { return mAltitudeStartErr; }
+    //double altitudeEnd() const { return mAltitudeEnd; }
+    //double altitudeEndErr() const { return mAltitudeEndErr; }
+    //double gpsSpeedStart() const { return mGpsSpeedStart; }
+    //double gpsSpeedStartErr() const { return mGpsSpeedStartErr; }
+    //double gpsSpeedEnd() const { return mGpsSpeedEnd; }
+    //double gpsSpeedEndErr() const { return mGpsSpeedEndErr; }
     QDateTime gpsTimeStart() const { return mGpsTimeStart; }
-    QDateTime gpsTimeEnd() const { return mGpsTimeEnd; }
+    //QDateTime gpsTimeEnd() const { return mGpsTimeEnd; }
     int realtime() const { return mRealtime; }
     int livetime() const { return mLivetime; }
-    int totalCount() const { return mTotalCount; }
+    //int totalCount() const { return mTotalCount; }
 
     ChanListSize numChannels() const { return mChannels.size(); }
     const ChanList& channels() const { return mChannels; }
@@ -80,11 +80,11 @@ public:
     double doserate() const { return mDoserate; }
 
     double x1() const { return mX1; }
-    double x2() const { return mX2; }
+    //double x2() const { return mX2; }
     double y1() const { return mY1; }
-    double y2() const { return mY2; }
+    //double y2() const { return mY2; }
     double z1() const { return mZ1; }
-    double z2() const { return mZ2; }
+    //double z2() const { return mZ2; }
 
     struct InvalidSpectrumFile : public GammanException
     {
@@ -97,20 +97,35 @@ private:
     void loadFile(QString filename);
 
     QString mSessionName;
-    int mSessionIndex, mSessionIterations, mSessionPreview;
-    double mSessionDelay, mLatitudeStart, mLatitudeStartErr;
-    double mLatitudeEnd, mLatitudeEndErr;
-    double mLongitudeStart, mLongitudeStartErr;
-    double mLongitudeEnd, mLongitudeEndErr;
-    double mAltitudeStart, mAltitudeStartErr;
-    double mAltitudeEnd, mAltitudeEndErr;
-    double mGpsSpeedStart, mGpsSpeedStartErr;
-    double mGpsSpeedEnd, mGpsSpeedEndErr;
-    QDateTime mGpsTimeStart, mGpsTimeEnd;
-    int mRealtime, mLivetime, mTotalCount;
+    int mSessionIndex;
+    //int mSessionIterations;
+    //int mSessionPreview;
+    //double mSessionDelay;
+    double mLatitudeStart;
+    //double mLatitudeStartErr;
+    //double mLatitudeEnd;
+    //double mLatitudeEndErr;
+    double mLongitudeStart;
+    //double mLongitudeStartErr;
+    //double mLongitudeEnd;
+    //double mLongitudeEndErr;
+    double mAltitudeStart;
+    //double mAltitudeStartErr;
+    //double mAltitudeEnd;
+    //double mAltitudeEndErr;
+    //double mGpsSpeedStart;
+    //double mGpsSpeedStartErr;
+    //double mGpsSpeedEnd;
+    //double mGpsSpeedEndErr;
+    QDateTime mGpsTimeStart;
+    //QDateTime mGpsTimeEnd;
+    int mRealtime;
+    int mLivetime;
+    //int mTotalCount;
     ChanList mChannels;
     double mDoserate = 0.0;
-    double mX1, mX2, mY1, mY2, mZ1, mZ2;
+    double mX1, mY1, mZ1;
+    //double mX2, mY2, mZ2;
 };
 
 } // namespace Gamma

@@ -43,9 +43,9 @@ Scene::Scene(const QColor &clearColor)
 
 Scene::~Scene()
 {
-    Q_FOREACH(Qt3DCore::QNode* node, root->childNodes())
+    for(auto node : root->childNodes())
     {
-        Qt3DCore::QEntity *entity = qobject_cast<Qt3DCore::QEntity*>(node);
+        auto entity = qobject_cast<Qt3DCore::QEntity*>(node);
         if(entity)
         {
             entity->components().clear();

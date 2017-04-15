@@ -87,7 +87,7 @@ void GammaAnalyzer3D::onOpenSession()
 {
     try
     {
-        QString sessionDir = QFileDialog::getExistingDirectory(
+        auto sessionDir = QFileDialog::getExistingDirectory(
                     this,
                     tr("Open session directory"),
                     QDir::homePath(),
@@ -104,7 +104,7 @@ void GammaAnalyzer3D::onOpenSession()
             return;
         }
 
-        Scene *scene = new Scene(QColor(27, 48, 46));
+        auto *scene = new Scene(QColor(27, 48, 46));
 
         if(QFile::exists(doserateScript))
             scene->session->loadDoserateScript(doserateScript);
@@ -117,8 +117,8 @@ void GammaAnalyzer3D::onOpenSession()
                     scene->session->minDoserate(),
                     scene->session->maxDoserate());
 
-        double halfX = (scene->session->maxX() - scene->session->minX()) / 2.0;
-        double halfY = (scene->session->maxY() - scene->session->minY()) / 2.0;
+        auto halfX = (scene->session->maxX() - scene->session->minX()) / 2.0;
+        auto halfY = (scene->session->maxY() - scene->session->minY()) / 2.0;
 
         for(auto spec : scene->session->getSpectrumList())
         {
@@ -127,7 +127,7 @@ void GammaAnalyzer3D::onOpenSession()
                         spec->altitudeStart() - scene->session->minAltitude(),
                         (spec->y1() - scene->session->minY() - halfY) * -15000.0);
 
-            SpectrumEntity *entity = new SpectrumEntity(
+            auto *entity = new SpectrumEntity(
                         position,
                         colorSpectrum(spec->doserate()),
                         spec,
@@ -180,20 +180,35 @@ void GammaAnalyzer3D::onPicked(Qt3DRender::QPickEvent *evt)
         if(evt->button() != Qt3DRender::QPickEvent::LeftButton)
             return;
 
-        SpectrumEntity *entity = qobject_cast<SpectrumEntity*>(sender()->parent());
+        auto entity = qobject_cast<SpectrumEntity*>(sender()->parent());
         if(!entity)
             return;
 
-        Gamma::Spectrum *spec = entity->spectrum();
+        auto spec = entity->spectrum();
 
         ui->lblSpectrum->setText(
-                    "Selected spectrum: " + spec->sessionName() + " " +
+                    QStringLiteral("Selected spectrum: ") +
+                    spec->sessionName() + " " +
                     QString::number(spec->sessionIndex()));
-        ui->lblLatitude->setText("Latitude: " + QString::number(spec->latitudeStart()));
-        ui->lblLongitude->setText("Longitude: " + QString::number(spec->longitudeStart()));
-        ui->lblAltitude->setText("Altitude: " + QString::number(spec->altitudeStart()));
-        ui->lblRealtime->setText("Real time: " + QString::number(spec->realtime()));
-        ui->lblDoserate->setText("Doserate: " + QString::number(spec->doserate()));
+        ui->lblLatitude->setText(
+                    QStringLiteral("Latitude: ") +
+                    QString::number(spec->latitudeStart()));
+        ui->lblLongitude->setText(
+                    QStringLiteral("Longitude: ") +
+                    QString::number(spec->longitudeStart()));
+        ui->lblAltitude->setText(
+                    QStringLiteral("Altitude: ") +
+                    QString::number(spec->altitudeStart()));
+        ui->lblRealtime->setText(
+                    QStringLiteral("Real time: ") +
+                    QString::number(spec->realtime()));
+        ui->lblDoserate->setText(
+                    QStringLiteral("Doserate: ") +
+                    QString::number(spec->doserate()));
+        ui->lblDate->setText(
+                    QStringLiteral("Date: ") +
+                    spec->gpsTimeStart().toLocalTime().
+                    toString("yyyy-MM-dd hh:mm:ss"));
     }
     catch(const std::exception& e)
     {

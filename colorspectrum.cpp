@@ -43,8 +43,8 @@ QColor ColorSpectrum::operator() (double value)
         return QColor(0, 255, 0);
 
     QColor color;
-    double minVal = mMinValue;
-    double maxVal = mMaxValue;
+    auto minVal = mMinValue;
+    auto maxVal = mMaxValue;
 
     if(mUseLogarithmicScale)
     {
@@ -53,7 +53,7 @@ QColor ColorSpectrum::operator() (double value)
         value = std::log(value);
     }
 
-    double f = (value - minVal) / (maxVal - minVal);
+    auto f = (value - minVal) / (maxVal - minVal);
 
     auto a = (1.0 - f) / 0.25;	// invert and group
     auto X = std::floor(a);	// the integer part
