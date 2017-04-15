@@ -20,23 +20,26 @@
 #include "gridentity.h"
 #include "spectrumentity.h"
 #include "scene.h"
+#include <QDebug>
+#include <QMessageBox>
 #include <QDir>
 #include <QFileDialog>
 #include <QAction>
 #include <QLabel>
-#include <QMessageBox>
-#include <QDebug>
 #include <QColor>
 #include <QVector3D>
 #include <Qt3DCore/QEntity>
 #include <Qt3DRender/QCamera>
 #include <Qt3DRender/QObjectPicker>
 
-GammaAnalyzer3D::GammaAnalyzer3D(QWidget *parent) :
-    QMainWindow(parent),
-    ui(new Ui::GammaAnalyzer3D)
+GammaAnalyzer3D::GammaAnalyzer3D(QWidget *parent)
+    :
+      QMainWindow(parent),
+      ui(new Ui::GammaAnalyzer3D)
 {
     ui->setupUi(this);
+    //setAttribute(Qt::WA_QuitOnClose);
+    setAttribute(Qt::WA_DeleteOnClose);
     setupSignals();
 }
 
@@ -51,7 +54,7 @@ void GammaAnalyzer3D::setupSignals()
                 ui->actionExit,
                 &QAction::triggered,
                 this,
-                &GammaAnalyzer3D::onApplicationExit);
+                &GammaAnalyzer3D::onActionExit);
 
     QObject::connect(
                 ui->actionLoadDoserateScript,
@@ -66,7 +69,13 @@ void GammaAnalyzer3D::setupSignals()
                 &GammaAnalyzer3D::onOpenSession);
 }
 
-void GammaAnalyzer3D::onApplicationExit()
+void GammaAnalyzer3D::closeEvent(QCloseEvent *event)
+{
+    event->ignore();
+    onActionExit();
+}
+
+void GammaAnalyzer3D::onActionExit()
 {
     try
     {
@@ -137,7 +146,7 @@ void GammaAnalyzer3D::onOpenSession()
                         entity->picker(),
                         &Qt3DRender::QObjectPicker::pressed,
                         this,
-                        &GammaAnalyzer3D::onPicked);
+                        &GammaAnalyzer3D::onSpectrumPicked);
         }
 
         scene->camera->setUpVector(QVector3D(0.0, 1.0, 0.0));
@@ -165,7 +174,10 @@ void GammaAnalyzer3D::onLoadDoserateScript()
                     tr("Lua script (*.lua)"));
 
         doserateScript = QDir::toNativeSeparators(scriptFileName);
-        ui->lblDoserateScript->setText("Loaded doserate script: " + doserateScript);
+
+        ui->lblDoserateScript->setText(
+                    QStringLiteral("Loaded doserate script: ")
+                    + doserateScript);
     }
     catch(const std::exception& e)
     {
@@ -173,7 +185,7 @@ void GammaAnalyzer3D::onLoadDoserateScript()
     }
 }
 
-void GammaAnalyzer3D::onPicked(Qt3DRender::QPickEvent *evt)
+void GammaAnalyzer3D::onSpectrumPicked(Qt3DRender::QPickEvent *evt)
 {
     try
     {

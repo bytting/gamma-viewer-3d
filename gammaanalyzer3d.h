@@ -19,6 +19,7 @@
 
 #include <QMainWindow>
 #include <QString>
+#include <QCloseEvent>
 #include <Qt3DRender/QPickEvent>
 #include <map>
 #include "exceptions.h"
@@ -37,6 +38,10 @@ public:
     explicit GammaAnalyzer3D(QWidget *parent = 0);
     ~GammaAnalyzer3D();
 
+protected:
+
+    virtual void closeEvent(QCloseEvent *event);
+
 private:
 
     Ui::GammaAnalyzer3D *ui;
@@ -47,10 +52,10 @@ private:
 
 private slots:
 
-    void onApplicationExit();
+    void onActionExit();
     void onOpenSession();
     void onLoadDoserateScript();
-    void onPicked(Qt3DRender::QPickEvent *evt);
+    void onSpectrumPicked(Qt3DRender::QPickEvent *evt);
 };
 
 #endif // GAMMAANALYZER3D_H
