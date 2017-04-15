@@ -38,7 +38,6 @@ GammaAnalyzer3D::GammaAnalyzer3D(QWidget *parent)
       ui(new Ui::GammaAnalyzer3D)
 {
     ui->setupUi(this);
-    //setAttribute(Qt::WA_QuitOnClose);
     setAttribute(Qt::WA_DeleteOnClose);
     setupSignals();
 }
@@ -46,6 +45,12 @@ GammaAnalyzer3D::GammaAnalyzer3D(QWidget *parent)
 GammaAnalyzer3D::~GammaAnalyzer3D()
 {
     delete ui;
+}
+
+void GammaAnalyzer3D::closeEvent(QCloseEvent *event)
+{
+    event->ignore();
+    onActionExit();
 }
 
 void GammaAnalyzer3D::setupSignals()
@@ -69,12 +74,6 @@ void GammaAnalyzer3D::setupSignals()
                 &GammaAnalyzer3D::onOpenSession);
 }
 
-void GammaAnalyzer3D::closeEvent(QCloseEvent *event)
-{
-    event->ignore();
-    onActionExit();
-}
-
 void GammaAnalyzer3D::onActionExit()
 {
     try
@@ -86,7 +85,7 @@ void GammaAnalyzer3D::onActionExit()
 
         QApplication::exit();
     }
-    catch(const std::exception& e)
+    catch(const std::exception &e)
     {
         qDebug() << e.what();
     }
@@ -109,7 +108,13 @@ void GammaAnalyzer3D::onOpenSession()
         auto it = scenes.find(sessionDir);
         if(it != scenes.end())
         {
-            it->second->window->show();
+            auto *scene = it->second;
+            scene->camera->setUpVector(QVector3D(0.0, 1.0, 0.0));
+            scene->camera->setPosition(QVector3D(0, 20, 100.0f));
+            scene->camera->setViewCenter(QVector3D(0, 0, 0));
+            scene->window->show();
+            scene->window->raise();
+            scene->window->requestActivate();
             return;
         }
 
@@ -157,7 +162,11 @@ void GammaAnalyzer3D::onOpenSession()
 
         scenes[sessionDir] = scene;
     }
-    catch(const std::exception& e)
+    catch(GammanException &e)
+    {
+        QMessageBox::warning(this, "Warning", e.what());
+    }
+    catch(const std::exception &e)
     {
         qDebug() << e.what();
     }
@@ -179,7 +188,7 @@ void GammaAnalyzer3D::onLoadDoserateScript()
                     QStringLiteral("Loaded doserate script: ")
                     + doserateScript);
     }
-    catch(const std::exception& e)
+    catch(const std::exception &e)
     {
         qDebug() << e.what();
     }
@@ -194,13 +203,18 @@ void GammaAnalyzer3D::onSpectrumPicked(Qt3DRender::QPickEvent *evt)
 
         auto entity = qobject_cast<SpectrumEntity*>(sender()->parent());
         if(!entity)
+        {
+            qDebug() << "GammaAnalyzer3D::onSpectrumPicked: qobject_cast failed";
             return;
+        }
 
         auto spec = entity->spectrum();
 
+        ui->lblSession->setText(
+                    QStringLiteral("Session: ") +
+                    spec->sessionName());
         ui->lblSpectrum->setText(
-                    QStringLiteral("Selected spectrum: ") +
-                    spec->sessionName() + " " +
+                    QStringLiteral("Spectrum: ") +
                     QString::number(spec->sessionIndex()));
         ui->lblLatitude->setText(
                     QStringLiteral("Latitude: ") +
@@ -213,7 +227,10 @@ void GammaAnalyzer3D::onSpectrumPicked(Qt3DRender::QPickEvent *evt)
                     QString::number(spec->altitudeStart()));
         ui->lblRealtime->setText(
                     QStringLiteral("Real time: ") +
-                    QString::number(spec->realtime()));
+                    QString::number(spec->realtime() / 1000000.0));
+        ui->lblLivetime->setText(
+                    QStringLiteral("Live time: ") +
+                    QString::number(spec->livetime() / 1000000.0));
         ui->lblDoserate->setText(
                     QStringLiteral("Doserate: ") +
                     QString::number(spec->doserate()));
@@ -222,7 +239,7 @@ void GammaAnalyzer3D::onSpectrumPicked(Qt3DRender::QPickEvent *evt)
                     spec->gpsTimeStart().toLocalTime().
                     toString("yyyy-MM-dd hh:mm:ss"));
     }
-    catch(const std::exception& e)
+    catch(const std::exception &e)
     {
         qDebug() << e.what();
     }

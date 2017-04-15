@@ -37,7 +37,7 @@ void ColorSpectrum::setMinMaxValues(double minValue, double maxValue)
     mMaxValue = maxValue;
 }
 
-QColor ColorSpectrum::operator() (double value)
+QColor ColorSpectrum::operator() (double value) const
 {
     if(value == 0.0)
         return QColor(0, 255, 0);
@@ -81,7 +81,7 @@ QColor ColorSpectrum::operator() (double value)
     return color;
 }
 
-QColor ColorSpectrum::colorFromValue(double value)
+QColor ColorSpectrum::colorFromValue(double value) const
 {
     return operator()(value);
 }

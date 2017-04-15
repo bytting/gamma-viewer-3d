@@ -27,9 +27,16 @@
      </widget>
     </item>
     <item>
+     <widget class="QLabel" name="lblSession">
+      <property name="text">
+       <string>Session:</string>
+      </property>
+     </widget>
+    </item>
+    <item>
      <widget class="QLabel" name="lblSpectrum">
       <property name="text">
-       <string>Selected spectrum:</string>
+       <string>Spectrum:</string>
       </property>
      </widget>
     </item>
@@ -58,6 +65,13 @@
      <widget class="QLabel" name="lblRealtime">
       <property name="text">
        <string>Real time:</string>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <widget class="QLabel" name="lblLivetime">
+      <property name="text">
+       <string>Livetime:</string>
       </property>
      </widget>
     </item>

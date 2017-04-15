@@ -58,7 +58,7 @@ Scene::~Scene()
     cameraController->setCamera(nullptr);
     cameraController->deleteLater();
     camera = nullptr;
-    window->hide();
+    window->disconnect();
     window->destroy();
     window->deleteLater();
     delete session;
