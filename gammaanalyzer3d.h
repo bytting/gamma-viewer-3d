@@ -25,6 +25,7 @@
 #include <map>
 #include "exceptions.h"
 #include "scene.h"
+#include "spectrumentity.h"
 
 namespace Ui {
 class GammaAnalyzer3D;
@@ -52,6 +53,9 @@ private:
 
     void setupWidgets();
     void setupSignals();
+
+    void handleSelectSpectrum(Scene *scene, SpectrumEntity *entity);
+    void handleCalculateDistance(Scene *scene, SpectrumEntity *entity);
 
 private slots:
 

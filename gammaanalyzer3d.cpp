@@ -18,7 +18,6 @@
 #include "ui_gammaanalyzer3d.h"
 #include "colorspectrum.h"
 #include "gridentity.h"
-#include "spectrumentity.h"
 #include "scene.h"
 #include <QDebug>
 #include <QMessageBox>
@@ -31,6 +30,7 @@
 #include <Qt3DCore/QEntity>
 #include <Qt3DRender/QCamera>
 #include <Qt3DRender/QObjectPicker>
+#include <algorithm>
 
 GammaAnalyzer3D::GammaAnalyzer3D(QWidget *parent)
     :
@@ -206,52 +206,89 @@ void GammaAnalyzer3D::onSpectrumPicked(Qt3DRender::QPickEvent *evt)
 {
     try
     {
-        if(evt->button() != Qt3DRender::QPickEvent::LeftButton)
-            return;
-
+        // Store the selected spectrum entity
         auto entity = qobject_cast<SpectrumEntity*>(sender()->parent());
         if(!entity)
         {
-            qDebug() << "GammaAnalyzer3D::onSpectrumPicked: qobject_cast failed";
+            qDebug() << "GammaAnalyzer3D::onSpectrumPicked: casting to SpectrumEntity failed";
             return;
         }
 
-        for(auto p : scenes)
+        auto it = std::find_if(scenes.begin(), scenes.end(), [&](auto &p){
+            return p.second->root == entity->parent();
+        });
+
+        if(it == scenes.end())
         {
-            Scene *scene = p.second;
-            if(scene->root == entity->parent())
-            {
-                QVector3D selPos(entity->transform()->translation());
-                selPos.setY(selPos.y() + 1.8);
-                scene->selection->transform()->setTranslation(selPos);
-                scene->selection->setEnabled(true);
-            }
-            else scene->selection->setEnabled(false);
+            qDebug() << "GammaAnalyzer3D::onSpectrumPicked: Scene not found";
+            return;
         }
 
-        auto spec = entity->spectrum();
-
-        ui->lblSessionSpectrum->setText(
-                    QStringLiteral("Session / Spectrum: ") +
-                    spec->sessionName() + " / " +
-                    QString::number(spec->sessionIndex()));
-        ui->lblCoordinates->setText(
-                    QStringLiteral("Coordinates: ") +
-                    spec->coordinates.toString(QGeoCoordinate::Degrees));
-        ui->lblLivetimeRealtime->setText(
-                    QStringLiteral("Livetime / Realtime: ") +
-                    QString::number(spec->livetime() / 1000000.0) + "s / " +
-                    QString::number(spec->realtime() / 1000000.0) + "s");
-        ui->lblDoserate->setText(
-                    QStringLiteral("Doserate: ") +
-                    QString::number(spec->doserate(), 'E') + " μSv");
-        ui->lblDate->setText(
-                    QStringLiteral("Date: ") +
-                    spec->gpsTimeStart().toLocalTime().
-                    toString("yyyy-MM-dd hh:mm:ss"));
+        if(evt->button() == Qt3DRender::QPickEvent::LeftButton)
+            handleSelectSpectrum(it->second, entity);
+        else if(evt->button() == Qt3DRender::QPickEvent::RightButton)
+            handleCalculateDistance(it->second, entity);
     }
     catch(const std::exception &e)
     {
         qDebug() << e.what();
+    }
+}
+
+void GammaAnalyzer3D::handleSelectSpectrum(Scene *scene, SpectrumEntity *entity)
+{
+    // Disable selection arrow for all scenes
+    for(auto p : scenes)
+        p.second->selection->setEnabled(false);
+
+    // Position and enable current selection arrow
+    QVector3D pos(entity->transform()->translation());
+    pos.setY(pos.y() + 1.8);
+    scene->selection->transform()->setTranslation(pos);
+    scene->selection->setEnabled(true);
+    scene->selectedTarget = entity;
+
+    // Populate UI fields with information about selected spectrum
+    auto spec = entity->spectrum();
+
+    ui->lblSessionSpectrum->setText(
+                QStringLiteral("Session / Spectrum: ") +
+                spec->sessionName() + " / " +
+                QString::number(spec->sessionIndex()));
+    ui->lblCoordinates->setText(
+                QStringLiteral("Coordinates: ") +
+                spec->coordinates.toString(QGeoCoordinate::Degrees));
+    ui->lblLivetimeRealtime->setText(
+                QStringLiteral("Livetime / Realtime: ") +
+                QString::number(spec->livetime() / 1000000.0) +
+                QStringLiteral("s / ") +
+                QString::number(spec->realtime() / 1000000.0) +
+                QStringLiteral("s"));
+    ui->lblDoserate->setText(
+                QStringLiteral("Doserate: ") +
+                QString::number(spec->doserate(), 'E') +
+                QStringLiteral(" μSv"));
+    ui->lblDate->setText(
+                QStringLiteral("Date: ") +
+                spec->gpsTimeStart().toLocalTime().
+                toString("yyyy-MM-dd hh:mm:ss"));
+}
+
+void GammaAnalyzer3D::handleCalculateDistance(Scene *scene, SpectrumEntity *entity)
+{
+    if(scene->selectedTarget)
+    {
+        auto sourceEntity = qobject_cast<SpectrumEntity*>(scene->selectedTarget);
+        double distance = sourceEntity->spectrum()->coordinates.
+                distanceTo(entity->spectrum()->coordinates);
+
+        ui->lblDistance->setText(
+                    QStringLiteral("Distance between spectrum ") +
+                    QString::number(sourceEntity->spectrum()->sessionIndex()) +
+                    QStringLiteral(" and ") +
+                    QString::number(entity->spectrum()->sessionIndex()) +
+                    QStringLiteral(" is ") +
+                    QString::number(distance, 'f', 2) +
+                    QStringLiteral("m"));
     }
 }

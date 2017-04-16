@@ -36,6 +36,7 @@ struct Scene
     Qt3DExtras::QOrbitCameraController *cameraController = nullptr;
     Qt3DCore::QEntity *root = nullptr;
     SelectionEntity *selection = nullptr;
+    Qt3DCore::QEntity *selectedTarget;
 };
 
 #endif // SCENE_H

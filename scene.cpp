@@ -25,7 +25,8 @@ Scene::Scene(const QColor &clearColor)
       session(new Gamma::Session()),
       window(new Qt3DExtras::Qt3DWindow),
       root(new Qt3DCore::QEntity),
-      selection(new SelectionEntity(QVector3D(0.0, 0.0, 0.0), QColor(255, 255, 255), root))
+      selection(new SelectionEntity(QVector3D(0.0, 0.0, 0.0), QColor(255, 0, 255), root)),
+      selectedTarget(0)
 {
     window->defaultFrameGraph()->setClearColor(clearColor);
 
