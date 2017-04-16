@@ -28,23 +28,23 @@ DetectorType::DetectorType(const QJsonObject &obj)
 void DetectorType::loadJson(const QJsonObject &obj)
 {
     if(!obj.contains("Name"))
-        throw MissingJsonValue("DetectorType:Name");
+        throw GA::MissingJsonValue("DetectorType:Name");
     mName = obj.value("Name").toString();
 
     if(!obj.contains("MaxNumChannels"))
-        throw MissingJsonValue("DetectorType:MaxNumChannels");
+        throw GA::MissingJsonValue("DetectorType:MaxNumChannels");
     mMaxNumChannels = obj.value("MaxNumChannels").toInt();
 
     if(!obj.contains("MinHV"))
-        throw MissingJsonValue("DetectorType:MinHV");
+        throw GA::MissingJsonValue("DetectorType:MinHV");
     mMinHV = obj.value("MinHV").toInt();
 
     if(!obj.contains("MaxHV"))
-        throw MissingJsonValue("DetectorType:MaxHV");
+        throw GA::MissingJsonValue("DetectorType:MaxHV");
     mMaxHV = obj.value("MaxHV").toInt();
 
     if(!obj.contains("GEScript"))
-        throw MissingJsonValue("DetectorType:GEScript");
+        throw GA::MissingJsonValue("DetectorType:GEScript");
     mGEScript = obj.value("GEScript").toString();
 }
 

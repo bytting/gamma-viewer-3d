@@ -50,8 +50,8 @@ private:
     std::map<QString, Scene*> scenes;
     QString doserateScript;
 
-    void setupSignals();
     void setupWidgets();
+    void setupSignals();
 
 private slots:
 

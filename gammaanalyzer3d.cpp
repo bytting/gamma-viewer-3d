@@ -39,8 +39,8 @@ GammaAnalyzer3D::GammaAnalyzer3D(QWidget *parent)
 {
     ui->setupUi(this);
     setAttribute(Qt::WA_DeleteOnClose);
-    setupSignals();
     setupWidgets();
+    setupSignals();
 }
 
 GammaAnalyzer3D::~GammaAnalyzer3D()
@@ -52,6 +52,12 @@ void GammaAnalyzer3D::closeEvent(QCloseEvent *event)
 {
     event->ignore();
     onActionExit();
+}
+
+void GammaAnalyzer3D::setupWidgets()
+{
+    labelStatus = new QLabel(statusBar());
+    statusBar()->addWidget(labelStatus);
 }
 
 void GammaAnalyzer3D::setupSignals()
@@ -73,12 +79,6 @@ void GammaAnalyzer3D::setupSignals()
                 &QAction::triggered,
                 this,
                 &GammaAnalyzer3D::onOpenSession);
-}
-
-void GammaAnalyzer3D::setupWidgets()
-{
-    labelStatus = new QLabel(statusBar());
-    statusBar()->addWidget(labelStatus);
 }
 
 void GammaAnalyzer3D::onActionExit()
@@ -170,7 +170,7 @@ void GammaAnalyzer3D::onOpenSession()
         scenes[sessionDir] = scene;
         labelStatus->setText("Session " + sessionDir + " loaded");
     }
-    catch(GammanException &e)
+    catch(GA::Exception &e)
     {
         QMessageBox::warning(this, "Warning", e.what());
     }

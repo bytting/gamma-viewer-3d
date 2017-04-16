@@ -53,7 +53,7 @@ Session::~Session()
 const Spectrum* Session::getSpectrum(SpecListSize index) const
 {
     if(index >= mSpecList.size())
-        throw IndexOutOfBounds("Session::getSpectrum");
+        throw GA::IndexOutOfBounds("Session::getSpectrum");
 
     return mSpecList[index];
 }
@@ -67,7 +67,7 @@ void Session::loadPath(QString sessionPath)
 {
     const QDir sessionDir(sessionPath);
     if(!sessionDir.exists())
-        throw DirDoesNotExist(sessionDir.absolutePath());
+        throw GA::DirDoesNotExist(sessionDir.absolutePath());
 
     const QDir spectrumDir(sessionPath + QDir::separator() +
                      QStringLiteral("json"));
@@ -184,7 +184,7 @@ void Session::loadPath(QString sessionPath)
 
             mSpecList.push_back(spec);
         }
-        catch(const GammanException& e)
+        catch(const GA::Exception& e)
         {
             qDebug() << e.what();
         }
@@ -195,7 +195,7 @@ void Session::loadSessionFile(QString sessionFile)
 {
     QFile jsonFile(sessionFile);
     if(!jsonFile.open(QFile::ReadOnly))
-        throw UnableToLoadFile(sessionFile);
+        throw GA::UnableToLoadFile(sessionFile);
 
     auto doc = QJsonDocument().fromJson(jsonFile.readAll());
     if(!doc.isObject())
@@ -204,27 +204,27 @@ void Session::loadSessionFile(QString sessionFile)
     auto root = doc.object();
 
     if(!root.contains("Name"))
-        throw MissingJsonValue("Session:Name");
+        throw GA::MissingJsonValue("Session:Name");
     mName = root.value("Name").toString();
 
     if(!root.contains("Comment"))
-        throw MissingJsonValue("Session:Comment");
+        throw GA::MissingJsonValue("Session:Comment");
     mComment = root.value("Comment").toString();
 
     if(!root.contains("Livetime"))
-        throw MissingJsonValue("Session:Livetime");
+        throw GA::MissingJsonValue("Session:Livetime");
     mLivetime = root.value("Livetime").toInt();
 
     if(!root.contains("Iterations"))
-        throw MissingJsonValue("Session:Iterations");
+        throw GA::MissingJsonValue("Session:Iterations");
     mIterations = root.value("Iterations").toInt();
 
     if(!root.contains("DetectorType"))
-        throw MissingJsonValue("Session:DetectorType");
+        throw GA::MissingJsonValue("Session:DetectorType");
     mDetectorType.loadJson(root.value("DetectorType").toObject());
 
     if(!root.contains("Detector"))
-        throw MissingJsonValue("Session:Detector");
+        throw GA::MissingJsonValue("Session:Detector");
     mDetector.loadJson(root.value("Detector").toObject());
 }
 

@@ -20,46 +20,51 @@
 #include <stdexcept>
 #include <QString>
 
-struct GammanException : public std::runtime_error
+namespace GA
 {
-    explicit GammanException(QString arg) noexcept
+
+struct Exception : public std::runtime_error
+{
+    explicit Exception(QString arg) noexcept
         : std::runtime_error(arg.toStdString()) {}
 };
 
-struct IndexOutOfBounds : public GammanException
+struct IndexOutOfBounds : public Exception
 {
     explicit IndexOutOfBounds(QString source) noexcept
-        : GammanException("Index out of bounds: " + source) {}
+        : Exception("Index out of bounds: " + source) {}
 };
 
-struct NumericRangeError : public GammanException
+struct NumericRangeError : public Exception
 {
     explicit NumericRangeError(QString source) noexcept
-        : GammanException("Numeric range error: " + source) {}
+        : Exception("Numeric range error: " + source) {}
 };
 
-struct DirDoesNotExist : public GammanException
+struct DirDoesNotExist : public Exception
 {
     explicit DirDoesNotExist(QString dir) noexcept
-        : GammanException("Directory does not exist: " + dir) {}
+        : Exception("Directory does not exist: " + dir) {}
 };
 
-struct FileDoesNotExist : public GammanException
+struct FileDoesNotExist : public Exception
 {
     explicit FileDoesNotExist(QString filename) noexcept
-        : GammanException("File does not exist: " + filename) {}
+        : Exception("File does not exist: " + filename) {}
 };
 
-struct UnableToLoadFile : public GammanException
+struct UnableToLoadFile : public Exception
 {
     explicit UnableToLoadFile(QString filename) noexcept
-        : GammanException("Unable to load file: " + filename) {}
+        : Exception("Unable to load file: " + filename) {}
 };
 
-struct MissingJsonValue : public GammanException
+struct MissingJsonValue : public Exception
 {
     explicit MissingJsonValue(QString source) noexcept
-        : GammanException("Missing JSON value: " + source) {}
+        : Exception("Missing JSON value: " + source) {}
 };
+
+} // namespace GA
 
 #endif // EXCEPTIONS_H

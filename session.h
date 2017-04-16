@@ -72,22 +72,22 @@ public:
     double minAltitude() const { return mMinAltitude; }
     double maxAltitude() const { return mMaxAltitude; }
 
-    struct DirIsNotASession : public GammanException
+    struct DirIsNotASession : public GA::Exception
     {
         explicit DirIsNotASession(QString dir) noexcept
-            : GammanException("Directory is not a valid session: " + dir) {}
+            : GA::Exception("Directory is not a valid session: " + dir) {}
     };
 
-    struct InvalidSessionFile : public GammanException
+    struct InvalidSessionFile : public GA::Exception
     {
         explicit InvalidSessionFile(QString filename) noexcept
-            : GammanException("Invalid session file: " + filename) {}
+            : GA::Exception("Invalid session file: " + filename) {}
     };
 
-    struct UnableToCreateLuaState : public GammanException
+    struct UnableToCreateLuaState : public GA::Exception
     {
         explicit UnableToCreateLuaState(QString source) noexcept
-            : GammanException("Unable to create Lua state: " + source) {}
+            : GA::Exception("Unable to create Lua state: " + source) {}
     };
 
 private:

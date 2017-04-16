@@ -31,7 +31,7 @@ ColorSpectrum::ColorSpectrum(double minValue, double maxValue,
 void ColorSpectrum::setMinMaxValues(double minValue, double maxValue)
 {
     if(minValue > maxValue)
-        throw NumericRangeError("ColorSpectrum::setMinMaxValues: minValue > maxValue");
+        throw GA::NumericRangeError("ColorSpectrum::setMinMaxValues: minValue > maxValue");
 
     mMinValue = minValue;
     mMaxValue = maxValue;
