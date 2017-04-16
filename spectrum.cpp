@@ -135,7 +135,7 @@ void Spectrum::calculateDoserate(const Detector &det, lua_State* L)
     if(endChan > det.numChannels()) // FIXME: Can not exceed 100% atm
         endChan = det.numChannels();
 
-    // Accumulate doserates of each channel
+    // Accumulate doserates from each channel
     for (int i = startChan; i < endChan; i++)
     {
         float sec = (float)mLivetime / 1000000.0;

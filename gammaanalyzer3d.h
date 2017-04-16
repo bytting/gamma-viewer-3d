@@ -55,7 +55,7 @@ private:
     void setupSignals();
 
     void handleSelectSpectrum(Scene *scene, SpectrumEntity *entity);
-    void handleCalculateDistance(Scene *scene, SpectrumEntity *entity);
+    void handleCalculateDistance(Scene *scene, SpectrumEntity *targetEntity);
 
 private slots:
 

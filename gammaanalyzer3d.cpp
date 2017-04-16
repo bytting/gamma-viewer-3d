@@ -144,9 +144,9 @@ void GammaAnalyzer3D::onOpenSession()
         for(Gamma::Spectrum *spec : scene->session->getSpectrumList())
         {
             QVector3D position(
-                        (spec->x1() - scene->session->minX() - halfX) * 10000.0,
+                        (spec->x1() - scene->session->minX() - halfX) * 18000.0,
                         spec->coordinates.altitude() - scene->session->minAltitude(),
-                        (spec->y1() - scene->session->minY() - halfY) * -10000.0);
+                        (spec->y1() - scene->session->minY() - halfY) * -18000.0);
 
             auto *entity = new SpectrumEntity(
                         position,
@@ -274,19 +274,19 @@ void GammaAnalyzer3D::handleSelectSpectrum(Scene *scene, SpectrumEntity *entity)
                 toString("yyyy-MM-dd hh:mm:ss"));
 }
 
-void GammaAnalyzer3D::handleCalculateDistance(Scene *scene, SpectrumEntity *entity)
+void GammaAnalyzer3D::handleCalculateDistance(Scene *scene, SpectrumEntity *targetEntity)
 {
     if(scene->selectedTarget)
     {
         auto sourceEntity = qobject_cast<SpectrumEntity*>(scene->selectedTarget);
         double distance = sourceEntity->spectrum()->coordinates.
-                distanceTo(entity->spectrum()->coordinates);
+                distanceTo(targetEntity->spectrum()->coordinates);
 
         ui->lblDistance->setText(
                     QStringLiteral("Distance between spectrum ") +
                     QString::number(sourceEntity->spectrum()->sessionIndex()) +
                     QStringLiteral(" and ") +
-                    QString::number(entity->spectrum()->sessionIndex()) +
+                    QString::number(targetEntity->spectrum()->sessionIndex()) +
                     QStringLiteral(" is ") +
                     QString::number(distance, 'f', 2) +
                     QStringLiteral("m"));

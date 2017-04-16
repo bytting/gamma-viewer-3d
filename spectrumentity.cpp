@@ -42,7 +42,7 @@ SpectrumEntity::SpectrumEntity(
                 color.green() - color.green() / 10,
                 color.blue() - color.blue() / 10);
     mMaterial->setAmbient(ambientColor);
-    mMaterial->setShininess(3.0f);
+    mMaterial->setShininess(10.0f);
     addComponent(mMaterial);
 
     mPicker->setHoverEnabled(false);
