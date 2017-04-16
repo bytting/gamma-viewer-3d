@@ -15,6 +15,7 @@
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "scene.h"
+#include <QColor>
 #include <QVector3D>
 #include <Qt3DRender/QCameraLens>
 #include <Qt3DExtras/QForwardRenderer>
@@ -23,7 +24,8 @@ Scene::Scene(const QColor &clearColor)
     :
       session(new Gamma::Session()),
       window(new Qt3DExtras::Qt3DWindow),
-      root(new Qt3DCore::QEntity)
+      root(new Qt3DCore::QEntity),
+      selection(new SelectionEntity(QVector3D(0.0, 0.0, 0.0), QColor(255, 255, 255), root))
 {
     window->defaultFrameGraph()->setClearColor(clearColor);
 
@@ -37,6 +39,8 @@ Scene::Scene(const QColor &clearColor)
     cameraController->setLinearSpeed(50.0f);
     cameraController->setLookSpeed(180.0f);
     cameraController->setCamera(camera);
+
+    selection->setEnabled(false);
 
     window->setRootEntity(root);
 }

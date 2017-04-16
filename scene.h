@@ -18,6 +18,7 @@
 #define SCENE_H
 
 #include "session.h"
+#include "selectionentity.h"
 #include <QColor>
 #include <Qt3DExtras/Qt3DWindow>
 #include <Qt3DRender/QCamera>
@@ -34,6 +35,7 @@ struct Scene
     Qt3DRender::QCamera *camera = nullptr;
     Qt3DExtras::QOrbitCameraController *cameraController = nullptr;
     Qt3DCore::QEntity *root = nullptr;
+    SelectionEntity *selection = nullptr;
 };
 
 #endif // SCENE_H
