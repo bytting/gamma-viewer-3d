@@ -134,6 +134,12 @@ void GammaAnalyzer3D::onOpenSession()
 
         new GridEntityXZ(0.0f, 10, 10.0f, QColor(255, 255, 255), scene->root);
 
+        selection = new SelectionEntity(
+                    QVector3D(0.0, 0.0, 0.0),
+                    QColor(255, 255, 255),
+                    scene->root);
+        selection->setEnabled(false);
+
         Palette::ColorSpectrum colorSpectrum(
                     scene->session->minDoserate(),
                     scene->session->maxDoserate());
@@ -215,6 +221,11 @@ void GammaAnalyzer3D::onSpectrumPicked(Qt3DRender::QPickEvent *evt)
             qDebug() << "GammaAnalyzer3D::onSpectrumPicked: qobject_cast failed";
             return;
         }
+
+        QVector3D selPos(entity->transform()->translation());
+        selPos.setY(selPos.y() + 1.8);
+        selection->transform()->setTranslation(selPos);
+        selection->setEnabled(true);
 
         auto spec = entity->spectrum();
 

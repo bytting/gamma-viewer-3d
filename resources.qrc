@@ -7,5 +7,6 @@
         <file>images/open-32.png</file>
         <file>images/scatter-32.png</file>
         <file>images/script-32.png</file>
+        <file>models/arrow.obj</file>
     </qresource>
 </RCC>

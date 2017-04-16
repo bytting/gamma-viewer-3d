@@ -25,6 +25,7 @@
 #include <map>
 #include "exceptions.h"
 #include "scene.h"
+#include "selectionentity.h"
 
 namespace Ui {
 class GammaAnalyzer3D;
@@ -49,6 +50,7 @@ private:
     QLabel *labelStatus;
     std::map<QString, Scene*> scenes;
     QString doserateScript;
+    SelectionEntity *selection;
 
     void setupWidgets();
     void setupSignals();

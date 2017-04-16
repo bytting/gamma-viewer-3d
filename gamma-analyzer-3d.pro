@@ -60,7 +60,8 @@ SOURCES += lua/lapi.c \
     colorspectrum.cpp \
     scene.cpp \
     spectrumentity.cpp \
-    gridentity.cpp
+    gridentity.cpp \
+    selectionentity.cpp
 
 HEADERS += lua/lapi.h \
     lua/lauxlib.h \
@@ -97,7 +98,8 @@ HEADERS += lua/lapi.h \
     colorspectrum.h \
     scene.h \
     spectrumentity.h \
-    gridentity.h
+    gridentity.h \
+    selectionentity.h
 
 FORMS += gammaanalyzer3d.ui
 
