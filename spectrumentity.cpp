@@ -29,7 +29,7 @@ SpectrumEntity::SpectrumEntity(
       mPicker(new Qt3DRender::QObjectPicker(this)),
       mSpectrum(spec)
 {
-    mMesh->setRadius(0.8f);
+    mMesh->setRadius(0.6f);
     addComponent(mMesh);
 
     mTransform->setTranslation(pos);

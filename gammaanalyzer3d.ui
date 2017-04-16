@@ -27,51 +27,23 @@
      </widget>
     </item>
     <item>
-     <widget class="QLabel" name="lblSession">
+     <widget class="QLabel" name="lblSessionSpectrum">
       <property name="text">
-       <string>Session:</string>
+       <string>Session / Spectrum:</string>
       </property>
      </widget>
     </item>
     <item>
-     <widget class="QLabel" name="lblSpectrum">
+     <widget class="QLabel" name="lblCoordinates">
       <property name="text">
-       <string>Spectrum:</string>
+       <string>Coordinates:</string>
       </property>
      </widget>
     </item>
     <item>
-     <widget class="QLabel" name="lblLatitude">
+     <widget class="QLabel" name="lblLivetimeRealtime">
       <property name="text">
-       <string>Latitude:</string>
-      </property>
-     </widget>
-    </item>
-    <item>
-     <widget class="QLabel" name="lblLongitude">
-      <property name="text">
-       <string>Longitude:</string>
-      </property>
-     </widget>
-    </item>
-    <item>
-     <widget class="QLabel" name="lblAltitude">
-      <property name="text">
-       <string>Altitude:</string>
-      </property>
-     </widget>
-    </item>
-    <item>
-     <widget class="QLabel" name="lblRealtime">
-      <property name="text">
-       <string>Real time:</string>
-      </property>
-     </widget>
-    </item>
-    <item>
-     <widget class="QLabel" name="lblLivetime">
-      <property name="text">
-       <string>Livetime:</string>
+       <string>Livetime / Realtime:</string>
       </property>
      </widget>
     </item>

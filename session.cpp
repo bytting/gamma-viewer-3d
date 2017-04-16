@@ -132,7 +132,7 @@ void Session::loadPath(QString sessionPath)
                 /*mMinAltitude = minAltitude;
                 mMaxAltitude = maxAltitude;*/
 
-                mMinAltitude = mMaxAltitude = spec->altitudeStart();
+                mMinAltitude = mMaxAltitude = spec->coordinates.altitude();
 
                 first = false;
             }
@@ -176,10 +176,10 @@ void Session::loadPath(QString sessionPath)
                 if(maxAltitude > mMaxAltitude)
                     mMaxAltitude = maxAltitude;*/
 
-                if(mMinAltitude > spec->altitudeStart())
-                    mMinAltitude = spec->altitudeStart();
-                if(mMaxAltitude < spec->altitudeStart())
-                    mMaxAltitude = spec->altitudeStart();
+                if(mMinAltitude > spec->coordinates.altitude())
+                    mMinAltitude = spec->coordinates.altitude();
+                if(mMaxAltitude < spec->coordinates.altitude())
+                    mMaxAltitude = spec->coordinates.altitude();
             }
 
             mSpecList.push_back(spec);

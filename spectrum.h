@@ -22,6 +22,7 @@
 #include <vector>
 #include <QString>
 #include <QDateTime>
+#include <QGeoCoordinate>
 
 extern "C"
 {
@@ -50,15 +51,17 @@ public:
     //int sessionIterations() const { return mSessionIterations; }
     //double sessionDelay() const { return mSessionDelay; }
 
-    double latitudeStart() const { return mLatitudeStart; }
+    QGeoCoordinate coordinates;
+
+    //double latitudeStart() const { return mLatitudeStart; }
     //double latitudeStartErr() const { return mLatitudeStartErr; }
     //double latitudeEnd() const { return mLatitudeEnd; }
     //double latitudeEndErr() const { return mLatitudeEndErr; }
-    double longitudeStart() const { return mLongitudeStart; }
+    //double longitudeStart() const { return mLongitudeStart; }
     //double longitudeStartErr() const { return mLongitudeStartErr; }
     //double longitudeEnd() const { return mLongitudeEnd; }
     //double longitudeEndErr() const { return mLongitudeEndErr; }
-    double altitudeStart() const { return mAltitudeStart; }
+    //double altitudeStart() const { return mAltitudeStart; }
     //double altitudeStartErr() const { return mAltitudeStartErr; }
     //double altitudeEnd() const { return mAltitudeEnd; }
     //double altitudeEndErr() const { return mAltitudeEndErr; }
@@ -101,15 +104,15 @@ private:
     //int mSessionIterations;
     //int mSessionPreview;
     //double mSessionDelay;
-    double mLatitudeStart;
+    //double mLatitudeStart;
     //double mLatitudeStartErr;
     //double mLatitudeEnd;
     //double mLatitudeEndErr;
-    double mLongitudeStart;
+    //double mLongitudeStart;
     //double mLongitudeStartErr;
     //double mLongitudeEnd;
     //double mLongitudeEndErr;
-    double mAltitudeStart;
+    //double mAltitudeStart;
     //double mAltitudeStartErr;
     //double mAltitudeEnd;
     //double mAltitudeEndErr;

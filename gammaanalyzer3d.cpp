@@ -25,9 +25,9 @@
 #include <QDir>
 #include <QFileDialog>
 #include <QAction>
-#include <QLabel>
 #include <QColor>
 #include <QVector3D>
+#include <QGeoCoordinate>
 #include <Qt3DCore/QEntity>
 #include <Qt3DRender/QCamera>
 #include <Qt3DRender/QObjectPicker>
@@ -40,6 +40,7 @@ GammaAnalyzer3D::GammaAnalyzer3D(QWidget *parent)
     ui->setupUi(this);
     setAttribute(Qt::WA_DeleteOnClose);
     setupSignals();
+    setupWidgets();
 }
 
 GammaAnalyzer3D::~GammaAnalyzer3D()
@@ -72,6 +73,12 @@ void GammaAnalyzer3D::setupSignals()
                 &QAction::triggered,
                 this,
                 &GammaAnalyzer3D::onOpenSession);
+}
+
+void GammaAnalyzer3D::setupWidgets()
+{
+    labelStatus = new QLabel(statusBar());
+    statusBar()->addWidget(labelStatus);
 }
 
 void GammaAnalyzer3D::onActionExit()
@@ -118,7 +125,7 @@ void GammaAnalyzer3D::onOpenSession()
             return;
         }
 
-        auto *scene = new Scene(QColor(27, 48, 46));
+        auto *scene = new Scene(QColor(27, 46, 46));
 
         if(QFile::exists(doserateScript))
             scene->session->loadDoserateScript(doserateScript);
@@ -134,12 +141,12 @@ void GammaAnalyzer3D::onOpenSession()
         auto halfX = (scene->session->maxX() - scene->session->minX()) / 2.0;
         auto halfY = (scene->session->maxY() - scene->session->minY()) / 2.0;
 
-        for(auto spec : scene->session->getSpectrumList())
+        for(Gamma::Spectrum *spec : scene->session->getSpectrumList())
         {
             QVector3D position(
-                        (spec->x1() - scene->session->minX() - halfX) * 15000.0,
-                        spec->altitudeStart() - scene->session->minAltitude(),
-                        (spec->y1() - scene->session->minY() - halfY) * -15000.0);
+                        (spec->x1() - scene->session->minX() - halfX) * 10000.0,
+                        spec->coordinates.altitude() - scene->session->minAltitude(),
+                        (spec->y1() - scene->session->minY() - halfY) * -10000.0);
 
             auto *entity = new SpectrumEntity(
                         position,
@@ -161,6 +168,7 @@ void GammaAnalyzer3D::onOpenSession()
         scene->window->show();
 
         scenes[sessionDir] = scene;
+        labelStatus->setText("Session " + sessionDir + " loaded");
     }
     catch(GammanException &e)
     {
@@ -210,30 +218,20 @@ void GammaAnalyzer3D::onSpectrumPicked(Qt3DRender::QPickEvent *evt)
 
         auto spec = entity->spectrum();
 
-        ui->lblSession->setText(
-                    QStringLiteral("Session: ") +
-                    spec->sessionName());
-        ui->lblSpectrum->setText(
-                    QStringLiteral("Spectrum: ") +
+        ui->lblSessionSpectrum->setText(
+                    QStringLiteral("Session / Spectrum: ") +
+                    spec->sessionName() + " / " +
                     QString::number(spec->sessionIndex()));
-        ui->lblLatitude->setText(
-                    QStringLiteral("Latitude: ") +
-                    QString::number(spec->latitudeStart()));
-        ui->lblLongitude->setText(
-                    QStringLiteral("Longitude: ") +
-                    QString::number(spec->longitudeStart()));
-        ui->lblAltitude->setText(
-                    QStringLiteral("Altitude: ") +
-                    QString::number(spec->altitudeStart()));
-        ui->lblRealtime->setText(
-                    QStringLiteral("Real time: ") +
-                    QString::number(spec->realtime() / 1000000.0));
-        ui->lblLivetime->setText(
-                    QStringLiteral("Live time: ") +
-                    QString::number(spec->livetime() / 1000000.0));
+        ui->lblCoordinates->setText(
+                    QStringLiteral("Coordinates: ") +
+                    spec->coordinates.toString(QGeoCoordinate::Degrees));
+        ui->lblLivetimeRealtime->setText(
+                    QStringLiteral("Livetime / Realtime: ") +
+                    QString::number(spec->livetime() / 1000000.0) + "s / " +
+                    QString::number(spec->realtime() / 1000000.0) + "s");
         ui->lblDoserate->setText(
                     QStringLiteral("Doserate: ") +
-                    QString::number(spec->doserate()));
+                    QString::number(spec->doserate(), 'E') + " μSv");
         ui->lblDate->setText(
                     QStringLiteral("Date: ") +
                     spec->gpsTimeStart().toLocalTime().

@@ -20,6 +20,7 @@
 #include <QMainWindow>
 #include <QString>
 #include <QCloseEvent>
+#include <QLabel>
 #include <Qt3DRender/QPickEvent>
 #include <map>
 #include "exceptions.h"
@@ -45,10 +46,12 @@ protected:
 private:
 
     Ui::GammaAnalyzer3D *ui;
+    QLabel *labelStatus;
     std::map<QString, Scene*> scenes;
     QString doserateScript;
 
     void setupSignals();
+    void setupWidgets();
 
 private slots:
 

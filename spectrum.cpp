@@ -88,7 +88,7 @@ void Spectrum::loadFile(QString filename)
         mLivetime = args.value("livetime").toInt();
 
     if(args.contains("latitude_start"))
-        mLatitudeStart = args.value("latitude_start").toDouble();
+        coordinates.setLatitude(args.value("latitude_start").toDouble());
 
     /*if(args.contains("latitude_start_err"))
         mLatitudeStartErr = args.value("latitude_start_err").toDouble();
@@ -100,7 +100,7 @@ void Spectrum::loadFile(QString filename)
         mLatitudeEndErr = args.value("latitude_end_err").toDouble();*/
 
     if(args.contains("longitude_start"))
-        mLongitudeStart = args.value("longitude_start").toDouble();
+        coordinates.setLongitude(args.value("longitude_start").toDouble());
 
     /*if(args.contains("longitude_start_err"))
         mLongitudeStartErr = args.value("longitude_start_err").toDouble();
@@ -112,7 +112,7 @@ void Spectrum::loadFile(QString filename)
         mLongitudeEndErr = args.value("longitude_end_err").toDouble();*/
 
     if(args.contains("altitude_start"))
-        mAltitudeStart = args.value("altitude_start").toDouble();
+        coordinates.setAltitude(args.value("altitude_start").toDouble());
 
     /*if(args.contains("altitude_start_err"))
         mAltitudeStartErr = args.value("altitude_start_err").toDouble();
@@ -159,7 +159,8 @@ void Spectrum::loadFile(QString filename)
         }
     }
 
-    Geo::geodeticToCartesianSimplified(mLatitudeStart, mLongitudeStart,
+    Geo::geodeticToCartesianSimplified(coordinates.latitude(),
+                                       coordinates.longitude(),
                                        mX1, mY1, mZ1);
 
     /*Geo::geodeticToCartesianSimplified(mLatitudeEnd, mLongitudeEnd,
