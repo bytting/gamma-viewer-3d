@@ -25,7 +25,8 @@ SelectionEntity::SelectionEntity(
       Qt3DCore::QEntity(parent),
       mMesh(new Qt3DRender::QMesh(this)),
       mTransform(new Qt3DCore::QTransform(this)),
-      mMaterial(new Qt3DExtras::QPhongMaterial(this))
+      mMaterial(new Qt3DExtras::QPhongMaterial(this)),
+      mTarget(nullptr)
 {
     mMesh->setSource(QUrl(QStringLiteral("qrc:/models/arrow.obj")));
     addComponent(mMesh);
@@ -41,7 +42,7 @@ SelectionEntity::SelectionEntity(
                 color.green() - color.green() / 10,
                 color.blue() - color.blue() / 10);
     mMaterial->setAmbient(ambientColor);
-    mMaterial->setShininess(10.0f);
+    mMaterial->setShininess(3.0f);
     addComponent(mMaterial);
 }
 
@@ -60,4 +61,5 @@ SelectionEntity::~SelectionEntity()
     mMaterial->deleteLater();
     mTransform->deleteLater();
     mMesh->deleteLater();
+    mTarget = nullptr;
 }

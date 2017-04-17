@@ -25,8 +25,7 @@ Scene::Scene(const QColor &clearColor)
       session(new Gamma::Session()),
       window(new Qt3DExtras::Qt3DWindow),
       root(new Qt3DCore::QEntity),
-      selection(new SelectionEntity(QVector3D(0.0, 0.0, 0.0), QColor(255, 0, 255), root)),
-      selectedTarget(0)
+      selection(new SelectionEntity(QVector3D(0.0, 0.0, 0.0), QColor(255, 0, 255), root))
 {
     window->defaultFrameGraph()->setClearColor(clearColor);
 
@@ -67,5 +66,18 @@ Scene::~Scene()
     window->destroy();
     window->deleteLater();
     delete session;
+}
+
+bool Scene::hasChild(Qt3DCore::QEntity *entity) const
+{
+    QObject *e = entity;
+    while(e->parent())
+    {
+        if(e == root)
+            return true;
+        e = e->parent();
+    }
+
+    return false;
 }
 

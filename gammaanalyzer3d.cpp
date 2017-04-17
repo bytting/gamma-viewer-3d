@@ -81,6 +81,19 @@ void GammaAnalyzer3D::setupSignals()
                 &GammaAnalyzer3D::onOpenSession);
 }
 
+Scene *GammaAnalyzer3D::sceneFromEntity(SpectrumEntity *entity) const
+{
+    auto it = std::find_if(scenes.begin(), scenes.end(), [&](auto &p){
+        return p.second->hasChild(entity);
+    });
+
+    if(it == scenes.end())
+        throw NoSceneFoundForEntity(entity->spectrum()->sessionName() + " " +
+                    QString(entity->spectrum()->sessionIndex()));
+
+    return it->second;
+}
+
 void GammaAnalyzer3D::onActionExit()
 {
     try
@@ -125,14 +138,14 @@ void GammaAnalyzer3D::onOpenSession()
             return;
         }
 
-        auto *scene = new Scene(QColor(27, 46, 46));
+        auto *scene = new Scene(QColor(32, 53, 53));
 
         if(QFile::exists(doserateScript))
             scene->session->loadDoserateScript(doserateScript);
         scene->session->loadPath(sessionDir);
         scene->window->setTitle(scene->session->name());
 
-        new GridEntityXZ(0.0f, 10, 10.0f, QColor(255, 255, 255), scene->root);
+        new GridEntityXZ(-1.0f, 10, 10.0f, QColor(255, 255, 255), scene->root);
 
         Palette::ColorSpectrum colorSpectrum(
                     scene->session->minDoserate(),
@@ -214,20 +227,11 @@ void GammaAnalyzer3D::onSpectrumPicked(Qt3DRender::QPickEvent *evt)
             return;
         }
 
-        auto it = std::find_if(scenes.begin(), scenes.end(), [&](auto &p){
-            return p.second->root == entity->parent();
-        });
-
-        if(it == scenes.end())
-        {
-            qDebug() << "GammaAnalyzer3D::onSpectrumPicked: Scene not found";
-            return;
-        }
-
+        // Handle event based on mouse button
         if(evt->button() == Qt3DRender::QPickEvent::LeftButton)
-            handleSelectSpectrum(it->second, entity);
+            handleSelectSpectrum(sceneFromEntity(entity), entity);
         else if(evt->button() == Qt3DRender::QPickEvent::RightButton)
-            handleCalculateDistance(it->second, entity);
+            handleCalculateDistance(sceneFromEntity(entity), entity);
     }
     catch(const std::exception &e)
     {
@@ -246,7 +250,7 @@ void GammaAnalyzer3D::handleSelectSpectrum(Scene *scene, SpectrumEntity *entity)
     pos.setY(pos.y() + 1.8);
     scene->selection->transform()->setTranslation(pos);
     scene->selection->setEnabled(true);
-    scene->selectedTarget = entity;
+    scene->selection->setTarget(entity);
 
     // Populate UI fields with information about selected spectrum
     auto spec = entity->spectrum();
@@ -277,9 +281,9 @@ void GammaAnalyzer3D::handleSelectSpectrum(Scene *scene, SpectrumEntity *entity)
 
 void GammaAnalyzer3D::handleCalculateDistance(Scene *scene, SpectrumEntity *targetEntity)
 {
-    if(scene->selection->isEnabled() && scene->selectedTarget)
+    if(scene->selection->isEnabled() && scene->selection->target())
     {
-        auto sourceEntity = qobject_cast<SpectrumEntity*>(scene->selectedTarget);
+        auto sourceEntity = qobject_cast<SpectrumEntity*>(scene->selection->target());
         double distance = sourceEntity->spectrum()->coordinates.
                 distanceTo(targetEntity->spectrum()->coordinates);
 
@@ -294,6 +298,7 @@ void GammaAnalyzer3D::handleCalculateDistance(Scene *scene, SpectrumEntity *targ
                     QStringLiteral(": ") +
                     QString::number(distance, 'f', 2) +
                     QStringLiteral("m / ") +
-                    QString::number(azimuth, 'f', 2));
+                    QString::number(azimuth, 'f', 1) +
+                    QStringLiteral("°"));
     }
 }

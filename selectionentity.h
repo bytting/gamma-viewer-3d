@@ -39,12 +39,15 @@ public:
     Qt3DRender::QMesh *mesh() const { return mMesh; }
     Qt3DCore::QTransform *transform() const { return mTransform; }
     Qt3DExtras::QPhongMaterial *material() const { return mMaterial; }
+    Qt3DCore::QEntity *target() const { return mTarget; }
+    void setTarget(Qt3DCore::QEntity* target) { mTarget = target; }
 
 private:
 
     Qt3DRender::QMesh *mMesh;
     Qt3DCore::QTransform *mTransform;
     Qt3DExtras::QPhongMaterial *mMaterial;
+    Qt3DCore::QEntity *mTarget;
 };
 
 #endif // SELECTIONENTITY_H
