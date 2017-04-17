@@ -272,23 +272,28 @@ void GammaAnalyzer3D::handleSelectSpectrum(Scene *scene, SpectrumEntity *entity)
                 QStringLiteral("Date: ") +
                 spec->gpsTimeStart().toLocalTime().
                 toString("yyyy-MM-dd hh:mm:ss"));
+    ui->lblDistance->setText("");
 }
 
 void GammaAnalyzer3D::handleCalculateDistance(Scene *scene, SpectrumEntity *targetEntity)
 {
-    if(scene->selectedTarget)
+    if(scene->selection->isEnabled() && scene->selectedTarget)
     {
         auto sourceEntity = qobject_cast<SpectrumEntity*>(scene->selectedTarget);
         double distance = sourceEntity->spectrum()->coordinates.
                 distanceTo(targetEntity->spectrum()->coordinates);
 
+        double azimuth = sourceEntity->spectrum()->coordinates.
+                azimuthTo(targetEntity->spectrum()->coordinates);
+
         ui->lblDistance->setText(
-                    QStringLiteral("Distance between spectrum ") +
+                    QStringLiteral("Distance / Azimuth from ") +
                     QString::number(sourceEntity->spectrum()->sessionIndex()) +
-                    QStringLiteral(" and ") +
+                    QStringLiteral(" to ") +
                     QString::number(targetEntity->spectrum()->sessionIndex()) +
-                    QStringLiteral(" is ") +
+                    QStringLiteral(": ") +
                     QString::number(distance, 'f', 2) +
-                    QStringLiteral("m"));
+                    QStringLiteral("m / ") +
+                    QString::number(azimuth, 'f', 2));
     }
 }
