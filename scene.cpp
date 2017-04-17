@@ -70,8 +70,11 @@ Scene::~Scene()
 
 bool Scene::hasChild(Qt3DCore::QEntity *entity) const
 {
-    QObject *e = entity;
-    while(e->parent())
+    if(!entity)
+        return false;
+
+    QObject *e = entity->parent();
+    while(e)
     {
         if(e == root)
             return true;
