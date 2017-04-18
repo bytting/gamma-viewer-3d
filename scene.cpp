@@ -25,7 +25,8 @@ Scene::Scene(const QColor &clearColor)
       session(new Gamma::Session()),
       window(new Qt3DExtras::Qt3DWindow),
       root(new Qt3DCore::QEntity),
-      selection(new SelectionEntity(QVector3D(0.0, 0.0, 0.0), QColor(255, 0, 255), root))
+      selected(new SelectionEntity(QVector3D(0.0, 0.0, 0.0), QColor(255, 0, 255), root)),
+      targeted(new SelectionEntity(QVector3D(0.0, 0.0, 0.0), QColor(255, 255, 255), root))
 {
     window->defaultFrameGraph()->setClearColor(clearColor);
 
@@ -40,7 +41,8 @@ Scene::Scene(const QColor &clearColor)
     cameraController->setLookSpeed(180.0f);
     cameraController->setCamera(camera);
 
-    selection->setEnabled(false);
+    selected->setEnabled(false);
+    targeted->setEnabled(false);
 
     window->setRootEntity(root);
 }

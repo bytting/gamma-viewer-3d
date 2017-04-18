@@ -243,14 +243,17 @@ void GammaAnalyzer3D::handleSelectSpectrum(Scene *scene, SpectrumEntity *entity)
 {
     // Disable selection arrow for all scenes
     for(auto p : scenes)
-        p.second->selection->setEnabled(false);
+    {
+        p.second->selected->setEnabled(false);
+        p.second->targeted->setEnabled(false);
+    }
 
     // Position and enable current selection arrow
     QVector3D pos(entity->transform()->translation());
     pos.setY(pos.y() + 1.8);
-    scene->selection->transform()->setTranslation(pos);
-    scene->selection->setEnabled(true);
-    scene->selection->setTarget(entity);
+    scene->selected->transform()->setTranslation(pos);
+    scene->selected->setEnabled(true);
+    scene->selected->setTarget(entity);
 
     // Populate UI fields with information about selected spectrum
     auto spec = entity->spectrum();
@@ -281,9 +284,19 @@ void GammaAnalyzer3D::handleSelectSpectrum(Scene *scene, SpectrumEntity *entity)
 
 void GammaAnalyzer3D::handleCalculateDistance(Scene *scene, SpectrumEntity *targetEntity)
 {
-    if(scene->selection->isEnabled() && scene->selection->target())
+    if(scene->selected->isEnabled() &&
+            scene->selected->target() &&
+            scene->selected->target() != targetEntity)
     {
-        auto sourceEntity = qobject_cast<SpectrumEntity*>(scene->selection->target());
+        auto sourceEntity = qobject_cast<SpectrumEntity*>(scene->selected->target());
+
+        // Position and enable current target arrow
+        QVector3D pos(targetEntity->transform()->translation());
+        pos.setY(pos.y() + 1.8);
+        scene->targeted->transform()->setTranslation(pos);
+        scene->targeted->setEnabled(true);
+        scene->targeted->setTarget(targetEntity);
+
         double distance = sourceEntity->spectrum()->coordinates.
                 distanceTo(targetEntity->spectrum()->coordinates);
 
