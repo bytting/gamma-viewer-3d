@@ -95,42 +95,16 @@ void Session::loadPath(QString sessionPath)
             auto spec = new Spectrum(info.absoluteFilePath());
 
             if(mScriptLoaded)
-                spec->calculateDoserate(mDetector, L);
-
-            /*double minX = std::min(spec->x1(), spec->x2());
-            double minY = std::min(spec->y1(), spec->y2());
-            double minZ = std::min(spec->z1(), spec->z2());
-
-            double maxX = std::max(spec->x1(), spec->x2());
-            double maxY = std::max(spec->y1(), spec->y2());
-            double maxZ = std::max(spec->z1(), spec->z2());*/
-
-            /*double minAltitude = std::min(
-                        spec->altitudeStart(),
-                        spec->altitudeEnd());
-            double maxAltitude = std::max(
-                        spec->altitudeStart(),
-                        spec->altitudeEnd());*/
+                spec->calculateDoserate(mDetector, L);            
 
             if(first)
             {
                 mMinDoserate = spec->doserate();
-                mMaxDoserate = spec->doserate();
-
-                /*mMinX = minX;
-                mMinY = minY;
-                mMinZ = minZ;
-
-                mMaxX = maxX;
-                mMaxY = maxY;
-                mMaxZ = maxZ;*/
+                mMaxDoserate = spec->doserate();                
 
                 mMinX = mMaxX = spec->x1();
                 mMinY = mMaxY = spec->y1();
-                mMinZ = mMaxZ = spec->z1();
-
-                /*mMinAltitude = minAltitude;
-                mMaxAltitude = maxAltitude;*/
+                mMinZ = mMaxZ = spec->z1();                
 
                 mMinAltitude = mMaxAltitude = spec->coordinates.altitude();
 
@@ -141,21 +115,7 @@ void Session::loadPath(QString sessionPath)
                 if(spec->doserate() < mMinDoserate)
                     mMinDoserate = spec->doserate();
                 if(spec->doserate() > mMaxDoserate)
-                    mMaxDoserate = spec->doserate();
-
-                /*if(minX < mMinX)
-                    mMinX = minX;
-                if(minY < mMinY)
-                    mMinY = minY;
-                if(minZ < mMinZ)
-                    mMinZ = minZ;
-
-                if(maxX > mMaxX)
-                    mMaxX = maxX;
-                if(maxY > mMaxY)
-                    mMaxY = maxY;
-                if(maxZ > mMaxZ)
-                    mMaxZ = maxZ;*/
+                    mMaxDoserate = spec->doserate();                
 
                 if(mMinX > spec->x1())
                     mMinX = spec->x1();
@@ -169,12 +129,7 @@ void Session::loadPath(QString sessionPath)
                 if(mMaxY < spec->y1())
                     mMaxY = spec->y1();
                 if(mMaxZ < spec->z1())
-                    mMaxZ = spec->z1();
-
-                /*if(minAltitude < mMinAltitude)
-                    mMinAltitude = minAltitude;
-                if(maxAltitude > mMaxAltitude)
-                    mMaxAltitude = maxAltitude;*/
+                    mMaxZ = spec->z1();                
 
                 if(mMinAltitude > spec->coordinates.altitude())
                     mMinAltitude = spec->coordinates.altitude();

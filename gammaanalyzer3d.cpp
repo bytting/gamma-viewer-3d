@@ -178,6 +178,7 @@ void GammaAnalyzer3D::onOpenSession()
         scene->camera->setPosition(QVector3D(0, 20, 100.0f));
         scene->camera->setViewCenter(QVector3D(0, 0, 0));
 
+        scene->window->setIcon(QIcon(":/images/crash.ico"));
         scene->window->show();
 
         scenes[sessionDir] = scene;
