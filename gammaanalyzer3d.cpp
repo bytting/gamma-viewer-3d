@@ -216,7 +216,7 @@ void GammaAnalyzer3D::onLoadDoserateScript()
     }
 }
 
-void GammaAnalyzer3D::onSpectrumPicked(Qt3DRender::QPickEvent *evt)
+void GammaAnalyzer3D::onSpectrumPicked(Qt3DRender::QPickEvent *event)
 {
     try
     {
@@ -229,9 +229,9 @@ void GammaAnalyzer3D::onSpectrumPicked(Qt3DRender::QPickEvent *evt)
         }
 
         // Handle event based on mouse button
-        if(evt->button() == Qt3DRender::QPickEvent::LeftButton)
+        if(event->button() == Qt3DRender::QPickEvent::LeftButton)
             handleSelectSpectrum(sceneFromEntity(entity), entity);
-        else if(evt->button() == Qt3DRender::QPickEvent::RightButton)
+        else if(event->button() == Qt3DRender::QPickEvent::RightButton)
             handleCalculateDistance(sceneFromEntity(entity), entity);
     }
     catch(const std::exception &e)

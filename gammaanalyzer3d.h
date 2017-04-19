@@ -70,7 +70,7 @@ private slots:
     void onActionExit();
     void onOpenSession();
     void onLoadDoserateScript();
-    void onSpectrumPicked(Qt3DRender::QPickEvent *evt);
+    void onSpectrumPicked(Qt3DRender::QPickEvent *event);
 };
 
 #endif // GAMMAANALYZER3D_H
