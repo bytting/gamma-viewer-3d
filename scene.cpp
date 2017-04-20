@@ -25,6 +25,7 @@ Scene::Scene(const QColor &clearColor)
       session(new Gamma::Session()),
       window(new Qt3DExtras::Qt3DWindow),
       root(new Qt3DCore::QEntity),
+      cameraController(new Qt3DExtras::QOrbitCameraController(root)),
       selected(new SelectionEntity(QVector3D(0.0, 0.0, 0.0), QColor(255, 0, 255), root)),
       targeted(new SelectionEntity(QVector3D(0.0, 0.0, 0.0), QColor(255, 255, 255), root))
 {
@@ -36,7 +37,6 @@ Scene::Scene(const QColor &clearColor)
     camera->setPosition(QVector3D(0, 20, 100.0f));
     camera->setViewCenter(QVector3D(0, 0, 0));
 
-    cameraController = new Qt3DExtras::QOrbitCameraController(root);
     cameraController->setLinearSpeed(50.0f);
     cameraController->setLookSpeed(180.0f);
     cameraController->setCamera(camera);

@@ -285,34 +285,34 @@ void GammaAnalyzer3D::handleSelectSpectrum(Scene *scene, SpectrumEntity *entity)
 
 void GammaAnalyzer3D::handleCalculateDistance(Scene *scene, SpectrumEntity *targetEntity)
 {
-    if(scene->selected->isEnabled() &&
-            scene->selected->target() &&
-            scene->selected->target() != targetEntity)
-    {
-        auto sourceEntity = qobject_cast<SpectrumEntity*>(scene->selected->target());
+    if(!scene->selected->isEnabled() ||
+            !scene->selected->target() ||
+            scene->selected->target() == targetEntity)
+        return;
 
-        // Position and enable current target arrow
-        QVector3D pos(targetEntity->transform()->translation());
-        pos.setY(pos.y() + 1.8);
-        scene->targeted->transform()->setTranslation(pos);
-        scene->targeted->setEnabled(true);
-        scene->targeted->setTarget(targetEntity);
+    auto sourceEntity = qobject_cast<SpectrumEntity*>(scene->selected->target());
 
-        double distance = sourceEntity->spectrum()->coordinates.
-                distanceTo(targetEntity->spectrum()->coordinates);
+    // Position and enable current target arrow
+    QVector3D pos(targetEntity->transform()->translation());
+    pos.setY(pos.y() + 1.8);
+    scene->targeted->transform()->setTranslation(pos);
+    scene->targeted->setEnabled(true);
+    scene->targeted->setTarget(targetEntity);
 
-        double azimuth = sourceEntity->spectrum()->coordinates.
-                azimuthTo(targetEntity->spectrum()->coordinates);
+    double distance = sourceEntity->spectrum()->coordinates.
+            distanceTo(targetEntity->spectrum()->coordinates);
 
-        ui->lblDistance->setText(
-                    QStringLiteral("Distance / Azimuth from ") +
-                    QString::number(sourceEntity->spectrum()->sessionIndex()) +
-                    QStringLiteral(" to ") +
-                    QString::number(targetEntity->spectrum()->sessionIndex()) +
-                    QStringLiteral(": ") +
-                    QString::number(distance, 'f', 2) +
-                    QStringLiteral("m / ") +
-                    QString::number(azimuth, 'f', 1) +
-                    QStringLiteral("°"));
-    }
+    double azimuth = sourceEntity->spectrum()->coordinates.
+            azimuthTo(targetEntity->spectrum()->coordinates);
+
+    ui->lblDistance->setText(
+                QStringLiteral("Distance / Azimuth from ") +
+                QString::number(sourceEntity->spectrum()->sessionIndex()) +
+                QStringLiteral(" to ") +
+                QString::number(targetEntity->spectrum()->sessionIndex()) +
+                QStringLiteral(": ") +
+                QString::number(distance, 'f', 2) +
+                QStringLiteral("m / ") +
+                QString::number(azimuth, 'f', 1) +
+                QStringLiteral("°"));
 }
