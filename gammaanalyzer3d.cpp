@@ -194,8 +194,8 @@ void GammaAnalyzer3D::onLoadDoserateScript()
         doserateScript = QDir::toNativeSeparators(scriptFileName);
 
         ui->lblDoserateScript->setText(
-                    QStringLiteral("Loaded doserate script: ")
-                    + doserateScript);
+                    QStringLiteral("Loaded doserate script: ") +
+                    doserateScript);
     }
     catch(const std::exception &e)
     {
@@ -219,7 +219,7 @@ void GammaAnalyzer3D::onSpectrumPicked(Qt3DRender::QPickEvent *event)
         if(event->button() == Qt3DRender::QPickEvent::LeftButton)
             handleSelectSpectrum(entity);
         else if(event->button() == Qt3DRender::QPickEvent::RightButton)
-            handleSelectTarget(entity);
+            handleMarkSpectrum(entity);
     }
     catch(const std::exception &e)
     {
@@ -242,11 +242,11 @@ Scene *GammaAnalyzer3D::sceneFromEntity(SpectrumEntity *entity) const
 
 void GammaAnalyzer3D::handleSelectSpectrum(SpectrumEntity *entity)
 {
-    // Disable selection arrow for all scenes
+    // Disable selected and marked arrows for all scenes
     for(auto p : scenes)
     {
         p.second->selected->setEnabled(false);
-        p.second->targeted->setEnabled(false);
+        p.second->marked->setEnabled(false);
     }
 
     Scene *scene = sceneFromEntity(entity);
@@ -281,7 +281,7 @@ void GammaAnalyzer3D::handleSelectSpectrum(SpectrumEntity *entity)
     ui->lblDistance->setText("");
 }
 
-void GammaAnalyzer3D::handleSelectTarget(SpectrumEntity *entity)
+void GammaAnalyzer3D::handleMarkSpectrum(SpectrumEntity *entity)
 {
     Scene *scene = sceneFromEntity(entity);
 
@@ -289,8 +289,8 @@ void GammaAnalyzer3D::handleSelectTarget(SpectrumEntity *entity)
             scene->selected->target() == entity)
         return;
 
-    // Enable current target arrow
-    scene->targeted->setTarget(entity);
+    // Enable current marked arrow
+    scene->marked->setTarget(entity);
 
     // Calculate distance and azimuth
     auto spec1 = scene->selected->target()->spectrum();

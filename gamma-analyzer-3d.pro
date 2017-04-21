@@ -1,5 +1,5 @@
 
-QT += core gui 3dcore 3drender 3dinput 3dextras positioning
+QT += core gui 3dcore 3drender 3dextras positioning
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 

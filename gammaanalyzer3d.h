@@ -63,7 +63,7 @@ private:
     };
 
     void handleSelectSpectrum(SpectrumEntity *entity);
-    void handleSelectTarget(SpectrumEntity *entity);
+    void handleMarkSpectrum(SpectrumEntity *entity);
 
 private slots:
 

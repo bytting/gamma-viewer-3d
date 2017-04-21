@@ -36,7 +36,7 @@ struct Scene
     Qt3DRender::QCamera *camera = nullptr;
     Qt3DExtras::QOrbitCameraController *cameraController = nullptr;
     SelectionEntity *selected = nullptr;
-    SelectionEntity *targeted = nullptr;
+    SelectionEntity *marked = nullptr;
 
     bool hasChild(Qt3DCore::QEntity *entity) const;
 };

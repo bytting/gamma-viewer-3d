@@ -27,7 +27,7 @@ Scene::Scene(const QColor &clearColor)
       root(new Qt3DCore::QEntity),
       cameraController(new Qt3DExtras::QOrbitCameraController(root)),
       selected(new SelectionEntity(QVector3D(0.0, 0.0, 0.0), QColor(255, 0, 255), root)),
-      targeted(new SelectionEntity(QVector3D(0.0, 0.0, 0.0), QColor(255, 255, 255), root))
+      marked(new SelectionEntity(QVector3D(0.0, 0.0, 0.0), QColor(255, 255, 255), root))
 {
     window->defaultFrameGraph()->setClearColor(clearColor);
 
@@ -42,7 +42,7 @@ Scene::Scene(const QColor &clearColor)
     cameraController->setCamera(camera);
 
     selected->setEnabled(false);
-    targeted->setEnabled(false);
+    marked->setEnabled(false);
 
     window->setRootEntity(root);
 }
@@ -51,8 +51,7 @@ Scene::~Scene()
 {
     for(auto node : root->childNodes())
     {
-        auto entity = qobject_cast<Qt3DCore::QEntity*>(node);
-        if(entity)
+        if(auto entity = qobject_cast<Qt3DCore::QEntity*>(node))
         {
             entity->components().clear();
             entity->deleteLater();
@@ -72,7 +71,7 @@ Scene::~Scene()
 
 bool Scene::hasChild(Qt3DCore::QEntity *entity) const
 {
-    QObject *e = entity;
+    QObject *e = static_cast<QObject*>(entity);
     while(e)
     {
         if(e->parent() == root)
