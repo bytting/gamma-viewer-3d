@@ -81,19 +81,6 @@ void GammaAnalyzer3D::setupSignals()
                 &GammaAnalyzer3D::onOpenSession);
 }
 
-Scene *GammaAnalyzer3D::sceneFromEntity(SpectrumEntity *entity) const
-{
-    auto it = std::find_if(scenes.begin(), scenes.end(), [&](auto &p){
-        return p.second->hasChild(entity);
-    });
-
-    if(it == scenes.end())
-        throw NoSceneFoundForEntity(entity->spectrum()->sessionName() + " " +
-                    QString(entity->spectrum()->sessionIndex()));
-
-    return it->second;
-}
-
 void GammaAnalyzer3D::onActionExit()
 {
     try
@@ -230,9 +217,9 @@ void GammaAnalyzer3D::onSpectrumPicked(Qt3DRender::QPickEvent *event)
 
         // Handle event based on mouse button
         if(event->button() == Qt3DRender::QPickEvent::LeftButton)
-            handleSelectSpectrum(sceneFromEntity(entity), entity);
+            handleSelectSpectrum(entity);
         else if(event->button() == Qt3DRender::QPickEvent::RightButton)
-            handleCalculateDistance(sceneFromEntity(entity), entity);
+            handleSelectTarget(entity);
     }
     catch(const std::exception &e)
     {
@@ -240,7 +227,20 @@ void GammaAnalyzer3D::onSpectrumPicked(Qt3DRender::QPickEvent *event)
     }
 }
 
-void GammaAnalyzer3D::handleSelectSpectrum(Scene *scene, SpectrumEntity *entity)
+Scene *GammaAnalyzer3D::sceneFromEntity(SpectrumEntity *entity) const
+{
+    auto it = std::find_if(scenes.begin(), scenes.end(), [&](auto &p){
+        return p.second->hasChild(entity);
+    });
+
+    if(it == scenes.end())
+        throw NoSceneFoundForEntity(entity->spectrum()->sessionName() + " " +
+                    QString(entity->spectrum()->sessionIndex()));
+
+    return it->second;
+}
+
+void GammaAnalyzer3D::handleSelectSpectrum(SpectrumEntity *entity)
 {
     // Disable selection arrow for all scenes
     for(auto p : scenes)
@@ -249,11 +249,9 @@ void GammaAnalyzer3D::handleSelectSpectrum(Scene *scene, SpectrumEntity *entity)
         p.second->targeted->setEnabled(false);
     }
 
-    // Position and enable current selection arrow
-    QVector3D pos(entity->transform()->translation());
-    pos.setY(pos.y() + 1.8);
-    scene->selected->transform()->setTranslation(pos);
-    scene->selected->setEnabled(true);
+    Scene *scene = sceneFromEntity(entity);
+
+    // Enable current selection arrow
     scene->selected->setTarget(entity);
 
     // Populate UI fields with information about selected spectrum
@@ -283,33 +281,29 @@ void GammaAnalyzer3D::handleSelectSpectrum(Scene *scene, SpectrumEntity *entity)
     ui->lblDistance->setText("");
 }
 
-void GammaAnalyzer3D::handleCalculateDistance(Scene *scene, SpectrumEntity *targetEntity)
+void GammaAnalyzer3D::handleSelectTarget(SpectrumEntity *entity)
 {
-    if(!scene->selected->isEnabled() ||
-            !scene->selected->target() ||
-            scene->selected->target() == targetEntity)
+    Scene *scene = sceneFromEntity(entity);
+
+    if(!scene->selected->isEnabled() || !scene->selected->target() ||
+            scene->selected->target() == entity)
         return;
 
-    auto sourceEntity = qobject_cast<SpectrumEntity*>(scene->selected->target());
+    // Enable current target arrow
+    scene->targeted->setTarget(entity);
 
-    // Position and enable current target arrow
-    QVector3D pos(targetEntity->transform()->translation());
-    pos.setY(pos.y() + 1.8);
-    scene->targeted->transform()->setTranslation(pos);
-    scene->targeted->setEnabled(true);
-    scene->targeted->setTarget(targetEntity);
+    // Calculate distance and azimuth
+    auto spec1 = scene->selected->target()->spectrum();
+    auto spec2 = entity->spectrum();
 
-    double distance = sourceEntity->spectrum()->coordinates.
-            distanceTo(targetEntity->spectrum()->coordinates);
-
-    double azimuth = sourceEntity->spectrum()->coordinates.
-            azimuthTo(targetEntity->spectrum()->coordinates);
+    double distance = spec1->coordinates.distanceTo(spec2->coordinates);
+    double azimuth = spec1->coordinates.azimuthTo(spec2->coordinates);
 
     ui->lblDistance->setText(
                 QStringLiteral("Distance / Azimuth from ") +
-                QString::number(sourceEntity->spectrum()->sessionIndex()) +
+                QString::number(spec1->sessionIndex()) +
                 QStringLiteral(" to ") +
-                QString::number(targetEntity->spectrum()->sessionIndex()) +
+                QString::number(spec2->sessionIndex()) +
                 QStringLiteral(": ") +
                 QString::number(distance, 'f', 2) +
                 QStringLiteral("m / ") +

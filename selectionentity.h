@@ -17,6 +17,7 @@
 #ifndef SELECTIONENTITY_H
 #define SELECTIONENTITY_H
 
+#include "spectrumentity.h"
 #include <QColor>
 #include <Qt3DCore/QEntity>
 #include <Qt3DRender/QMesh>
@@ -39,15 +40,15 @@ public:
     Qt3DRender::QMesh *mesh() const { return mMesh; }
     Qt3DCore::QTransform *transform() const { return mTransform; }
     Qt3DExtras::QPhongMaterial *material() const { return mMaterial; }
-    Qt3DCore::QEntity *target() const { return mTarget; }
-    void setTarget(Qt3DCore::QEntity* target) { mTarget = target; }
+    SpectrumEntity *target() const { return mTarget; }
+    void setTarget(SpectrumEntity *target);
 
 private:
 
     Qt3DRender::QMesh *mMesh;
     Qt3DCore::QTransform *mTransform;
     Qt3DExtras::QPhongMaterial *mMaterial;
-    Qt3DCore::QEntity *mTarget;
+    SpectrumEntity *mTarget;
 };
 
 #endif // SELECTIONENTITY_H
