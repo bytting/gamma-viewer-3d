@@ -95,16 +95,16 @@ void Session::loadPath(QString sessionPath)
             auto spec = new Spectrum(info.absoluteFilePath());
 
             if(mScriptLoaded)
-                spec->calculateDoserate(mDetector, L);            
+                spec->calculateDoserate(mDetector, L);
 
             if(first)
             {
                 mMinDoserate = spec->doserate();
-                mMaxDoserate = spec->doserate();                
+                mMaxDoserate = spec->doserate();
 
-                mMinX = mMaxX = spec->x1();
-                mMinY = mMaxY = spec->y1();
-                mMinZ = mMaxZ = spec->z1();                
+                mMinX = mMaxX = spec->position.x();
+                mMinY = mMaxY = spec->position.y();
+                mMinZ = mMaxZ = spec->position.z();
 
                 mMinAltitude = mMaxAltitude = spec->coordinates.altitude();
 
@@ -115,21 +115,21 @@ void Session::loadPath(QString sessionPath)
                 if(spec->doserate() < mMinDoserate)
                     mMinDoserate = spec->doserate();
                 if(spec->doserate() > mMaxDoserate)
-                    mMaxDoserate = spec->doserate();                
+                    mMaxDoserate = spec->doserate();
 
-                if(mMinX > spec->x1())
-                    mMinX = spec->x1();
-                if(mMinY > spec->y1())
-                    mMinY = spec->y1();
-                if(mMinZ > spec->z1())
-                    mMinZ = spec->z1();
+                if(mMinX > spec->position.x())
+                    mMinX = spec->position.x();
+                if(mMinY > spec->position.y())
+                    mMinY = spec->position.y();
+                if(mMinZ > spec->position.z())
+                    mMinZ = spec->position.z();
 
-                if(mMaxX < spec->x1())
-                    mMaxX = spec->x1();
-                if(mMaxY < spec->y1())
-                    mMaxY = spec->y1();
-                if(mMaxZ < spec->z1())
-                    mMaxZ = spec->z1();                
+                if(mMaxX < spec->position.x())
+                    mMaxX = spec->position.x();
+                if(mMaxY < spec->position.y())
+                    mMaxY = spec->position.y();
+                if(mMaxZ < spec->position.z())
+                    mMaxZ = spec->position.z();
 
                 if(mMinAltitude > spec->coordinates.altitude())
                     mMinAltitude = spec->coordinates.altitude();

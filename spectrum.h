@@ -22,6 +22,7 @@
 #include <vector>
 #include <QString>
 #include <QDateTime>
+#include <QVector3D>
 #include <QGeoCoordinate>
 
 extern "C"
@@ -60,9 +61,7 @@ public:
     void calculateDoserate(const Detector &det, lua_State* L);
     double doserate() const { return mDoserate; }
 
-    double x1() const { return mX1; }
-    double y1() const { return mY1; }
-    double z1() const { return mZ1; }
+    QVector3D position;
 
     struct InvalidSpectrumFile : public GA::Exception
     {
@@ -81,7 +80,6 @@ private:
     int mLivetime;
     ChanList mChannels;
     double mDoserate = 0.0;
-    double mX1, mY1, mZ1;
 };
 
 } // namespace Gamma

@@ -104,10 +104,9 @@ void Spectrum::loadFile(QString filename)
         }
     }
 
-    Geo::geodeticToCartesianSimplified(
+    position = Geo::geodeticToCartesianSimplified(
                 coordinates.latitude(),
-                coordinates.longitude(),
-                mX1, mY1, mZ1);
+                coordinates.longitude());
 }
 
 static double GEValue(lua_State* L, double energy)

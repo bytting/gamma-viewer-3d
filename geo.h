@@ -17,6 +17,8 @@
 #ifndef GEO_H
 #define GEO_H
 
+#include <QVector3D>
+
 namespace Geo
 {
 
@@ -29,19 +31,13 @@ T degToRad(T deg)
     return deg * pi<T> / static_cast<T>(180);
 }
 
-void geodeticToCartesianSimplified(
+QVector3D geodeticToCartesianSimplified(
         double lat,
-        double lon,
-        double &x,
-        double &y,
-        double &z);
+        double lon);
 
-void geodeticToCartesian(
+QVector3D geodeticToCartesian(
         double lat,
-        double lon,
-        double &x,
-        double &y,
-        double &z);
+        double lon);
 
 } // namespace Geo
 

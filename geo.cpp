@@ -20,30 +20,27 @@
 namespace Geo
 {
 
-void geodeticToCartesianSimplified(
+QVector3D geodeticToCartesianSimplified(
         double lat,
-        double lon,
-        double &x,
-        double &y,
-        double &z)
+        double lon)
 {
+    QVector3D vec;
     auto cosLat = std::cos(degToRad<double>(lat));
     auto sinLat = std::sin(degToRad<double>(lat));
     auto cosLon = std::cos(degToRad<double>(lon));
     auto sinLon = std::sin(degToRad<double>(lon));
     const auto rad = 500.0;
-    x = rad * cosLat * cosLon;
-    y = rad * cosLat * sinLon;
-    z = rad * sinLat;
+    vec.setX(rad * cosLat * cosLon);
+    vec.setY(rad * sinLat);
+    vec.setZ(rad * cosLat * sinLon);
+    return vec;
 }
 
-void geodeticToCartesian(
+QVector3D geodeticToCartesian(
         double lat,
-        double lon,
-        double &x,
-        double &y,
-        double &z)
+        double lon)
 {
+    QVector3D vec;
     auto cosLat = std::cos(degToRad<double>(lat));
     auto sinLat = std::sin(degToRad<double>(lat));
     auto cosLon = std::cos(degToRad<double>(lon));
@@ -54,9 +51,10 @@ void geodeticToCartesian(
                 cosLat * cosLat + (1 - f) * (1 - f) * sinLat * sinLat);
     const auto S = (1.0 - f) * (1.0 - f) * C;
     const auto h = 0.0;
-    x = (rad * C + h) * cosLat * cosLon;
-    y = (rad * C + h) * cosLat * sinLon;
-    z = (rad * S + h) * sinLat;
+    vec.setX((rad * C + h) * cosLat * cosLon);
+    vec.setY((rad * S + h) * sinLat);
+    vec.setZ((rad * C + h) * cosLat * sinLon);
+    return vec;
 }
 
 } // namespace Geo
