@@ -18,6 +18,7 @@
 #include <stdexcept>
 #include <memory>
 #include <cmath>
+#include <algorithm>
 #include <QString>
 #include <QDir>
 #include <QFile>
@@ -155,6 +156,17 @@ void Session::loadPath(QString sessionPath)
         spec->position.setY(spec->coordinates.altitude() - mMinAltitude);
         spec->position.setZ((spec->position.z() - mMinZ - halfZ) * -18000.0);
     }
+
+    // Recalculate min/max positions for session
+    auto p = std::minmax_element(mSpecList.begin(), mSpecList.end(),
+        [&](Spectrum* s1, Spectrum *s2) { return s1->position.x() < s2->position.x(); });
+    mMinX = (*p.first)->position.x();
+    mMaxX = (*p.second)->position.x();
+
+    p = std::minmax_element(mSpecList.begin(), mSpecList.end(),
+        [&](Spectrum* s1, Spectrum *s2) { return s1->position.z() < s2->position.z(); });
+    mMinZ = (*p.first)->position.z();
+    mMaxZ = (*p.second)->position.z();
 }
 
 void Session::loadSessionFile(QString sessionFile)
