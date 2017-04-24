@@ -144,6 +144,17 @@ void Session::loadPath(QString sessionPath)
             qDebug() << e.what();
         }
     }
+
+    // Transpose spectrum positions to origo and expand by a factor of 18000
+    auto halfX = (mMaxX - mMinX) / 2.0;
+    auto halfZ = (mMaxZ - mMinZ) / 2.0;
+
+    for(Spectrum *spec : mSpecList)
+    {
+        spec->position.setX((spec->position.x() - mMinX - halfX) * 18000.0);
+        spec->position.setY(spec->coordinates.altitude() - mMinAltitude);
+        spec->position.setZ((spec->position.z() - mMinZ - halfZ) * -18000.0);
+    }
 }
 
 void Session::loadSessionFile(QString sessionFile)

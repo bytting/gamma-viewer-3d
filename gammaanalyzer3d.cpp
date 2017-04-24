@@ -138,20 +138,11 @@ void GammaAnalyzer3D::onOpenSession()
                     scene->session->minDoserate(),
                     scene->session->maxDoserate());
 
-        auto halfX = (scene->session->maxX() - scene->session->minX()) / 2.0;
-        auto halfZ = (scene->session->maxZ() - scene->session->minZ()) / 2.0;
-
         for(Gamma::Spectrum *spec : scene->session->getSpectrumList())
         {
-            QVector3D position(
-                        (spec->position.x() - scene->session->minX() - halfX) * 18000.0,
-                        spec->coordinates.altitude() - scene->session->minAltitude(),
-                        (spec->position.z() - scene->session->minZ() - halfZ) * -18000.0);
-
             auto *entity = new SpectrumEntity(
-                        position,
-                        colorSpectrum(spec->doserate()),
                         spec,
+                        colorSpectrum(spec->doserate()),
                         scene->root);
 
             QObject::connect(
