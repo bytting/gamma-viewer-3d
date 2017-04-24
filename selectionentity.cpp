@@ -67,7 +67,6 @@ void SelectionEntity::setTarget(SpectrumEntity *target)
 {
     QVector3D pos(target->transform()->translation());
     pos.setY(pos.y() + 1.8);
-    transform()->setTranslation(pos);
-    setEnabled(true);
+    transform()->setTranslation(pos);    
     mTarget = target;
 }

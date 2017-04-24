@@ -115,6 +115,7 @@ void GammaAnalyzer3D::onOpenSession()
         auto it = scenes.find(sessionDir);
         if(it != scenes.end())
         {
+            // Scene has been open before, just show it
             auto *scene = it->second;
             scene->camera->setUpVector(QVector3D(0.0, 1.0, 0.0));
             scene->camera->setPosition(QVector3D(0, 20, 100.0f));
@@ -225,8 +226,9 @@ Scene *GammaAnalyzer3D::sceneFromEntity(SpectrumEntity *entity) const
     });
 
     if(it == scenes.end())
-        throw NoSceneFoundForEntity(entity->spectrum()->sessionName() + " " +
-                    QString(entity->spectrum()->sessionIndex()));
+        throw NoSceneFoundForEntity(
+                entity->spectrum()->sessionName() + " " +
+                QString::number(entity->spectrum()->sessionIndex()));
 
     return it->second;
 }
@@ -244,6 +246,7 @@ void GammaAnalyzer3D::handleSelectSpectrum(SpectrumEntity *entity)
 
     // Enable current selection arrow
     scene->selected->setTarget(entity);
+    scene->selected->setEnabled(true);
 
     // Populate UI fields with information about selected spectrum
     auto spec = entity->spectrum();
@@ -282,6 +285,7 @@ void GammaAnalyzer3D::handleMarkSpectrum(SpectrumEntity *entity)
 
     // Enable current marked arrow
     scene->marked->setTarget(entity);
+    scene->marked->setEnabled(true);
 
     // Calculate distance and azimuth
     auto spec1 = scene->selected->target()->spectrum();
