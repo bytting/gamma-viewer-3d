@@ -163,13 +163,13 @@ void Session::loadPath(QString sessionPath)
     auto halfZ = (mMaxZ - mMinZ) / 2.0;
 
     // Calculate center and north positions, transpose to origo and extend by a factor of 18000.
-    // Use -3.0 as y-axis to move positions below ground level.
+    // Use -5.0 as y-axis to move positions below ground level.
     center = Geo::geodeticToCartesianSimplified(
                 mMinLatitude + ((mMaxLatitude - mMinLatitude) / 2.0),
                 mMinLongitude + ((mMaxLongitude - mMinLongitude) / 2.0));
 
     center.setX((center.x() - mMinX - halfX) * 18000.0);
-    center.setY(-3.0);
+    center.setY(-5.0);
     center.setZ((center.z() - mMinZ - halfZ) * -18000.0);
 
     north = Geo::geodeticToCartesianSimplified(
@@ -177,7 +177,7 @@ void Session::loadPath(QString sessionPath)
                 mMinLongitude + ((mMaxLongitude - mMinLongitude) / 2.0));
 
     north.setX((north.x() - mMinX - halfX) * 18000.0);
-    north.setY(-3.0);
+    north.setY(-5.0);
     north.setZ((north.z() - mMinZ - halfZ) * -18000.0);
 
     // Transpose spectrum positions to origo and extend by a factor of 18000.
