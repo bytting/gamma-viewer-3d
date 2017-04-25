@@ -18,6 +18,7 @@
 #include "ui_gammaanalyzer3d.h"
 #include "colorspectrum.h"
 #include "gridentity.h"
+#include "compassentity.h"
 #include "scene.h"
 #include <QDebug>
 #include <QMessageBox>
@@ -152,6 +153,12 @@ void GammaAnalyzer3D::onOpenSession()
                         this,
                         &GammaAnalyzer3D::onSpectrumPicked);
         }
+
+        new CompassEntity(
+                    QColor(255, 0, 0),
+                    scene->session->center,
+                    scene->session->north,
+                    scene->root);
 
         scene->camera->setUpVector(QVector3D(0.0, 1.0, 0.0));
         scene->camera->setPosition(QVector3D(0, 20, 100.0f));

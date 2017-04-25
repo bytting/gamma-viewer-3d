@@ -14,13 +14,12 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-#include "gridentity.h"
+#include "compassentity.h"
 
-GridEntityXZ::GridEntityXZ(
-        float y,
-        unsigned int count,
-        float interval,
+CompassEntity::CompassEntity(
         const QColor &color,
+        const QVector3D &center,
+        const QVector3D &north,
         Qt3DCore::QEntity *parent)
     :
       Qt3DCore::QEntity(parent),
@@ -28,45 +27,20 @@ GridEntityXZ::GridEntityXZ(
       mGeometry(new Qt3DRender::QGeometry(this)),
       mDataBuffer(new Qt3DRender::QBuffer(Qt3DRender::QBuffer::VertexBuffer, this)),
       mPositionAttribute(new Qt3DRender::QAttribute(this)),
-      mMaterial(new Qt3DExtras::QPhongMaterial(this)),
-      mTransform(new Qt3DCore::QTransform(this))
+      mTransform(new Qt3DCore::QTransform(this)),
+      mMaterial(new Qt3DExtras::QPhongMaterial(this))
 {
-    int halfCount = count / 2;
-    int numVerts = halfCount * 4 * 2; // number of lines * number of points per line
-    float halfLength = interval * (float)halfCount;
-
     QByteArray vertexBuffer;
-    vertexBuffer.resize(numVerts * 3 * sizeof(float));
+    vertexBuffer.resize(2 * 3 * sizeof(float));
     float *ptr = reinterpret_cast<float*>(vertexBuffer.data());
 
-    int i = 0;
-    float x = -interval * (float)halfCount;
-    for(; i < (numVerts * 3) / 2; i += 6)
-    {
-        ptr[i] = x;
-        ptr[i+1] = y;
-        ptr[i+2] = -halfLength;
+    ptr[0] = center.x();
+    ptr[1] = center.y();
+    ptr[2] = center.z();
 
-        ptr[i+3] = x;
-        ptr[i+4] = y;
-        ptr[i+5] = halfLength - interval;
-
-        x += interval;
-    }
-
-    float z = -interval * (float)halfCount;
-    for(; i < numVerts * 3; i += 6)
-    {
-        ptr[i] = -halfLength;
-        ptr[i+1] = y;
-        ptr[i+2] = z;
-
-        ptr[i+3] = halfLength - interval;
-        ptr[i+4] = y;
-        ptr[i+5] = z;
-
-        z += interval;
-    }
+    ptr[3] = north.x();
+    ptr[4] = north.y();
+    ptr[5] = north.z();
 
     mDataBuffer->setData(vertexBuffer);
 
@@ -81,7 +55,7 @@ GridEntityXZ::GridEntityXZ(
     mMesh->setInstanceCount(1);
     mMesh->setIndexOffset(0);
     mMesh->setFirstInstance(0);
-    mMesh->setVertexCount(numVerts);
+    mMesh->setVertexCount(2);
     mMesh->setPrimitiveType(Qt3DRender::QGeometryRenderer::Lines);
     mMesh->setGeometry(mGeometry);
 
@@ -92,7 +66,7 @@ GridEntityXZ::GridEntityXZ(
     addComponent(mTransform);
 }
 
-GridEntityXZ::~GridEntityXZ()
+CompassEntity::~CompassEntity()
 {
     for(auto node : childNodes())
     {
@@ -103,10 +77,10 @@ GridEntityXZ::~GridEntityXZ()
         }
     }
 
-    mTransform->deleteLater();
-    mMaterial->deleteLater();
     mPositionAttribute->deleteLater();
     mDataBuffer->deleteLater();
     mGeometry->deleteLater();
+    mMaterial->deleteLater();
+    mTransform->deleteLater();
     mMesh->deleteLater();
 }

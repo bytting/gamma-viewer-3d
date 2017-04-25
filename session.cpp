@@ -15,6 +15,7 @@
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "session.h"
+#include "geo.h"
 #include <stdexcept>
 #include <memory>
 #include <cmath>
@@ -84,16 +85,16 @@ void Session::loadPath(QString sessionPath)
 
     loadSessionFile(sessionFile);
 
-    const auto entryInfoList = spectrumDir.entryInfoList(
+    const auto fileEntries = spectrumDir.entryInfoList(
                 QStringList() << "*.json",
                 QDir::NoDotAndDotDot | QDir::Files);
 
     bool first = true;
-    for(const auto& info : entryInfoList)
+    for(const auto& fileEntry : fileEntries)
     {
         try
         {
-            auto spec = new Spectrum(info.absoluteFilePath());
+            auto spec = new Spectrum(fileEntry.absoluteFilePath());
 
             if(mScriptLoaded)
                 spec->calculateDoserate(mDetector, L);
@@ -108,6 +109,8 @@ void Session::loadPath(QString sessionPath)
                 mMinZ = mMaxZ = spec->position.z();
 
                 mMinAltitude = mMaxAltitude = spec->coordinates.altitude();
+                mMinLatitude = mMaxLatitude = spec->coordinates.latitude();
+                mMinLongitude = mMaxLongitude = spec->coordinates.longitude();
 
                 first = false;
             }
@@ -136,6 +139,16 @@ void Session::loadPath(QString sessionPath)
                     mMinAltitude = spec->coordinates.altitude();
                 if(mMaxAltitude < spec->coordinates.altitude())
                     mMaxAltitude = spec->coordinates.altitude();
+
+                if(mMinLatitude > spec->coordinates.latitude())
+                    mMinLatitude = spec->coordinates.latitude();
+                if(mMaxLatitude < spec->coordinates.latitude())
+                    mMaxLatitude = spec->coordinates.latitude();
+
+                if(mMinLongitude > spec->coordinates.longitude())
+                    mMinLongitude = spec->coordinates.longitude();
+                if(mMaxLongitude < spec->coordinates.longitude())
+                    mMaxLongitude = spec->coordinates.longitude();
             }
 
             mSpecList.push_back(spec);
@@ -146,9 +159,29 @@ void Session::loadPath(QString sessionPath)
         }
     }
 
-    // Transpose spectrum positions to origo and expand by a factor of 18000
     auto halfX = (mMaxX - mMinX) / 2.0;
     auto halfZ = (mMaxZ - mMinZ) / 2.0;
+
+    // Calculate center and north positions, transpose to origo and extend by a factor of 18000.
+    // Use -3.0 as y-axis to move positions below ground level.
+    center = Geo::geodeticToCartesianSimplified(
+                mMinLatitude + ((mMaxLatitude - mMinLatitude) / 2.0),
+                mMinLongitude + ((mMaxLongitude - mMinLongitude) / 2.0));
+
+    center.setX((center.x() - mMinX - halfX) * 18000.0);
+    center.setY(-3.0);
+    center.setZ((center.z() - mMinZ - halfZ) * -18000.0);
+
+    north = Geo::geodeticToCartesianSimplified(
+                mMinLatitude + ((mMaxLatitude - mMinLatitude) / 2.0) + 0.00025,
+                mMinLongitude + ((mMaxLongitude - mMinLongitude) / 2.0));
+
+    north.setX((north.x() - mMinX - halfX) * 18000.0);
+    north.setY(-3.0);
+    north.setZ((north.z() - mMinZ - halfZ) * -18000.0);
+
+    // Transpose spectrum positions to origo and extend by a factor of 18000.
+    // Use delta altitude as y-axis to "flatten" the spectrums right above ground level.
 
     for(Spectrum *spec : mSpecList)
     {
@@ -162,6 +195,11 @@ void Session::loadPath(QString sessionPath)
         [&](Spectrum* s1, Spectrum *s2) { return s1->position.x() < s2->position.x(); });
     mMinX = (*p.first)->position.x();
     mMaxX = (*p.second)->position.x();
+
+    p = std::minmax_element(mSpecList.begin(), mSpecList.end(),
+        [&](Spectrum* s1, Spectrum *s2) { return s1->position.y() < s2->position.y(); });
+    mMinY = (*p.first)->position.y();
+    mMaxY = (*p.second)->position.y();
 
     p = std::minmax_element(mSpecList.begin(), mSpecList.end(),
         [&](Spectrum* s1, Spectrum *s2) { return s1->position.z() < s2->position.z(); });

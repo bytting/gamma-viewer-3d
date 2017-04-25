@@ -24,6 +24,7 @@
 #include <memory>
 #include <vector>
 #include <QString>
+#include <QVector3D>
 
 extern "C"
 {
@@ -71,6 +72,12 @@ public:
 
     double minAltitude() const { return mMinAltitude; }
     double maxAltitude() const { return mMaxAltitude; }
+    double minLatitude() const { return mMinLatitude; }
+    double maxLatitude() const { return mMaxLatitude; }
+    double minLongitude() const { return mMinLongitude; }
+    double maxLongitude() const { return mMaxLongitude; }
+
+    QVector3D center, north;
 
     struct DirIsNotASession : public GA::Exception
     {
@@ -111,6 +118,8 @@ private:
     double mMinX = 0.0, mMaxX = 0.0, mMinY = 0.0;
     double mMaxY = 0.0, mMinZ = 0.0, mMaxZ = 0.0;
     double mMinAltitude = 0.0, mMaxAltitude = 0.0;
+    double mMinLatitude = 0.0, mMaxLatitude = 0.0;
+    double mMinLongitude = 0.0, mMaxLongitude = 0.0;
 };
 
 } // namespace Gamma
