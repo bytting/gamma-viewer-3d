@@ -190,7 +190,7 @@ void Session::loadPath(QString sessionPath)
         spec->position.setZ((spec->position.z() - mMinZ - halfZ) * -18000.0);
     }
 
-    // Recalculate min/max positions for session
+    // Recalculate min/max positions for session. FIXME: inefficient
     auto p = std::minmax_element(mSpecList.begin(), mSpecList.end(),
         [&](Spectrum* s1, Spectrum *s2) { return s1->position.x() < s2->position.x(); });
     mMinX = (*p.first)->position.x();

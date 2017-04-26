@@ -142,8 +142,9 @@ void GammaAnalyzer3D::onOpenSession()
                     scene->session->north,
                     scene->root);
 
-        Palette::ColorSpectrum colorSpectrum(scene->session->minDoserate(),
-                                             scene->session->maxDoserate());
+        Palette::ColorSpectrum colorSpectrum(
+                    scene->session->minDoserate(),
+                    scene->session->maxDoserate());
 
         for(Gamma::Spectrum *spec : scene->session->getSpectrumList())
         {
@@ -228,7 +229,7 @@ void GammaAnalyzer3D::onSpectrumPicked(Qt3DRender::QPickEvent *event)
 Scene *GammaAnalyzer3D::sceneFromEntity(SpectrumEntity *entity) const
 {
     auto it = std::find_if(scenes.begin(), scenes.end(), [&](auto &p){
-        return p.second->hasChild(entity);
+        return p.second->hasChildEntity(entity);
     });
 
     if(it == scenes.end())

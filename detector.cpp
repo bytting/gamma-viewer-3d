@@ -82,8 +82,10 @@ double Detector::getEnergy(int index) const
 
     double dx = (double)index;
     double e = 0.0;
+
     for(CoefficientListSize i = 0; i < mEnergyCurveCoefficients.size(); i++)
         e += mEnergyCurveCoefficients[i] * std::pow(dx, (double)i);
+
     return e;
 }
 

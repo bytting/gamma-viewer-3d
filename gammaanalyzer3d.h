@@ -42,7 +42,7 @@ public:
 
 protected:
 
-    virtual void closeEvent(QCloseEvent *event);
+    void closeEvent(QCloseEvent *event) override;
 
 private:
 

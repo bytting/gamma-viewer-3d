@@ -98,10 +98,7 @@ void Spectrum::loadFile(QString filename)
                     QString::SplitBehavior::SkipEmptyParts);
 
         for(auto chan : strChanList)
-        {
-            int count = chan.toInt();
-            mChannels.push_back(count);
-        }
+            mChannels.emplace_back(chan.toInt());
     }
 
     position = Geo::geodeticToCartesianSimplified(

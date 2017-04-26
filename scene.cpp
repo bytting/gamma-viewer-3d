@@ -69,9 +69,10 @@ Scene::~Scene()
     delete session;
 }
 
-bool Scene::hasChild(Qt3DCore::QEntity *entity) const
+bool Scene::hasChildEntity(Qt3DCore::QEntity *entity) const
 {
     QObject *e = static_cast<QObject*>(entity);
+
     while(e)
     {
         if(e->parent() == root)

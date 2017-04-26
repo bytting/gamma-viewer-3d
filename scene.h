@@ -38,7 +38,7 @@ struct Scene
     SelectionEntity *selected = nullptr;
     SelectionEntity *marked = nullptr;
 
-    bool hasChild(Qt3DCore::QEntity *entity) const;
+    bool hasChildEntity(Qt3DCore::QEntity *entity) const;
 };
 
 #endif // SCENE_H
