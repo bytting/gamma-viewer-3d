@@ -21,8 +21,8 @@
 #include <QColor>
 #include <Qt3DCore/QEntity>
 #include <Qt3DRender/QMesh>
-#include <Qt3DCore/QTransform>
 #include <Qt3DExtras/QPhongMaterial>
+#include <Qt3DCore/QTransform>
 
 class SelectionEntity : public Qt3DCore::QEntity
 {
@@ -38,16 +38,18 @@ public:
     virtual ~SelectionEntity();
 
     Qt3DRender::QMesh *mesh() const { return mMesh; }
-    Qt3DCore::QTransform *transform() const { return mTransform; }
     Qt3DExtras::QPhongMaterial *material() const { return mMaterial; }
+    Qt3DCore::QTransform *transform() const { return mTransform; }
+
     SpectrumEntity *target() const { return mTarget; }
     void setTarget(SpectrumEntity *target);
 
 private:
 
     Qt3DRender::QMesh *mMesh;
-    Qt3DCore::QTransform *mTransform;
     Qt3DExtras::QPhongMaterial *mMaterial;
+    Qt3DCore::QTransform *mTransform;
+
     SpectrumEntity *mTarget;
 };
 

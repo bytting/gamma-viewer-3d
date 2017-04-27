@@ -24,16 +24,12 @@ SelectionEntity::SelectionEntity(
     :
       Qt3DCore::QEntity(parent),
       mMesh(new Qt3DRender::QMesh(this)),
-      mTransform(new Qt3DCore::QTransform(this)),
       mMaterial(new Qt3DExtras::QPhongMaterial(this)),
+      mTransform(new Qt3DCore::QTransform(this)),
       mTarget(nullptr)
 {
     mMesh->setSource(QUrl(QStringLiteral("qrc:/models/arrow.obj")));
     addComponent(mMesh);
-
-    mTransform->setTranslation(pos);
-    mTransform->setRotationZ(180.0);
-    addComponent(mTransform);
 
     mMaterial->setDiffuse(color);
     mMaterial->setSpecular(QColor(20, 20, 20));
@@ -44,6 +40,10 @@ SelectionEntity::SelectionEntity(
     mMaterial->setAmbient(ambientColor);
     mMaterial->setShininess(3.0f);
     addComponent(mMaterial);
+
+    mTransform->setTranslation(pos);
+    mTransform->setRotationZ(180.0);
+    addComponent(mTransform);
 }
 
 SelectionEntity::~SelectionEntity()
@@ -57,8 +57,8 @@ SelectionEntity::~SelectionEntity()
         }
     }
 
-    mMaterial->deleteLater();
     mTransform->deleteLater();
+    mMaterial->deleteLater();
     mMesh->deleteLater();
     mTarget = nullptr;
 }
@@ -67,6 +67,6 @@ void SelectionEntity::setTarget(SpectrumEntity *target)
 {
     QVector3D pos(target->transform()->translation());
     pos.setY(pos.y() + 1.8);
-    transform()->setTranslation(pos);    
+    transform()->setTranslation(pos);
     mTarget = target;
 }

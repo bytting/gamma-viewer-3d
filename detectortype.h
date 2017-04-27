@@ -27,7 +27,7 @@ class DetectorType
 {
 public:
 
-    DetectorType() {}
+    DetectorType() : mMaxNumChannels(0), mMinHV(0), mMaxHV(0) {}
     explicit DetectorType(const QJsonObject &obj);
 
     QString name() const { return mName; }
@@ -41,9 +41,8 @@ public:
 private:
 
     QString mName;
-    int mMaxNumChannels = 0;
-    int mMinHV = 0;
-    int mMaxHV = 0;
+    int mMaxNumChannels;
+    int mMinHV, mMaxHV;
     QString mGEScript;
 };
 

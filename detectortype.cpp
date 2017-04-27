@@ -21,6 +21,10 @@ namespace Gamma
 {
 
 DetectorType::DetectorType(const QJsonObject &obj)
+    :
+      mMaxNumChannels(0),
+      mMinHV(0),
+      mMaxHV(0)
 {
     loadJson(obj);
 }

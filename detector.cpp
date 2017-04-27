@@ -68,9 +68,10 @@ void Detector::loadJson(const QJsonObject &obj)
     if(!obj.contains("EnergyCurveCoefficients"))
         throw GA::MissingJsonValue("Detector:EnergyCurveCoefficients");
     QJsonArray coeffs = obj.value("EnergyCurveCoefficients").toArray();
+
     mEnergyCurveCoefficients.clear();
     for(auto c : coeffs)
-        mEnergyCurveCoefficients.push_back(c.toDouble());
+        mEnergyCurveCoefficients.emplace_back(c.toDouble());
 }
 
 double Detector::getEnergy(int index) const

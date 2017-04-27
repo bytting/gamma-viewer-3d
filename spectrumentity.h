@@ -39,16 +39,18 @@ public:
     virtual ~SpectrumEntity();
 
     Qt3DExtras::QSphereMesh *mesh() const { return mMesh; }
-    Qt3DCore::QTransform *transform() const { return mTransform; }
     Qt3DExtras::QPhongMaterial *material() const { return mMaterial; }
+    Qt3DCore::QTransform *transform() const { return mTransform; }
+
     Qt3DRender::QObjectPicker *picker() const { return mPicker; }
     Gamma::Spectrum *spectrum() const { return mSpectrum; }
 
 private:
 
     Qt3DExtras::QSphereMesh *mMesh;
-    Qt3DCore::QTransform *mTransform;
     Qt3DExtras::QPhongMaterial *mMaterial;
+    Qt3DCore::QTransform *mTransform;
+
     Qt3DRender::QObjectPicker *mPicker;
     Gamma::Spectrum *mSpectrum;
 };
