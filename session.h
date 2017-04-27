@@ -46,6 +46,12 @@ public:
     Session();
     ~Session();
 
+    struct UnableToCreateLuaState : public GA::Exception
+    {
+        explicit UnableToCreateLuaState(QString source) noexcept
+            : GA::Exception("Unable to create Lua state: " + source) {}
+    };
+
     const SpecList& getSpectrumList() const;
 
     const Spectrum* getSpectrum(SpecListSize index) const;
@@ -54,7 +60,25 @@ public:
 
     void loadPath(QString sessionPath);
 
+    struct DirIsNotASession : public GA::Exception
+    {
+        explicit DirIsNotASession(QString dir) noexcept
+            : GA::Exception("Directory is not a valid session: " + dir) {}
+    };
+
+    struct InvalidSessionFile : public GA::Exception
+    {
+        explicit InvalidSessionFile(QString filename) noexcept
+            : GA::Exception("Invalid session file: " + filename) {}
+    };
+
     void loadDoserateScript(QString scriptFileName);
+
+    struct LoadDoserateScriptFailed : public GA::Exception
+    {
+        explicit LoadDoserateScriptFailed(QString filename) noexcept
+            : GA::Exception("Loading doserate script failed: " + filename) {}
+    };
 
     void clear();
 
@@ -79,47 +103,30 @@ public:
 
     QVector3D center, north;
 
-    struct DirIsNotASession : public GA::Exception
-    {
-        explicit DirIsNotASession(QString dir) noexcept
-            : GA::Exception("Directory is not a valid session: " + dir) {}
-    };
-
-    struct InvalidSessionFile : public GA::Exception
-    {
-        explicit InvalidSessionFile(QString filename) noexcept
-            : GA::Exception("Invalid session file: " + filename) {}
-    };
-
-    struct UnableToCreateLuaState : public GA::Exception
-    {
-        explicit UnableToCreateLuaState(QString source) noexcept
-            : GA::Exception("Unable to create Lua state: " + source) {}
-    };
-
 private:
 
     void loadSessionFile(QString sessionFile);
 
     QString mName;
     QString mComment;
-    double mLivetime = 0.0;
-    int mIterations = 0;
 
     DetectorType mDetectorType;
     Detector mDetector;
 
     SpecList mSpecList;
 
-    lua_State *L = nullptr;
-    bool mScriptLoaded = false;
-    double mMinDoserate = 0.0;
-    double mMaxDoserate = 0.0;
-    double mMinX = 0.0, mMaxX = 0.0, mMinY = 0.0;
-    double mMaxY = 0.0, mMinZ = 0.0, mMaxZ = 0.0;
-    double mMinAltitude = 0.0, mMaxAltitude = 0.0;
-    double mMinLatitude = 0.0, mMaxLatitude = 0.0;
-    double mMinLongitude = 0.0, mMaxLongitude = 0.0;
+    lua_State *L;
+    bool mScriptLoaded;
+
+    double mLivetime;
+    int mIterations;
+    double mMinDoserate, mMaxDoserate;
+    double mMinX, mMaxX;
+    double mMinY, mMaxY;
+    double mMinZ, mMaxZ;
+    double mMinAltitude, mMaxAltitude;
+    double mMinLatitude, mMaxLatitude;
+    double mMinLongitude, mMaxLongitude;
 };
 
 } // namespace Gamma

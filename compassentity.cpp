@@ -27,7 +27,7 @@ CompassEntity::CompassEntity(
       mGeometry(new Qt3DRender::QGeometry(this)),
       mDataBuffer(new Qt3DRender::QBuffer(Qt3DRender::QBuffer::VertexBuffer, this)),
       mPositionAttribute(new Qt3DRender::QAttribute(this)),
-      mTransform(new Qt3DCore::QTransform(this)),
+      //mTransform(new Qt3DCore::QTransform(this)),
       mMaterial(new Qt3DExtras::QPhongMaterial(this))
 {
     QByteArray vertexBuffer;
@@ -63,7 +63,7 @@ CompassEntity::CompassEntity(
 
     addComponent(mMesh);
     addComponent(mMaterial);
-    addComponent(mTransform);
+    //addComponent(mTransform);
 }
 
 CompassEntity::~CompassEntity()
@@ -81,6 +81,6 @@ CompassEntity::~CompassEntity()
     mDataBuffer->deleteLater();
     mGeometry->deleteLater();
     mMaterial->deleteLater();
-    mTransform->deleteLater();
+    //mTransform->deleteLater();
     mMesh->deleteLater();
 }

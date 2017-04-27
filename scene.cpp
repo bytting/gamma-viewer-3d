@@ -25,6 +25,7 @@ Scene::Scene(const QColor &clearColor)
       session(new Gamma::Session()),
       window(new Qt3DExtras::Qt3DWindow),
       root(new Qt3DCore::QEntity),
+      camera(nullptr),
       cameraController(new Qt3DExtras::QOrbitCameraController(root)),
       selected(new SelectionEntity(QVector3D(0.0, 0.0, 0.0), QColor(255, 0, 255), root)),
       marked(new SelectionEntity(QVector3D(0.0, 0.0, 0.0), QColor(255, 255, 255), root))

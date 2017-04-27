@@ -18,12 +18,13 @@
 #define COMPASSENTITY_H
 
 #include <QColor>
+#include <QVector3D>
 #include <Qt3DCore/QEntity>
 #include <Qt3DRender/QAttribute>
 #include <Qt3DRender/QBuffer>
 #include <Qt3DRender/QGeometryRenderer>
 #include <Qt3DRender/QGeometry>
-#include <Qt3DCore/QTransform>
+//#include <Qt3DCore/QTransform>
 #include <Qt3DExtras/QPhongMaterial>
 
 class CompassEntity : public Qt3DCore::QEntity
@@ -41,7 +42,7 @@ public:
     virtual ~CompassEntity();
 
     Qt3DRender::QGeometryRenderer *mesh() const { return mMesh; }
-    Qt3DCore::QTransform *transform() const { return mTransform; }
+    //Qt3DCore::QTransform *transform() const { return mTransform; }
     Qt3DExtras::QPhongMaterial *material() const { return mMaterial; }
 
 private:
@@ -50,7 +51,7 @@ private:
     Qt3DRender::QGeometry *mGeometry;
     Qt3DRender::QBuffer *mDataBuffer;
     Qt3DRender::QAttribute *mPositionAttribute;
-    Qt3DCore::QTransform *mTransform;
+    //Qt3DCore::QTransform *mTransform;
     Qt3DExtras::QPhongMaterial *mMaterial;
 };
 

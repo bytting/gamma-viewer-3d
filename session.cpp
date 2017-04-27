@@ -32,8 +32,26 @@ namespace Gamma
 {
 
 Session::Session()
+    :
+      L(luaL_newstate()),
+      mScriptLoaded(false),
+      mLivetime(0.0),
+      mIterations(0),
+      mMinDoserate(0.0),
+      mMaxDoserate(0.0),
+      mMinX(0.0),
+      mMaxX(0.0),
+      mMinY(0.0),
+      mMaxY(0.0),
+      mMinZ(0.0),
+      mMaxZ(0.0),
+      mMinAltitude(0.0),
+      mMaxAltitude(0.0),
+      mMinLatitude(0.0),
+      mMaxLatitude(0.0),
+      mMinLongitude(0.0),
+      mMaxLongitude(0.0)
 {
-    L = luaL_newstate();
     if(!L)
         throw UnableToCreateLuaState("Session::Session");
     luaL_openlibs(L);
@@ -247,8 +265,8 @@ void Session::loadSessionFile(QString sessionFile)
 void Session::loadDoserateScript(QString scriptFileName)
 {
     if(luaL_dofile(L, scriptFileName.toStdString().c_str()))
-        qDebug() << "luaL_dofile failed";
-    else mScriptLoaded = true;
+        throw LoadDoserateScriptFailed(scriptFileName);
+    mScriptLoaded = true;
 }
 
 void Session::clear()

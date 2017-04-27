@@ -30,13 +30,13 @@ struct Scene
     explicit Scene(const QColor &clearColor);
     ~Scene();
 
-    Gamma::Session *session = nullptr;
-    Qt3DExtras::Qt3DWindow *window = nullptr;
-    Qt3DCore::QEntity *root = nullptr;
-    Qt3DRender::QCamera *camera = nullptr;
-    Qt3DExtras::QOrbitCameraController *cameraController = nullptr;
-    SelectionEntity *selected = nullptr;
-    SelectionEntity *marked = nullptr;
+    Gamma::Session *session;
+    Qt3DExtras::Qt3DWindow *window;
+    Qt3DCore::QEntity *root;
+    Qt3DRender::QCamera *camera;
+    Qt3DExtras::QOrbitCameraController *cameraController;
+    SelectionEntity *selected;
+    SelectionEntity *marked;
 
     bool hasChildEntity(Qt3DCore::QEntity *entity) const;
 };
