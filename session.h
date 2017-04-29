@@ -87,22 +87,6 @@ public:
     double minDoserate() const { return mMinDoserate; }
     double maxDoserate() const { return mMaxDoserate; }
 
-    double minX() const { return mMinX; }
-    double maxX() const { return mMaxX; }
-    double minY() const { return mMinY; }
-    double maxY() const { return mMaxY; }
-    double minZ() const { return mMinZ; }
-    double maxZ() const { return mMaxZ; }
-
-    double minAltitude() const { return mMinAltitude; }
-    double maxAltitude() const { return mMaxAltitude; }
-    double minLatitude() const { return mMinLatitude; }
-    double maxLatitude() const { return mMaxLatitude; }
-    double minLongitude() const { return mMinLongitude; }
-    double maxLongitude() const { return mMaxLongitude; }
-
-    QVector3D center, north;
-
 private:
 
     void loadSessionFile(QString sessionFile);
@@ -121,12 +105,6 @@ private:
     double mLivetime;
     int mIterations;
     double mMinDoserate, mMaxDoserate;
-    double mMinX, mMaxX;
-    double mMinY, mMaxY;
-    double mMinZ, mMaxZ;
-    double mMinAltitude, mMaxAltitude;
-    double mMinLatitude, mMaxLatitude;
-    double mMinLongitude, mMaxLongitude;
 };
 
 } // namespace Gamma

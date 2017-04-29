@@ -136,12 +136,6 @@ void GammaAnalyzer3D::onOpenSession()
 
         new GridEntityXZ(-1.0f, 10, 10.0f, QColor(255, 255, 255), scene->root);
 
-        new CompassEntity(
-                    QColor(255, 0, 0),
-                    scene->session->center,
-                    scene->session->north,
-                    scene->root);
-
         Palette::ColorSpectrum colorSpectrum(
                     scene->session->minDoserate(),
                     scene->session->maxDoserate());
