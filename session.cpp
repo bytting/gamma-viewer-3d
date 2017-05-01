@@ -44,8 +44,13 @@ Session::Session()
       mMaxY(0.0),
       mMinZ(0.0),
       mMaxZ(0.0),
+      mMinLatitude(0.0),
+      mMaxLatitude(0.0),
+      mMinLongitude(0.0),
+      mMaxLongitude(0.0),
       mMinAltitude(0.0),
-      mMaxAltitude(0.0)
+      mMaxAltitude(0.0),
+      mLogarithmicColorScale(true)
 {
     if(!L)
         throw UnableToCreateLuaState("Session::Session");
@@ -119,14 +124,16 @@ void Session::loadPath(QString sessionPath)
                 mMinX = mMaxX = spec->position.x();
                 mMinY = mMaxY = spec->position.y();
                 mMinZ = mMaxZ = spec->position.z();
+                mMinLatitude = mMaxLatitude = spec->coordinate.latitude();
+                mMinLongitude = mMaxLongitude = spec->coordinate.longitude();
                 mMinAltitude = mMaxAltitude = spec->coordinate.altitude();
                 first = false;
             }
             else
             {
-                if(spec->doserate() < mMinDoserate)
+                if(mMinDoserate > spec->doserate())
                     mMinDoserate = spec->doserate();
-                if(spec->doserate() > mMaxDoserate)
+                if(mMaxDoserate < spec->doserate())
                     mMaxDoserate = spec->doserate();
 
                 if(mMinX > spec->position.x())
@@ -143,6 +150,16 @@ void Session::loadPath(QString sessionPath)
                     mMinZ = spec->position.z();
                 if(mMaxZ < spec->position.z())
                     mMaxZ = spec->position.z();
+
+                if(mMinLatitude > spec->coordinate.latitude())
+                    mMinLatitude = spec->coordinate.latitude();
+                if(mMaxLatitude < spec->coordinate.latitude())
+                    mMaxLatitude = spec->coordinate.latitude();
+
+                if(mMinLongitude > spec->coordinate.longitude())
+                    mMinLongitude = spec->coordinate.longitude();
+                if(mMaxLongitude < spec->coordinate.longitude())
+                    mMaxLongitude = spec->coordinate.longitude();
 
                 if(mMinAltitude > spec->coordinate.altitude())
                     mMinAltitude = spec->coordinate.altitude();
@@ -162,39 +179,18 @@ void Session::loadPath(QString sessionPath)
     mHalfY = (mMaxY - mMinY) / 2.0;
     mHalfZ = (mMaxZ - mMinZ) / 2.0;
 
-    // FIXME: Make fromCartesian work
+    // FIXME: Make setFromCartesian work
 
     /*centerPosition.setX(mMinX + mHalfX);
     centerPosition.setY(mMinY + mHalfY);
     centerPosition.setZ(mMinZ + mHalfZ);
-    centerCoordinate = Geo::Coordinate::fromCartesian(centerPosition);*/
+    centerCoordinate.setFromCartesian(centerPosition);*/
 
     centerPosition = mSpecList[0]->position;
     centerCoordinate = mSpecList[0]->coordinate;
 
     northCoordinate = centerCoordinate.atDistanceAndAzimuth(50.0, 0.0);
     northPosition = northCoordinate.toCartesian();
-
-    qDebug() << centerCoordinate;
-    qDebug() << northCoordinate;
-    qDebug() << centerPosition;
-    qDebug() << northPosition;
-}
-
-QVector3D Session::scenePosition(const QVector3D &position, double altitude)
-{
-    QVector3D p;
-
-    p.setX(position.x() - mMinX - mHalfX);
-    p.setY(altitude - mMinAltitude);
-    p.setZ(-1.0 * (position.y() - mMinY - mHalfY));
-
-    return p;
-}
-
-QVector3D Session::scenePosition(const Spectrum *spec)
-{
-    return scenePosition(spec->position, spec->coordinate.altitude());
 }
 
 void Session::loadSessionFile(QString sessionFile)
@@ -252,7 +248,74 @@ void Session::clear()
     mIterations = 0;
     mLivetime = mMinDoserate = mMaxDoserate = 0.0;
     mMinX = mMaxX = mMinY = mMaxY = mMinZ = mMaxZ = 0.0;
+    mMinLatitude = mMaxLatitude = 0.0;
+    mMinLongitude = mMaxLongitude = 0.0;
     mMinAltitude = mMaxAltitude = 0.0;
+}
+
+QVector3D Session::makeScenePosition(const QVector3D &position, double altitude) const
+{
+    QVector3D p;
+
+    p.setX(position.x() - mMinX - mHalfX);
+    p.setY(altitude - mMinAltitude);
+    p.setZ(-1.0 * (position.y() - mMinY - mHalfY));
+
+    return p;
+}
+
+QVector3D Session::makeScenePosition(const Spectrum *spec) const
+{
+    return makeScenePosition(spec->position, spec->coordinate.altitude());
+}
+
+QColor Session::makeDoserateColor(double doserate) const
+{
+    if(doserate == 0.0)
+        return QColor(0, 255, 0);
+
+    QColor color;
+    auto minVal = mMinDoserate;
+    auto maxVal = mMaxDoserate;
+
+    if(mLogarithmicColorScale)
+    {
+        minVal = std::log(minVal);
+        maxVal = std::log(maxVal);
+        doserate = std::log(doserate);
+    }
+
+    auto f = (doserate - minVal) / (maxVal - minVal);
+
+    auto a = (1.0 - f) / 0.25;	// invert and group
+    auto X = std::floor(a);	// the integer part
+    auto Y = std::floor(255.0 * (a - X)); // the fractional part from 0 to 255
+
+    switch((int)X)
+    {
+    case 0:
+        color.setRgb(255, Y, 0);
+        break;
+    case 1:
+        color.setRgb(255 - Y, 255, 0);
+        break;
+    case 2:
+        color.setRgb(0, 255, Y);
+        break;
+    case 3:
+        color.setRgb(0, 255 - Y, 255);
+        break;
+    case 4:
+        color.setRgb(0, 0, 255);
+        break;
+    }
+
+    return color;
+}
+
+QColor Session::makeDoserateColor(const Spectrum *spec) const
+{
+    return makeDoserateColor(spec->doserate());
 }
 
 } // namespace Gamma

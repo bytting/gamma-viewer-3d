@@ -52,13 +52,13 @@ public:
     Coordinate(const QGeoCoordinate& rhs);
     virtual ~Coordinate() {}
 
-    void setCoordinates(double latitude, double longitude);
-    void setCoordinates(double latitude, double longitude, double altitude);
+    void set(double latitude, double longitude);
+    void set(double latitude, double longitude, double altitude);
+    void setFromCartesian(const QVector3D& position);
 
     QVector3D toCartesian() const;
-    void parseCartesian(const QVector3D& position);
 
-    static Coordinate fromCartesian(const QVector3D& position);
+    //static Coordinate fromCartesian(const QVector3D& position);
 };
 
 } // namespace Geo

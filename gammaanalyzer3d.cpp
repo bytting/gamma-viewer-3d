@@ -16,7 +16,6 @@
 
 #include "gammaanalyzer3d.h"
 #include "ui_gammaanalyzer3d.h"
-#include "colorspectrum.h"
 #include "gridentity.h"
 #include "compassentity.h"
 #include "scene.h"
@@ -139,19 +138,15 @@ void GammaAnalyzer3D::onOpenSession()
 
         new CompassEntity(
                     QColor(255, 0, 0),
-                    session->scenePosition(session->centerPosition, session->minAltitude() - 5.0),
-                    session->scenePosition(session->northPosition, session->minAltitude() - 5.0),
+                    session->makeScenePosition(session->centerPosition, session->minAltitude() - 5.0),
+                    session->makeScenePosition(session->northPosition, session->minAltitude() - 5.0),
                     scene->root);
-
-        Palette::ColorSpectrum colorSpectrum(
-                    session->minDoserate(),
-                    session->maxDoserate());
 
         for(Gamma::Spectrum *spec : session->getSpectrumList())
         {
             auto *entity = new SpectrumEntity(
-                        session->scenePosition(spec),
-                        colorSpectrum(spec->doserate()),
+                        session->makeScenePosition(spec),
+                        session->makeDoserateColor(spec),
                         spec,
                         scene->root);
 

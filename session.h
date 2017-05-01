@@ -26,6 +26,7 @@
 #include <vector>
 #include <QString>
 #include <QVector3D>
+#include <QColor>
 
 extern "C"
 {
@@ -66,8 +67,13 @@ public:
     Geo::Coordinate centerCoordinate, northCoordinate;
     QVector3D centerPosition, northPosition;
 
-    QVector3D scenePosition(const QVector3D &position, double altitude);
-    QVector3D scenePosition(const Spectrum *spec);
+    QVector3D makeScenePosition(const QVector3D &position, double altitude) const;
+    QVector3D makeScenePosition(const Spectrum *spec) const;
+
+    void useLogarithmicDoserateColor(bool state) { mLogarithmicColorScale = state; }
+
+    QColor makeDoserateColor(double doserate) const;
+    QColor makeDoserateColor(const Spectrum *spec) const;
 
     struct UnableToCreateLuaState : public GA::Exception
     {
@@ -113,7 +119,10 @@ private:
     double mMinDoserate, mMaxDoserate;
     double mMinX, mMaxX, mMinY, mMaxY, mMinZ, mMaxZ;
     double mHalfX, mHalfY, mHalfZ;
+    double mMinLatitude, mMaxLatitude;
+    double mMinLongitude, mMaxLongitude;
     double mMinAltitude, mMaxAltitude;
+    bool mLogarithmicColorScale;
 };
 
 } // namespace Gamma

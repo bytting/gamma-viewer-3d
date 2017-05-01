@@ -45,17 +45,23 @@ Coordinate::Coordinate(const QGeoCoordinate& rhs)
 {
 }
 
-void Coordinate::setCoordinates(double latitude, double longitude)
+void Coordinate::set(double latitude, double longitude)
 {
     setLatitude(latitude);
     setLongitude(longitude);
 }
 
-void Coordinate::setCoordinates(double latitude, double longitude, double altitude)
+void Coordinate::set(double latitude, double longitude, double altitude)
 {
     setLatitude(latitude);
     setLongitude(longitude);
     setAltitude(altitude);
+}
+
+void Coordinate::setFromCartesian(const QVector3D& position)
+{
+    setLatitude(radToDeg<double>(std::acos(position.y() / earth_radius<double>)));
+    setLongitude(radToDeg<double>(std::atan2(position.y(), position.x())));
 }
 
 QVector3D Coordinate::toCartesian() const
@@ -71,21 +77,6 @@ QVector3D Coordinate::toCartesian() const
     vec.setZ(earth_radius<double> * sinLat);
 
     return vec;
-}
-
-void Coordinate::parseCartesian(const QVector3D& position)
-{
-    //setLatitude(radToDeg<double>(std::acos(position.z() / earth_radius<double>)));
-    //setLongitude(radToDeg<double>(std::atan2(position.y(), position.x())));
-    setLatitude(radToDeg<double>(std::acos(position.y() / earth_radius<double>)));
-    setLongitude(radToDeg<double>(std::atan2(position.y(), position.x())));
-}
-
-Coordinate Coordinate::fromCartesian(const QVector3D& position)
-{
-    Coordinate coord;
-    coord.parseCartesian(position);
-    return coord;
 }
 
 } // namespace Geo
