@@ -17,8 +17,9 @@
 #include "spectrumentity.h"
 
 SpectrumEntity::SpectrumEntity(
-        Gamma::Spectrum *spec,
+        const QVector3D &position,
         const QColor &color,
+        Gamma::Spectrum *spec,
         Qt3DCore::QEntity *parent)
     :
       Qt3DCore::QEntity(parent),
@@ -28,7 +29,7 @@ SpectrumEntity::SpectrumEntity(
       mPicker(new Qt3DRender::QObjectPicker(this)),
       mSpectrum(spec)
 {
-    mMesh->setRadius(0.6f);
+    mMesh->setRadius(0.5f);
     addComponent(mMesh);
 
     mMaterial->setDiffuse(color);
@@ -41,7 +42,7 @@ SpectrumEntity::SpectrumEntity(
     mMaterial->setShininess(3.0f);
     addComponent(mMaterial);
 
-    mTransform->setTranslation(spec->position);
+    mTransform->setTranslation(position);
     addComponent(mTransform);
 
     mPicker->setHoverEnabled(false);

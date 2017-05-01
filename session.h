@@ -17,10 +17,11 @@
 #ifndef SESSION_H
 #define SESSION_H
 
-#include "spectrum.h"
 #include "exceptions.h"
 #include "detectortype.h"
 #include "detector.h"
+#include "spectrum.h"
+#include "geo.h"
 #include <memory>
 #include <vector>
 #include <QString>
@@ -46,19 +47,33 @@ public:
     Session();
     ~Session();
 
+    const SpecList& getSpectrumList() const;
+    const Spectrum* getSpectrum(SpecListSize index) const;
+    SpecListSize spectrumCount() const { return mSpecList.size(); }
+
+    void loadPath(QString sessionPath);
+    void loadDoserateScript(QString scriptFileName);
+
+    void clear();
+    QString name() const { return mName; }
+
+    double minDoserate() const { return mMinDoserate; }
+    double maxDoserate() const { return mMaxDoserate; }
+
+    double minAltitude() const { return mMinAltitude; }
+    double maxAltitude() const { return mMaxAltitude; }
+
+    Geo::Coordinate centerCoordinate, northCoordinate;
+    QVector3D centerPosition, northPosition;
+
+    QVector3D scenePosition(const QVector3D &position, double altitude);
+    QVector3D scenePosition(const Spectrum *spec);
+
     struct UnableToCreateLuaState : public GA::Exception
     {
         explicit UnableToCreateLuaState(QString source) noexcept
             : GA::Exception("Unable to create Lua state: " + source) {}
     };
-
-    const SpecList& getSpectrumList() const;
-
-    const Spectrum* getSpectrum(SpecListSize index) const;
-
-    SpecListSize spectrumCount() const { return mSpecList.size(); }
-
-    void loadPath(QString sessionPath);
 
     struct DirIsNotASession : public GA::Exception
     {
@@ -72,20 +87,11 @@ public:
             : GA::Exception("Invalid session file: " + filename) {}
     };
 
-    void loadDoserateScript(QString scriptFileName);
-
     struct LoadDoserateScriptFailed : public GA::Exception
     {
         explicit LoadDoserateScriptFailed(QString filename) noexcept
             : GA::Exception("Loading doserate script failed: " + filename) {}
     };
-
-    void clear();
-
-    QString name() const { return mName; }
-
-    double minDoserate() const { return mMinDoserate; }
-    double maxDoserate() const { return mMaxDoserate; }
 
 private:
 
@@ -105,6 +111,9 @@ private:
     double mLivetime;
     int mIterations;
     double mMinDoserate, mMaxDoserate;
+    double mMinX, mMaxX, mMinY, mMaxY, mMinZ, mMaxZ;
+    double mHalfX, mHalfY, mHalfZ;
+    double mMinAltitude, mMaxAltitude;
 };
 
 } // namespace Gamma

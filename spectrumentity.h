@@ -32,8 +32,9 @@ class SpectrumEntity : public Qt3DCore::QEntity
 public:
 
     SpectrumEntity(
-            Gamma::Spectrum *spec,
+            const QVector3D &position,
             const QColor &color,
+            Gamma::Spectrum *spec,
             Qt3DCore::QEntity *parent);
 
     virtual ~SpectrumEntity();

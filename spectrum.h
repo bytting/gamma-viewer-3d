@@ -19,11 +19,11 @@
 
 #include "exceptions.h"
 #include "detector.h"
+#include "geo.h"
 #include <vector>
 #include <QString>
 #include <QDateTime>
 #include <QVector3D>
-#include <QGeoCoordinate>
 
 extern "C"
 {
@@ -48,8 +48,6 @@ public:
     QString sessionName() const { return mSessionName; }
     int sessionIndex() const { return mSessionIndex; }
 
-    QGeoCoordinate coordinates;
-
     QDateTime gpsTimeStart() const { return mGpsTimeStart; }
     int realtime() const { return mRealtime; }
     int livetime() const { return mLivetime; }
@@ -61,6 +59,7 @@ public:
     void calculateDoserate(const Detector &det, lua_State* L);
     double doserate() const { return mDoserate; }
 
+    Geo::Coordinate coordinate;
     QVector3D position;
 
     struct InvalidSpectrumFile : public GA::Exception

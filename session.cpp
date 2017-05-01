@@ -15,7 +15,6 @@
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "session.h"
-#include "geo.h"
 #include <stdexcept>
 #include <memory>
 #include <cmath>
@@ -38,7 +37,15 @@ Session::Session()
       mLivetime(0.0),
       mIterations(0),
       mMinDoserate(0.0),
-      mMaxDoserate(0.0)
+      mMaxDoserate(0.0),
+      mMinX(0.0),
+      mMaxX(0.0),
+      mMinY(0.0),
+      mMaxY(0.0),
+      mMinZ(0.0),
+      mMaxZ(0.0),
+      mMinAltitude(0.0),
+      mMaxAltitude(0.0)
 {
     if(!L)
         throw UnableToCreateLuaState("Session::Session");
@@ -95,7 +102,6 @@ void Session::loadPath(QString sessionPath)
                 QStringList() << "*.json",
                 QDir::NoDotAndDotDot | QDir::Files);
 
-    double minX, maxX, minZ, maxZ, minAltitude;
     bool first = true;
 
     for(const auto& fileEntry : fileEntries)
@@ -110,9 +116,10 @@ void Session::loadPath(QString sessionPath)
             if(first)
             {
                 mMinDoserate = mMaxDoserate = spec->doserate();
-                minX = maxX = spec->position.x();
-                minZ = maxZ = spec->position.z();
-                minAltitude = spec->coordinates.altitude();
+                mMinX = mMaxX = spec->position.x();
+                mMinY = mMaxY = spec->position.y();
+                mMinZ = mMaxZ = spec->position.z();
+                mMinAltitude = mMaxAltitude = spec->coordinate.altitude();
                 first = false;
             }
             else
@@ -122,18 +129,25 @@ void Session::loadPath(QString sessionPath)
                 if(spec->doserate() > mMaxDoserate)
                     mMaxDoserate = spec->doserate();
 
-                if(minX > spec->position.x())
-                    minX = spec->position.x();
-                if(maxX < spec->position.x())
-                    maxX = spec->position.x();
+                if(mMinX > spec->position.x())
+                    mMinX = spec->position.x();
+                if(mMaxX < spec->position.x())
+                    mMaxX = spec->position.x();
 
-                if(minZ > spec->position.z())
-                    minZ = spec->position.z();
-                if(maxZ < spec->position.z())
-                    maxZ = spec->position.z();
+                if(mMinY > spec->position.y())
+                    mMinY = spec->position.y();
+                if(mMaxY < spec->position.y())
+                    mMaxY = spec->position.y();
 
-                if(minAltitude > spec->coordinates.altitude())
-                    minAltitude = spec->coordinates.altitude();
+                if(mMinZ > spec->position.z())
+                    mMinZ = spec->position.z();
+                if(mMaxZ < spec->position.z())
+                    mMaxZ = spec->position.z();
+
+                if(mMinAltitude > spec->coordinate.altitude())
+                    mMinAltitude = spec->coordinate.altitude();
+                if(mMaxAltitude < spec->coordinate.altitude())
+                    mMaxAltitude = spec->coordinate.altitude();
             }
 
             mSpecList.push_back(spec);
@@ -144,18 +158,43 @@ void Session::loadPath(QString sessionPath)
         }
     }
 
-    // Transpose spectrum positions to origo and extend by a factor of 18000.
-    // Use delta altitude as y-axis to position the spectrums above ground level.
+    mHalfX = (mMaxX - mMinX) / 2.0;
+    mHalfY = (mMaxY - mMinY) / 2.0;
+    mHalfZ = (mMaxZ - mMinZ) / 2.0;
 
-    auto halfX = (maxX - minX) / 2.0;
-    auto halfZ = (maxZ - minZ) / 2.0;
+    // FIXME: Make fromCartesian work
 
-    for(Spectrum *spec : mSpecList)
-    {
-        spec->position.setX((spec->position.x() - minX - halfX) * 18000.0);
-        spec->position.setY(spec->coordinates.altitude() - minAltitude);
-        spec->position.setZ((spec->position.z() - minZ - halfZ) * -18000.0);
-    }
+    /*centerPosition.setX(mMinX + mHalfX);
+    centerPosition.setY(mMinY + mHalfY);
+    centerPosition.setZ(mMinZ + mHalfZ);
+    centerCoordinate = Geo::Coordinate::fromCartesian(centerPosition);*/
+
+    centerPosition = mSpecList[0]->position;
+    centerCoordinate = mSpecList[0]->coordinate;
+
+    northCoordinate = centerCoordinate.atDistanceAndAzimuth(50.0, 0.0);
+    northPosition = northCoordinate.toCartesian();
+
+    qDebug() << centerCoordinate;
+    qDebug() << northCoordinate;
+    qDebug() << centerPosition;
+    qDebug() << northPosition;
+}
+
+QVector3D Session::scenePosition(const QVector3D &position, double altitude)
+{
+    QVector3D p;
+
+    p.setX(position.x() - mMinX - mHalfX);
+    p.setY(altitude - mMinAltitude);
+    p.setZ(-1.0 * (position.y() - mMinY - mHalfY));
+
+    return p;
+}
+
+QVector3D Session::scenePosition(const Spectrum *spec)
+{
+    return scenePosition(spec->position, spec->coordinate.altitude());
 }
 
 void Session::loadSessionFile(QString sessionFile)
@@ -212,6 +251,8 @@ void Session::clear()
     mName = "";
     mIterations = 0;
     mLivetime = mMinDoserate = mMaxDoserate = 0.0;
+    mMinX = mMaxX = mMinY = mMaxY = mMinZ = mMaxZ = 0.0;
+    mMinAltitude = mMaxAltitude = 0.0;
 }
 
 } // namespace Gamma

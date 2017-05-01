@@ -128,23 +128,31 @@ void GammaAnalyzer3D::onOpenSession()
         }
 
         auto *scene = new Scene(QColor(32, 53, 53));
+        auto *session = scene->session;
 
         if(QFile::exists(doserateScript))
-            scene->session->loadDoserateScript(doserateScript);
-        scene->session->loadPath(sessionDir);
-        scene->window->setTitle(scene->session->name());
+            session->loadDoserateScript(doserateScript);
+        session->loadPath(sessionDir);
+        scene->window->setTitle(session->name());
 
         new GridEntityXZ(-1.0f, 10, 10.0f, QColor(255, 255, 255), scene->root);
 
-        Palette::ColorSpectrum colorSpectrum(
-                    scene->session->minDoserate(),
-                    scene->session->maxDoserate());
+        new CompassEntity(
+                    QColor(255, 0, 0),
+                    session->scenePosition(session->centerPosition, session->minAltitude() - 5.0),
+                    session->scenePosition(session->northPosition, session->minAltitude() - 5.0),
+                    scene->root);
 
-        for(Gamma::Spectrum *spec : scene->session->getSpectrumList())
+        Palette::ColorSpectrum colorSpectrum(
+                    session->minDoserate(),
+                    session->maxDoserate());
+
+        for(Gamma::Spectrum *spec : session->getSpectrumList())
         {
             auto *entity = new SpectrumEntity(
-                        spec,
+                        session->scenePosition(spec),
                         colorSpectrum(spec->doserate()),
+                        spec,
                         scene->root);
 
             QObject::connect(
@@ -258,7 +266,7 @@ void GammaAnalyzer3D::handleSelectSpectrum(SpectrumEntity *entity)
                 QString::number(spec->sessionIndex()));
     ui->lblCoordinates->setText(
                 QStringLiteral("Coordinates: ") +
-                spec->coordinates.toString(QGeoCoordinate::Degrees));
+                spec->coordinate.toString(QGeoCoordinate::Degrees));
     ui->lblLivetimeRealtime->setText(
                 QStringLiteral("Livetime / Realtime: ") +
                 QString::number(spec->livetime() / 1000000.0) +
@@ -292,8 +300,8 @@ void GammaAnalyzer3D::handleMarkSpectrum(SpectrumEntity *entity)
     auto spec1 = scene->selected->target()->spectrum();
     auto spec2 = entity->spectrum();
 
-    double distance = spec1->coordinates.distanceTo(spec2->coordinates);
-    double azimuth = spec1->coordinates.azimuthTo(spec2->coordinates);
+    double distance = spec1->coordinate.distanceTo(spec2->coordinate);
+    double azimuth = spec1->coordinate.azimuthTo(spec2->coordinate);
 
     ui->lblDistance->setText(
                 QStringLiteral("Distance / Azimuth from ") +

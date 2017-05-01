@@ -78,13 +78,13 @@ void Spectrum::loadFile(QString filename)
         mLivetime = args.value("livetime").toInt();
 
     if(args.contains("latitude_start"))
-        coordinates.setLatitude(args.value("latitude_start").toDouble());
+        coordinate.setLatitude(args.value("latitude_start").toDouble());
 
     if(args.contains("longitude_start"))
-        coordinates.setLongitude(args.value("longitude_start").toDouble());
+        coordinate.setLongitude(args.value("longitude_start").toDouble());
 
     if(args.contains("altitude_start"))
-        coordinates.setAltitude(args.value("altitude_start").toDouble());
+        coordinate.setAltitude(args.value("altitude_start").toDouble());
 
     if(args.contains("gps_time_start"))
         mGpsTimeStart = QDateTime::fromString(
@@ -101,9 +101,7 @@ void Spectrum::loadFile(QString filename)
             mChannels.emplace_back(chan.toInt());
     }
 
-    position = Geo::geodeticToCartesianSimplified(
-                coordinates.latitude(),
-                coordinates.longitude());
+    position = coordinate.toCartesian();
 }
 
 static double GEValue(lua_State* L, double energy)

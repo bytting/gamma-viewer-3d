@@ -18,6 +18,7 @@
 #define GEO_H
 
 #include <QVector3D>
+#include <QGeoCoordinate>
 
 namespace Geo
 {
@@ -26,18 +27,39 @@ template<typename T>
 const T pi = 3.14159265358979323846;
 
 template<typename T>
+const T earth_radius = 6378137.0;
+
+template<typename T>
 T degToRad(T deg)
 {
     return deg * pi<T> / static_cast<T>(180);
 }
 
-QVector3D geodeticToCartesianSimplified(
-        double lat,
-        double lon);
+template<typename T>
+T radToDeg(T rad)
+{
+    return rad * (static_cast<T>(180) / pi<T>);
+}
 
-QVector3D geodeticToCartesian(
-        double lat,
-        double lon);
+class Coordinate : public QGeoCoordinate
+{
+public:
+
+    Coordinate();
+    Coordinate(double latitude, double longitude);
+    Coordinate(double latitude, double longitude, double altitude);
+    Coordinate(const Coordinate& rhs);
+    Coordinate(const QGeoCoordinate& rhs);
+    virtual ~Coordinate() {}
+
+    void setCoordinates(double latitude, double longitude);
+    void setCoordinates(double latitude, double longitude, double altitude);
+
+    QVector3D toCartesian() const;
+    void parseCartesian(const QVector3D& position);
+
+    static Coordinate fromCartesian(const QVector3D& position);
+};
 
 } // namespace Geo
 

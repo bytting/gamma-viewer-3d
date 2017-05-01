@@ -20,41 +20,72 @@
 namespace Geo
 {
 
-QVector3D geodeticToCartesianSimplified(
-        double lat,
-        double lon)
+Coordinate::Coordinate()
+    : QGeoCoordinate()
+{
+}
+
+Coordinate::Coordinate(double latitude, double longitude)
+    : QGeoCoordinate(latitude, longitude)
+{
+}
+
+Coordinate::Coordinate(double latitude, double longitude, double altitude)
+    : QGeoCoordinate(latitude, longitude, altitude)
+{
+}
+
+Coordinate::Coordinate(const Coordinate& rhs)
+    : QGeoCoordinate(rhs)
+{
+}
+
+Coordinate::Coordinate(const QGeoCoordinate& rhs)
+    : QGeoCoordinate(rhs)
+{
+}
+
+void Coordinate::setCoordinates(double latitude, double longitude)
+{
+    setLatitude(latitude);
+    setLongitude(longitude);
+}
+
+void Coordinate::setCoordinates(double latitude, double longitude, double altitude)
+{
+    setLatitude(latitude);
+    setLongitude(longitude);
+    setAltitude(altitude);
+}
+
+QVector3D Coordinate::toCartesian() const
 {
     QVector3D vec;
-    auto cosLat = std::cos(degToRad<double>(lat));
-    auto sinLat = std::sin(degToRad<double>(lat));
-    auto cosLon = std::cos(degToRad<double>(lon));
-    auto sinLon = std::sin(degToRad<double>(lon));
-    const auto rad = 500.0;
-    vec.setX(rad * cosLat * cosLon);
-    vec.setY(rad * sinLat);
-    vec.setZ(rad * cosLat * sinLon);
+
+    auto cosLat = std::cos(degToRad<double>(latitude()));
+    auto sinLat = std::sin(degToRad<double>(latitude()));
+    auto cosLon = std::cos(degToRad<double>(longitude()));
+    auto sinLon = std::sin(degToRad<double>(longitude()));
+    vec.setX(earth_radius<double> * cosLat * cosLon);
+    vec.setY(earth_radius<double> * cosLat * sinLon);
+    vec.setZ(earth_radius<double> * sinLat);
+
     return vec;
 }
 
-QVector3D geodeticToCartesian(
-        double lat,
-        double lon)
+void Coordinate::parseCartesian(const QVector3D& position)
 {
-    QVector3D vec;
-    auto cosLat = std::cos(degToRad<double>(lat));
-    auto sinLat = std::sin(degToRad<double>(lat));
-    auto cosLon = std::cos(degToRad<double>(lon));
-    auto sinLon = std::sin(degToRad<double>(lon));
-    const auto rad = 6378137.0;
-    const auto f = 1.0 / 298.257224;
-    const auto C = 1.0 / std::sqrt(
-                cosLat * cosLat + (1 - f) * (1 - f) * sinLat * sinLat);
-    const auto S = (1.0 - f) * (1.0 - f) * C;
-    const auto h = 0.0;
-    vec.setX((rad * C + h) * cosLat * cosLon);
-    vec.setY((rad * S + h) * sinLat);
-    vec.setZ((rad * C + h) * cosLat * sinLon);
-    return vec;
+    //setLatitude(radToDeg<double>(std::acos(position.z() / earth_radius<double>)));
+    //setLongitude(radToDeg<double>(std::atan2(position.y(), position.x())));
+    setLatitude(radToDeg<double>(std::acos(position.y() / earth_radius<double>)));
+    setLongitude(radToDeg<double>(std::atan2(position.y(), position.x())));
+}
+
+Coordinate Coordinate::fromCartesian(const QVector3D& position)
+{
+    Coordinate coord;
+    coord.parseCartesian(position);
+    return coord;
 }
 
 } // namespace Geo
