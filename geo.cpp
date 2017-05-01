@@ -21,7 +21,6 @@ namespace Geo
 {
 
 Coordinate::Coordinate()
-    : QGeoCoordinate()
 {
 }
 
@@ -45,20 +44,20 @@ Coordinate::Coordinate(const QGeoCoordinate& rhs)
 {
 }
 
-void Coordinate::set(double latitude, double longitude)
+void Coordinate::setAngles(double latitude, double longitude)
 {
     setLatitude(latitude);
     setLongitude(longitude);
 }
 
-void Coordinate::set(double latitude, double longitude, double altitude)
+void Coordinate::setAngles(double latitude, double longitude, double altitude)
 {
     setLatitude(latitude);
     setLongitude(longitude);
     setAltitude(altitude);
 }
 
-void Coordinate::setFromCartesian(const QVector3D& position)
+void Coordinate::setAnglesFromCartesian(const QVector3D& position)
 {
     setLatitude(radToDeg<double>(std::acos(position.y() / earth_radius<double>)));
     setLongitude(radToDeg<double>(std::atan2(position.y(), position.x())));

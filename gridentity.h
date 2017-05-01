@@ -19,7 +19,6 @@
 
 #include <QColor>
 #include <Qt3DCore/QEntity>
-//#include <Qt3DCore/QTransform>
 #include <Qt3DRender/QAttribute>
 #include <Qt3DRender/QBuffer>
 #include <Qt3DRender/QGeometryRenderer>
@@ -43,7 +42,6 @@ public:
 
     Qt3DRender::QGeometryRenderer *mesh() const { return mMesh; }
     Qt3DExtras::QPhongMaterial *material() const { return mMaterial; }
-    //Qt3DCore::QTransform *transform() const { return mTransform; }
 
 private:
 
@@ -52,7 +50,6 @@ private:
     Qt3DRender::QBuffer *mDataBuffer;
     Qt3DRender::QAttribute *mPositionAttribute;
     Qt3DExtras::QPhongMaterial *mMaterial;
-    //Qt3DCore::QTransform *mTransform;
 };
 
 #endif // GRIDENTITY_H

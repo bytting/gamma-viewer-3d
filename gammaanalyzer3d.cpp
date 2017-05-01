@@ -246,7 +246,7 @@ void GammaAnalyzer3D::handleSelectSpectrum(SpectrumEntity *entity)
         p.second->marked->setEnabled(false);
     }
 
-    Scene *scene = sceneFromEntity(entity);
+    auto scene = sceneFromEntity(entity);
 
     // Enable current selection arrow
     scene->selected->setTarget(entity);
@@ -281,7 +281,7 @@ void GammaAnalyzer3D::handleSelectSpectrum(SpectrumEntity *entity)
 
 void GammaAnalyzer3D::handleMarkSpectrum(SpectrumEntity *entity)
 {
-    Scene *scene = sceneFromEntity(entity);
+    auto scene = sceneFromEntity(entity);
 
     if(!scene->selected->isEnabled() || !scene->selected->target() ||
             scene->selected->target() == entity)

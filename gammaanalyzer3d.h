@@ -56,14 +56,14 @@ private:
 
     Scene *sceneFromEntity(SpectrumEntity *entity) const;
 
+    void handleSelectSpectrum(SpectrumEntity *entity);
+    void handleMarkSpectrum(SpectrumEntity *entity);
+
     struct NoSceneFoundForEntity : public GA::Exception
     {
         explicit NoSceneFoundForEntity(QString source) noexcept
             : GA::Exception("No scene found for entity: " + source) {}
     };
-
-    void handleSelectSpectrum(SpectrumEntity *entity);
-    void handleMarkSpectrum(SpectrumEntity *entity);
 
 private slots:
 

@@ -25,7 +25,6 @@
 #include <Qt3DRender/QGeometryRenderer>
 #include <Qt3DRender/QGeometry>
 #include <Qt3DExtras/QPhongMaterial>
-//#include <Qt3DCore/QTransform>
 
 class CompassEntity : public Qt3DCore::QEntity
 {
@@ -43,7 +42,6 @@ public:
 
     Qt3DRender::QGeometryRenderer *mesh() const { return mMesh; }
     Qt3DExtras::QPhongMaterial *material() const { return mMaterial; }
-    //Qt3DCore::QTransform *transform() const { return mTransform; }
 
 private:
 
@@ -52,7 +50,6 @@ private:
     Qt3DRender::QBuffer *mDataBuffer;
     Qt3DRender::QAttribute *mPositionAttribute;
     Qt3DExtras::QPhongMaterial *mMaterial;
-    //Qt3DCore::QTransform *mTransform;
 };
 
 #endif // COMPASSENTITY_H

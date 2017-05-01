@@ -52,9 +52,9 @@ public:
     Coordinate(const QGeoCoordinate& rhs);
     virtual ~Coordinate() {}
 
-    void set(double latitude, double longitude);
-    void set(double latitude, double longitude, double altitude);
-    void setFromCartesian(const QVector3D& position);
+    void setAngles(double latitude, double longitude);
+    void setAngles(double latitude, double longitude, double altitude);
+    void setAnglesFromCartesian(const QVector3D& position);
 
     QVector3D toCartesian() const;
 

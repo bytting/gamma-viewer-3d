@@ -28,7 +28,6 @@ CompassEntity::CompassEntity(
       mDataBuffer(new Qt3DRender::QBuffer(Qt3DRender::QBuffer::VertexBuffer, this)),
       mPositionAttribute(new Qt3DRender::QAttribute(this)),
       mMaterial(new Qt3DExtras::QPhongMaterial(this))
-      //mTransform(new Qt3DCore::QTransform(this))
 {
     QByteArray vertexBuffer;
     vertexBuffer.resize(2 * 3 * sizeof(float));
@@ -62,8 +61,6 @@ CompassEntity::CompassEntity(
 
     mMaterial->setAmbient(color);
     addComponent(mMaterial);
-
-    //addComponent(mTransform);
 }
 
 CompassEntity::~CompassEntity()
@@ -80,7 +77,6 @@ CompassEntity::~CompassEntity()
     mPositionAttribute->deleteLater();
     mDataBuffer->deleteLater();
     mGeometry->deleteLater();
-    //mTransform->deleteLater();
     mMaterial->deleteLater();
     mMesh->deleteLater();
 }

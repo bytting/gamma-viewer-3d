@@ -29,7 +29,6 @@ GridEntityXZ::GridEntityXZ(
       mDataBuffer(new Qt3DRender::QBuffer(Qt3DRender::QBuffer::VertexBuffer, this)),
       mPositionAttribute(new Qt3DRender::QAttribute(this)),
       mMaterial(new Qt3DExtras::QPhongMaterial(this))
-      //mTransform(new Qt3DCore::QTransform(this))
 {
     int halfCount = count / 2;
     int numVerts = halfCount * 4 * 2; // number of lines * number of points per line
@@ -88,8 +87,6 @@ GridEntityXZ::GridEntityXZ(
 
     mMaterial->setAmbient(color);
     addComponent(mMaterial);
-
-    //addComponent(mTransform);
 }
 
 GridEntityXZ::~GridEntityXZ()
@@ -103,7 +100,6 @@ GridEntityXZ::~GridEntityXZ()
         }
     }
 
-    //mTransform->deleteLater();
     mMaterial->deleteLater();
     mPositionAttribute->deleteLater();
     mDataBuffer->deleteLater();
