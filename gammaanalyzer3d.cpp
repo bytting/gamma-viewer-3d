@@ -116,7 +116,7 @@ void GammaAnalyzer3D::onOpenSession()
         if(it != scenes.end())
         {
             // Scene has been open before, just show it
-            auto *scene = it->second;
+            auto scene = it->second;
             scene->camera->setUpVector(QVector3D(0.0, 1.0, 0.0));
             scene->camera->setPosition(QVector3D(0, 20, 100.0f));
             scene->camera->setViewCenter(QVector3D(0, 0, 0));
@@ -126,8 +126,8 @@ void GammaAnalyzer3D::onOpenSession()
             return;
         }
 
-        auto *scene = new Scene(QColor(32, 53, 53));
-        auto *session = scene->session;
+        auto scene = new Scene(QColor(32, 53, 53));
+        auto session = scene->session;
 
         if(QFile::exists(doserateScript))
             session->loadDoserateScript(doserateScript);
@@ -142,9 +142,9 @@ void GammaAnalyzer3D::onOpenSession()
                     session->makeScenePosition(session->northPosition, session->minAltitude() - 5.0),
                     scene->root);
 
-        for(Gamma::Spectrum *spec : session->getSpectrumList())
+        for(auto spec : session->getSpectrumList())
         {
-            auto *entity = new SpectrumEntity(
+            auto entity = new SpectrumEntity(
                         session->makeScenePosition(spec),
                         session->makeDoserateColor(spec),
                         spec,
@@ -295,8 +295,8 @@ void GammaAnalyzer3D::handleMarkSpectrum(SpectrumEntity *entity)
     auto spec1 = scene->selected->target()->spectrum();
     auto spec2 = entity->spectrum();
 
-    double distance = spec1->coordinate.distanceTo(spec2->coordinate);
-    double azimuth = spec1->coordinate.azimuthTo(spec2->coordinate);
+    auto distance = spec1->coordinate.distanceTo(spec2->coordinate);
+    auto azimuth = spec1->coordinate.azimuthTo(spec2->coordinate);
 
     ui->lblDistance->setText(
                 QStringLiteral("Distance / Azimuth from ") +
