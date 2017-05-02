@@ -15,11 +15,9 @@
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "spectrum.h"
-#include "geo.h"
+#include <QFile>
 #include <QJsonDocument>
 #include <QJsonObject>
-#include <QFile>
-#include <QTextStream>
 
 using namespace std;
 

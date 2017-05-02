@@ -34,12 +34,12 @@ Coordinate::Coordinate(double latitude, double longitude, double altitude)
 {
 }
 
-Coordinate::Coordinate(const Coordinate& rhs)
+Coordinate::Coordinate(const Coordinate &rhs)
     : QGeoCoordinate(rhs)
 {
 }
 
-Coordinate::Coordinate(const QGeoCoordinate& rhs)
+Coordinate::Coordinate(const QGeoCoordinate &rhs)
     : QGeoCoordinate(rhs)
 {
 }
@@ -57,7 +57,7 @@ void Coordinate::setAngles(double latitude, double longitude, double altitude)
     setAltitude(altitude);
 }
 
-void Coordinate::setAnglesFromCartesian(const QVector3D& position)
+void Coordinate::setAnglesFromCartesian(const QVector3D &position)
 {
     setLatitude(radToDeg<double>(std::acos(position.y() / earth_radius<double>)));
     setLongitude(radToDeg<double>(std::atan2(position.y(), position.x())));

@@ -16,9 +16,7 @@
 
 #include "session.h"
 #include <stdexcept>
-#include <memory>
 #include <cmath>
-#include <algorithm>
 #include <QString>
 #include <QDir>
 #include <QFile>

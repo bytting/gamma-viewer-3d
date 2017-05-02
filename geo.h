@@ -48,17 +48,15 @@ public:
     Coordinate();
     Coordinate(double latitude, double longitude);
     Coordinate(double latitude, double longitude, double altitude);
-    Coordinate(const Coordinate& rhs);
-    Coordinate(const QGeoCoordinate& rhs);
+    Coordinate(const Coordinate &rhs);
+    Coordinate(const QGeoCoordinate &rhs);
     virtual ~Coordinate() {}
 
     void setAngles(double latitude, double longitude);
     void setAngles(double latitude, double longitude, double altitude);
-    void setAnglesFromCartesian(const QVector3D& position);
+    void setAnglesFromCartesian(const QVector3D &position);
 
     QVector3D toCartesian() const;
-
-    //static Coordinate fromCartesian(const QVector3D& position);
 };
 
 } // namespace Geo

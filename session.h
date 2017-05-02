@@ -22,7 +22,6 @@
 #include "detector.h"
 #include "spectrum.h"
 #include "geo.h"
-#include <memory>
 #include <vector>
 #include <QString>
 #include <QVector3D>
