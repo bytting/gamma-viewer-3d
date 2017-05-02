@@ -35,7 +35,7 @@ Coordinate::Coordinate(double latitude, double longitude, double altitude)
 }
 
 Coordinate::Coordinate(const Coordinate &rhs)
-    : QGeoCoordinate(rhs)
+    : QGeoCoordinate(static_cast<QGeoCoordinate>(rhs))
 {
 }
 
