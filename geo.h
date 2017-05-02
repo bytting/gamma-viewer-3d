@@ -38,7 +38,7 @@ T degToRad(T deg)
 template<typename T>
 T radToDeg(T rad)
 {
-    return (rad * static_cast<T>(180)) / PI<T>;
+    return rad * (static_cast<T>(180) / PI<T>);
 }
 
 class Coordinate : public QGeoCoordinate
