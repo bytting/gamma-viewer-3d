@@ -59,21 +59,25 @@ void Coordinate::setAngles(double latitude, double longitude, double altitude)
 
 void Coordinate::setAnglesFromCartesian(const QVector3D &position)
 {
-    setLatitude(radToDeg<double>(std::acos(position.y() / earth_radius<double>)));
+    // Simplified conversion from cartesian to geodetic coordinates
+
+    setLatitude(radToDeg<double>(std::asin(position.z() / EARTH_RADIUS<double>)));
     setLongitude(radToDeg<double>(std::atan2(position.y(), position.x())));
 }
 
 QVector3D Coordinate::toCartesian() const
 {
+    // Simplified conversion from geodetic to cartesian coordinates
+
     QVector3D vec;
 
     auto cosLat = std::cos(degToRad<double>(latitude()));
     auto sinLat = std::sin(degToRad<double>(latitude()));
     auto cosLon = std::cos(degToRad<double>(longitude()));
     auto sinLon = std::sin(degToRad<double>(longitude()));
-    vec.setX(earth_radius<double> * cosLat * cosLon);
-    vec.setY(earth_radius<double> * cosLat * sinLon);
-    vec.setZ(earth_radius<double> * sinLat);
+    vec.setX(EARTH_RADIUS<double> * cosLat * cosLon);
+    vec.setY(EARTH_RADIUS<double> * cosLat * sinLon);
+    vec.setZ(EARTH_RADIUS<double> * sinLat);
 
     return vec;
 }

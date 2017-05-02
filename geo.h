@@ -24,21 +24,21 @@ namespace Geo
 {
 
 template<typename T>
-const T pi = 3.14159265358979323846;
+const T PI = 3.14159265358979323846;
 
 template<typename T>
-const T earth_radius = 6378137.0;
+const T EARTH_RADIUS = 6378137.0;
 
 template<typename T>
 T degToRad(T deg)
 {
-    return deg * pi<T> / static_cast<T>(180);
+    return deg * PI<T> / static_cast<T>(180);
 }
 
 template<typename T>
 T radToDeg(T rad)
 {
-    return rad * (static_cast<T>(180) / pi<T>);
+    return (rad * static_cast<T>(180)) / PI<T>;
 }
 
 class Coordinate : public QGeoCoordinate

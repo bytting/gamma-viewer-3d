@@ -177,17 +177,12 @@ void Session::loadPath(QString sessionPath)
     mHalfY = (mMaxY - mMinY) / 2.0;
     mHalfZ = (mMaxZ - mMinZ) / 2.0;
 
-    // FIXME: Make setFromCartesian work
-
-    /*centerPosition.setX(mMinX + mHalfX);
+    centerPosition.setX(mMinX + mHalfX);
     centerPosition.setY(mMinY + mHalfY);
     centerPosition.setZ(mMinZ + mHalfZ);
-    centerCoordinate.setFromCartesian(centerPosition);*/
+    centerCoordinate.setAnglesFromCartesian(centerPosition);
 
-    centerPosition = mSpecList[0]->position;
-    centerCoordinate = mSpecList[0]->coordinate;
-
-    northCoordinate = centerCoordinate.atDistanceAndAzimuth(50.0, 0.0);
+    northCoordinate = centerCoordinate.atDistanceAndAzimuth(60.0, 0.0);
     northPosition = northCoordinate.toCartesian();
 }
 
