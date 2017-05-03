@@ -61,25 +61,29 @@ void Coordinate::setAnglesFromCartesian(const QVector3D &position)
 {
     // Simplified conversion from cartesian to geodetic coordinates
 
-    setLatitude(radToDeg<double>(std::asin(position.z() / EARTH_RADIUS<double>)));
-    setLongitude(radToDeg<double>(std::atan2(position.y(), position.x())));
+    setLatitude(radianToDegree<double>(
+                    std::asin(position.z() / EARTH_RADIUS<double>)));
+
+    setLongitude(radianToDegree<double>(
+                     std::atan2(position.y(), position.x())));
 }
 
 QVector3D Coordinate::toCartesian() const
 {
     // Simplified conversion from geodetic to cartesian coordinates
 
-    QVector3D vec;
+    QVector3D position;
 
-    auto cosLat = std::cos(degToRad<double>(latitude()));
-    auto sinLat = std::sin(degToRad<double>(latitude()));
-    auto cosLon = std::cos(degToRad<double>(longitude()));
-    auto sinLon = std::sin(degToRad<double>(longitude()));
-    vec.setX(EARTH_RADIUS<double> * cosLat * cosLon);
-    vec.setY(EARTH_RADIUS<double> * cosLat * sinLon);
-    vec.setZ(EARTH_RADIUS<double> * sinLat);
+    auto cosLat = std::cos(degreeToRadian<double>(latitude()));
+    auto sinLat = std::sin(degreeToRadian<double>(latitude()));
+    auto cosLon = std::cos(degreeToRadian<double>(longitude()));
+    auto sinLon = std::sin(degreeToRadian<double>(longitude()));
 
-    return vec;
+    position.setX(EARTH_RADIUS<double> * cosLat * cosLon);
+    position.setY(EARTH_RADIUS<double> * cosLat * sinLon);
+    position.setZ(EARTH_RADIUS<double> * sinLat);
+
+    return position;
 }
 
 } // namespace Geo

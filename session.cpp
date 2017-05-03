@@ -182,7 +182,7 @@ void Session::loadPath(QString sessionPath)
     centerPosition.setZ(mMinZ + mHalfZ);
     centerCoordinate.setAnglesFromCartesian(centerPosition);
 
-    northCoordinate = centerCoordinate.atDistanceAndAzimuth(60.0, 0.0);
+    northCoordinate = centerCoordinate.atDistanceAndAzimuth(50.0, 0.0);
     northPosition = northCoordinate.toCartesian();
 }
 

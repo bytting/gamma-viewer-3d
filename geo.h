@@ -30,15 +30,15 @@ template<typename T>
 const T EARTH_RADIUS = 6378137.0;
 
 template<typename T>
-T degToRad(T deg)
+T degreeToRadian(T degree)
 {
-    return deg * PI<T> / static_cast<T>(180);
+    return degree * (PI<T> / static_cast<T>(180));
 }
 
 template<typename T>
-T radToDeg(T rad)
+T radianToDegree(T radian)
 {
-    return rad * (static_cast<T>(180) / PI<T>);
+    return radian * (static_cast<T>(180) / PI<T>);
 }
 
 class Coordinate : public QGeoCoordinate
