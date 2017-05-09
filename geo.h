@@ -50,7 +50,7 @@ public:
     Coordinate(double latitude, double longitude, double altitude);
     Coordinate(const Coordinate &rhs);
     Coordinate(const QGeoCoordinate &rhs);
-    virtual ~Coordinate() {}
+    // Note: Base class destructor is not virtual. Do not expect propagation
 
     void setAngles(double latitude, double longitude);
     void setAngles(double latitude, double longitude, double altitude);
