@@ -19,8 +19,6 @@
 #include <QJsonDocument>
 #include <QJsonObject>
 
-using namespace std;
-
 namespace Gamma
 {
 

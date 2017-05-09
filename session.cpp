@@ -165,7 +165,7 @@ void Session::loadPath(QString sessionPath)
                     mMaxAltitude = spec->coordinate.altitude();
             }
 
-            mSpecList.push_back(spec);
+            mSpecList.emplace_back(spec);
         }
         catch(const GA::Exception& e)
         {

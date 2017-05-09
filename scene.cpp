@@ -71,7 +71,7 @@ Scene::~Scene()
 
 bool Scene::hasChildEntity(Qt3DCore::QEntity *entity) const
 {
-    QObject *e = static_cast<QObject*>(entity);
+    QObject *e = entity;
 
     while(e)
     {
