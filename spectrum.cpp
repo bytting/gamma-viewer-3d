@@ -130,8 +130,8 @@ void Spectrum::calculateDoserate(const Detector &det, lua_State* L)
     // Accumulate doserates from each channel
     for (int i = startChan; i < endChan; i++)
     {
-        float sec = (float)mLivetime / 1000000.0;
-        float cps = mChannels[i] / sec;
+        double sec = (double)mLivetime / 1000000.0;
+        double cps = mChannels[i] / sec;
         double E = det.getEnergy(i);
         if (E < 0.05) // Energies below 0.05 are invalid
             continue;
