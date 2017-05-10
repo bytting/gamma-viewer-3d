@@ -74,20 +74,19 @@ void Detector::loadJson(const QJsonObject &obj)
         mEnergyCurveCoefficients.emplace_back(c.toDouble());
 }
 
-double Detector::getEnergy(int index) const
+double Detector::getEnergy(int channel) const
 {
-    if (mEnergyCurveCoefficients.size() < 2
-            || mEnergyCurveCoefficients.size() > 5
-            || index < 0)
+    if (mEnergyCurveCoefficients.size() < 2 ||
+            mEnergyCurveCoefficients.size() > 5 || channel < 0)
         return 0.0;
 
-    double dx = (double)index;
-    double e = 0.0;
+    double energy = 0.0;
 
     for(CoefficientListSize i = 0; i < mEnergyCurveCoefficients.size(); i++)
-        e += mEnergyCurveCoefficients[i] * std::pow(dx, (double)i);
+        energy += mEnergyCurveCoefficients[i] *
+                std::pow((double)channel, (double)i);
 
-    return e;
+    return energy;
 }
 
 } // namespace Gamma
