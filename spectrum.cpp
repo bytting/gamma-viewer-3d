@@ -31,7 +31,7 @@ Spectrum::Spectrum(QString filename)
 int Spectrum::channel(ChanListSize index) const
 {
     if(index >= mChannels.size())
-        throw IndexOutOfBounds("Spectrum::channel");
+        throw Exception_IndexOutOfBounds("Spectrum::channel");
 
     return mChannels[index];
 }
@@ -40,23 +40,23 @@ void Spectrum::loadFile(QString filename)
 {
     QFile jsonFile(filename);
     if(!jsonFile.open(QFile::ReadOnly))
-        throw UnableToLoadFile(filename);
+        throw Exception_UnableToLoadFile(filename);
 
     auto doc = QJsonDocument().fromJson(jsonFile.readAll());
     if(!doc.isObject())
-        throw InvalidSpectrumFile(filename);
+        throw Exception_InvalidSpectrumFile(filename);
 
     auto obj = doc.object();
     if(!obj.contains("command"))
-        throw InvalidSpectrumFile(filename);
+        throw Exception_InvalidSpectrumFile(filename);
 
     auto cmd = obj.value("command").toString();
 
     if(cmd != QStringLiteral("spectrum"))
-        throw InvalidSpectrumFile(filename);
+        throw Exception_InvalidSpectrumFile(filename);
 
     if(!obj.contains("arguments"))
-        throw InvalidSpectrumFile(filename);
+        throw Exception_InvalidSpectrumFile(filename);
 
     auto args = obj.value("arguments").toObject();
 

@@ -36,7 +36,7 @@ public:
             const QColor &color,
             Qt3DCore::QEntity *parent);
 
-    virtual ~SelectionEntity();
+    ~SelectionEntity();
 
     Qt3DRender::QMesh *mesh() const { return mMesh; }
     Qt3DExtras::QPhongMaterial *material() const { return mMaterial; }

@@ -142,8 +142,10 @@ void GammaAnalyzer3D::onOpenSession()
 
         new CompassEntity(
                     QColor(255, 0, 0),
-                    session->makeScenePosition(session->centerPosition, session->minAltitude() - 5.0),
-                    session->makeScenePosition(session->northPosition, session->minAltitude() - 5.0),
+                    session->makeScenePosition(
+                        session->centerPosition, session->minAltitude() - 5.0),
+                    session->makeScenePosition(
+                        session->northPosition, session->minAltitude() - 5.0),
                     scene->root);
 
         for(auto spec : session->getSpectrumList())
@@ -234,9 +236,7 @@ Scene *GammaAnalyzer3D::sceneFromEntity(SpectrumEntity *entity) const
     });
 
     if(it == scenes.end())
-        throw NoSceneFoundForEntity(
-                entity->spectrum()->sessionName() + " " +
-                QString::number(entity->spectrum()->sessionIndex()));
+        throw Exception_NoSceneFoundForEntity("GammaAnalyzer3D::sceneFromEntity");
 
     return it->second;
 }

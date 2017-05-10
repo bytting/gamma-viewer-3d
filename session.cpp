@@ -52,7 +52,7 @@ Session::Session()
       mLogarithmicColorScale(true)
 {
     if(!L)
-        throw UnableToCreateLuaState("Session::Session");
+        throw Exception_UnableToCreateLuaState("Session::Session");
     luaL_openlibs(L);
 }
 
@@ -72,7 +72,7 @@ Session::~Session()
 const Spectrum* Session::getSpectrum(SpecListSize index) const
 {
     if(index >= mSpecList.size())
-        throw IndexOutOfBounds("Session::getSpectrum");
+        throw Exception_IndexOutOfBounds("Session::getSpectrum");
 
     return mSpecList[index];
 }
@@ -86,17 +86,17 @@ void Session::loadPath(QString sessionPath)
 {
     const QDir sessionDir(sessionPath);
     if(!sessionDir.exists())
-        throw DirDoesNotExist(sessionDir.absolutePath());
+        throw Exception_DirDoesNotExist(sessionDir.absolutePath());
 
     const QDir spectrumDir(sessionPath + QDir::separator() +
                      QStringLiteral("json"));
     if (!spectrumDir.exists())
-        throw DirIsNotASession(spectrumDir.absolutePath());
+        throw Exception_DirIsNotASession(spectrumDir.absolutePath());
 
     const auto sessionFile = sessionPath + QDir::separator() +
             QStringLiteral("session.json");
     if(!QFile::exists(sessionFile))
-        throw DirIsNotASession(sessionDir.absolutePath());
+        throw Exception_DirIsNotASession(sessionDir.absolutePath());
 
     clear();
 
@@ -191,43 +191,43 @@ void Session::loadSessionFile(QString sessionFile)
 {
     QFile jsonFile(sessionFile);
     if(!jsonFile.open(QFile::ReadOnly))
-        throw UnableToLoadFile(sessionFile);
+        throw Exception_UnableToLoadFile(sessionFile);
 
     auto doc = QJsonDocument().fromJson(jsonFile.readAll());
     if(!doc.isObject())
-        throw InvalidSessionFile(sessionFile);
+        throw Exception_InvalidSessionFile(sessionFile);
 
     auto root = doc.object();
 
     if(!root.contains("Name"))
-        throw MissingJsonValue("Session:Name");
+        throw Exception_MissingJsonValue("Session:Name");
     mName = root.value("Name").toString();
 
     if(!root.contains("Comment"))
-        throw MissingJsonValue("Session:Comment");
+        throw Exception_MissingJsonValue("Session:Comment");
     mComment = root.value("Comment").toString();
 
     if(!root.contains("Livetime"))
-        throw MissingJsonValue("Session:Livetime");
+        throw Exception_MissingJsonValue("Session:Livetime");
     mLivetime = root.value("Livetime").toInt();
 
     if(!root.contains("Iterations"))
-        throw MissingJsonValue("Session:Iterations");
+        throw Exception_MissingJsonValue("Session:Iterations");
     mIterations = root.value("Iterations").toInt();
 
     if(!root.contains("DetectorType"))
-        throw MissingJsonValue("Session:DetectorType");
+        throw Exception_MissingJsonValue("Session:DetectorType");
     mDetectorType.loadJson(root.value("DetectorType").toObject());
 
     if(!root.contains("Detector"))
-        throw MissingJsonValue("Session:Detector");
+        throw Exception_MissingJsonValue("Session:Detector");
     mDetector.loadJson(root.value("Detector").toObject());
 }
 
 void Session::loadDoserateScript(QString scriptFileName)
 {
     if(luaL_dofile(L, scriptFileName.toStdString().c_str()))
-        throw LoadDoserateScriptFailed(scriptFileName);
+        throw Exception_LoadDoserateScriptFailed(scriptFileName);
     mScriptLoaded = true;
 }
 

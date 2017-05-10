@@ -75,27 +75,27 @@ public:
     QColor makeDoserateColor(double doserate) const;
     QColor makeDoserateColor(const Spectrum *spec) const;
 
-    struct UnableToCreateLuaState : public Exception
+    struct Exception_UnableToCreateLuaState : public Exception
     {
-        explicit UnableToCreateLuaState(QString source) noexcept
+        explicit Exception_UnableToCreateLuaState(QString source) noexcept
             : Exception("Unable to create Lua state: " + source) {}
     };
 
-    struct DirIsNotASession : public Exception
+    struct Exception_DirIsNotASession : public Exception
     {
-        explicit DirIsNotASession(QString dir) noexcept
+        explicit Exception_DirIsNotASession(QString dir) noexcept
             : Exception("Directory is not a valid session: " + dir) {}
     };
 
-    struct InvalidSessionFile : public Exception
+    struct Exception_InvalidSessionFile : public Exception
     {
-        explicit InvalidSessionFile(QString filename) noexcept
+        explicit Exception_InvalidSessionFile(QString filename) noexcept
             : Exception("Invalid session file: " + filename) {}
     };
 
-    struct LoadDoserateScriptFailed : public Exception
+    struct Exception_LoadDoserateScriptFailed : public Exception
     {
-        explicit LoadDoserateScriptFailed(QString filename) noexcept
+        explicit Exception_LoadDoserateScriptFailed(QString filename) noexcept
             : Exception("Loading doserate script failed: " + filename) {}
     };
 

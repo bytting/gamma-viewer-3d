@@ -38,7 +38,7 @@ public:
             const QVector3D &north,
             Qt3DCore::QEntity *parent);
 
-    virtual ~CompassEntity();
+    ~CompassEntity();
 
     Qt3DRender::QGeometryRenderer *mesh() const { return mMesh; }
     Qt3DExtras::QPhongMaterial *material() const { return mMaterial; }

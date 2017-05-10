@@ -26,39 +26,39 @@ struct Exception : public std::runtime_error
         : std::runtime_error(arg.toStdString()) {}
 };
 
-struct IndexOutOfBounds : public Exception
+struct Exception_IndexOutOfBounds : public Exception
 {
-    explicit IndexOutOfBounds(QString source) noexcept
+    explicit Exception_IndexOutOfBounds(QString source) noexcept
         : Exception("Index out of bounds: " + source) {}
 };
 
-struct NumericRangeError : public Exception
+struct Exception_NumericRangeError : public Exception
 {
-    explicit NumericRangeError(QString source) noexcept
+    explicit Exception_NumericRangeError(QString source) noexcept
         : Exception("Numeric range error: " + source) {}
 };
 
-struct DirDoesNotExist : public Exception
+struct Exception_DirDoesNotExist : public Exception
 {
-    explicit DirDoesNotExist(QString dir) noexcept
+    explicit Exception_DirDoesNotExist(QString dir) noexcept
         : Exception("Directory does not exist: " + dir) {}
 };
 
-struct FileDoesNotExist : public Exception
+struct Exception_FileDoesNotExist : public Exception
 {
-    explicit FileDoesNotExist(QString filename) noexcept
+    explicit Exception_FileDoesNotExist(QString filename) noexcept
         : Exception("File does not exist: " + filename) {}
 };
 
-struct UnableToLoadFile : public Exception
+struct Exception_UnableToLoadFile : public Exception
 {
-    explicit UnableToLoadFile(QString filename) noexcept
+    explicit Exception_UnableToLoadFile(QString filename) noexcept
         : Exception("Unable to load file: " + filename) {}
 };
 
-struct MissingJsonValue : public Exception
+struct Exception_MissingJsonValue : public Exception
 {
-    explicit MissingJsonValue(QString source) noexcept
+    explicit Exception_MissingJsonValue(QString source) noexcept
         : Exception("Missing JSON value: " + source) {}
 };
 

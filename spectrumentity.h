@@ -41,7 +41,7 @@ public:
             Gamma::Spectrum *spec,
             Qt3DCore::QEntity *parent);
 
-    virtual ~SpectrumEntity();
+    ~SpectrumEntity();
 
     Qt3DExtras::QSphereMesh *mesh() const { return mMesh; }
     Qt3DExtras::QPhongMaterial *material() const { return mMaterial; }

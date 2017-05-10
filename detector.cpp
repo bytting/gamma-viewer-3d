@@ -30,43 +30,43 @@ Detector::Detector(const QJsonObject &obj)
 void Detector::loadJson(const QJsonObject &obj)
 {
     if(!obj.contains("TypeName"))
-        throw MissingJsonValue("Detector:TypeName");
+        throw Exception_MissingJsonValue("Detector:TypeName");
     mTypeName = obj.value("TypeName").toString();
 
     if(!obj.contains("CurrentHV"))
-        throw MissingJsonValue("Detector:CurrentHV");
+        throw Exception_MissingJsonValue("Detector:CurrentHV");
     mHV = obj.value("CurrentHV").toInt();
 
     if(!obj.contains("CurrentNumChannels"))
-        throw MissingJsonValue("Detector:CurrentNumChannels");
+        throw Exception_MissingJsonValue("Detector:CurrentNumChannels");
     mNumChannels = obj.value("CurrentNumChannels").toInt();
 
     if(!obj.contains("Serialnumber"))
-        throw MissingJsonValue("Detector:Serialnumber");
+        throw Exception_MissingJsonValue("Detector:Serialnumber");
     mSerialnumber = obj.value("Serialnumber").toString();
 
     if(!obj.contains("CurrentCoarseGain"))
-        throw MissingJsonValue("Detector:CurrentCoarseGain");
+        throw Exception_MissingJsonValue("Detector:CurrentCoarseGain");
     mCoarseGain = obj.value("CurrentCoarseGain").toDouble();
 
     if(!obj.contains("CurrentFineGain"))
-        throw MissingJsonValue("Detector:CurrentFineGain");
+        throw Exception_MissingJsonValue("Detector:CurrentFineGain");
     mFineGain = obj.value("CurrentFineGain").toDouble();
 
     if(!obj.contains("CurrentLivetime"))
-        throw MissingJsonValue("Detector:CurrentLivetime");
+        throw Exception_MissingJsonValue("Detector:CurrentLivetime");
     mLivetime = obj.value("CurrentLivetime").toInt();
 
     if(!obj.contains("CurrentLLD"))
-        throw MissingJsonValue("Detector:CurrentLLD");
+        throw Exception_MissingJsonValue("Detector:CurrentLLD");
     mLLD = obj.value("CurrentLLD").toInt();
 
     if(!obj.contains("CurrentULD"))
-        throw MissingJsonValue("Detector:CurrentULD");
+        throw Exception_MissingJsonValue("Detector:CurrentULD");
     mULD = obj.value("CurrentULD").toInt();
 
     if(!obj.contains("EnergyCurveCoefficients"))
-        throw MissingJsonValue("Detector:EnergyCurveCoefficients");
+        throw Exception_MissingJsonValue("Detector:EnergyCurveCoefficients");
     QJsonArray coeffs = obj.value("EnergyCurveCoefficients").toArray();
 
     mEnergyCurveCoefficients.clear();

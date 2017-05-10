@@ -62,9 +62,9 @@ public:
     Geo::Coordinate coordinate;
     QVector3D position;
 
-    struct InvalidSpectrumFile : public Exception
+    struct Exception_InvalidSpectrumFile : public Exception
     {
-        explicit InvalidSpectrumFile(QString filename) noexcept
+        explicit Exception_InvalidSpectrumFile(QString filename) noexcept
             : Exception("Invalid spectrum file: " + filename) {}
     };
 

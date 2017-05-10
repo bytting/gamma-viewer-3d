@@ -38,7 +38,7 @@ public:
             const QColor &color,
             Qt3DCore::QEntity *parent);
 
-    virtual ~GridEntityXZ();
+    ~GridEntityXZ();
 
     Qt3DRender::QGeometryRenderer *mesh() const { return mMesh; }
     Qt3DExtras::QPhongMaterial *material() const { return mMaterial; }

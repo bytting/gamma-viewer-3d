@@ -61,9 +61,9 @@ private:
     void handleSelectSpectrum(SpectrumEntity *entity);
     void handleMarkSpectrum(SpectrumEntity *entity);
 
-    struct NoSceneFoundForEntity : public Exception
+    struct Exception_NoSceneFoundForEntity : public Exception
     {
-        explicit NoSceneFoundForEntity(QString source) noexcept
+        explicit Exception_NoSceneFoundForEntity(QString source) noexcept
             : Exception("No scene found for entity: " + source) {}
     };
 
