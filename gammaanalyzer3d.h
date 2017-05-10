@@ -24,13 +24,13 @@
 #include <Qt3DRender/QPickEvent>
 #include <map>
 #include "exceptions.h"
-#include "scene.h"
 
 namespace Ui
 {
 class GammaAnalyzer3D;
 }
 
+class Scene;
 class SpectrumEntity;
 
 class GammaAnalyzer3D : public QMainWindow

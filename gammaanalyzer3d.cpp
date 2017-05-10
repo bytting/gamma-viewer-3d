@@ -16,13 +16,13 @@
 
 #include "gammaanalyzer3d.h"
 #include "ui_gammaanalyzer3d.h"
+#include "session.h"
 #include "spectrum.h"
+#include "scene.h"
 #include "gridentity.h"
 #include "compassentity.h"
 #include "spectrumentity.h"
 #include "selectionentity.h"
-#include "scene.h"
-#include "session.h"
 #include <QDebug>
 #include <QMessageBox>
 #include <QDir>
