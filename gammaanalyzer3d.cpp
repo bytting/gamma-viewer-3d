@@ -16,9 +16,13 @@
 
 #include "gammaanalyzer3d.h"
 #include "ui_gammaanalyzer3d.h"
+#include "spectrum.h"
 #include "gridentity.h"
 #include "compassentity.h"
+#include "spectrumentity.h"
+#include "selectionentity.h"
 #include "scene.h"
+#include "session.h"
 #include <QDebug>
 #include <QMessageBox>
 #include <QDir>
@@ -167,7 +171,7 @@ void GammaAnalyzer3D::onOpenSession()
         scenes[sessionDir] = scene;
         labelStatus->setText("Session " + sessionDir + " loaded");
     }
-    catch(GA::Exception &e)
+    catch(const Exception &e)
     {
         QMessageBox::warning(this, "Warning", e.what());
     }

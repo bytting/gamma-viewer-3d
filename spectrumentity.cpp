@@ -15,6 +15,7 @@
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "spectrumentity.h"
+#include "spectrum.h"
 
 SpectrumEntity::SpectrumEntity(
         const QVector3D &position,

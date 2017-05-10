@@ -18,7 +18,6 @@
 #define SPECTRUM_H
 
 #include "exceptions.h"
-#include "detector.h"
 #include "geo.h"
 #include <vector>
 #include <QString>
@@ -35,6 +34,8 @@ extern "C"
 namespace Gamma
 {
 
+class Detector;
+
 class Spectrum
 {
 public:
@@ -43,7 +44,6 @@ public:
     typedef ChanList::size_type ChanListSize;
 
     explicit Spectrum(QString filename);
-    virtual ~Spectrum() {}
 
     QString sessionName() const { return mSessionName; }
     int sessionIndex() const { return mSessionIndex; }
@@ -56,16 +56,16 @@ public:
     const ChanList& channels() const { return mChannels; }
     int channel(ChanListSize index) const;
 
-    void calculateDoserate(const Detector &det, lua_State* L);
+    void calculateDoserate(const Detector &detector, lua_State* L);
     double doserate() const { return mDoserate; }
 
     Geo::Coordinate coordinate;
     QVector3D position;
 
-    struct InvalidSpectrumFile : public GA::Exception
+    struct InvalidSpectrumFile : public Exception
     {
         explicit InvalidSpectrumFile(QString filename) noexcept
-            : GA::Exception("Invalid spectrum file: " + filename) {}
+            : Exception("Invalid spectrum file: " + filename) {}
     };
 
 private:

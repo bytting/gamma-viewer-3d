@@ -17,13 +17,17 @@
 #ifndef SPECTRUMENTITY_H
 #define SPECTRUMENTITY_H
 
-#include "spectrum.h"
 #include <QColor>
 #include <Qt3DCore/QEntity>
 #include <Qt3DExtras/QSphereMesh>
 #include <Qt3DCore/QTransform>
 #include <Qt3DExtras/QPhongMaterial>
 #include <Qt3DRender/QObjectPicker>
+
+namespace Gamma
+{
+class Spectrum;
+}
 
 class SpectrumEntity : public Qt3DCore::QEntity
 {

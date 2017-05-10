@@ -20,9 +20,6 @@
 #include <stdexcept>
 #include <QString>
 
-namespace GA
-{
-
 struct Exception : public std::runtime_error
 {
     explicit Exception(QString arg) noexcept
@@ -64,7 +61,5 @@ struct MissingJsonValue : public Exception
     explicit MissingJsonValue(QString source) noexcept
         : Exception("Missing JSON value: " + source) {}
 };
-
-} // namespace GA
 
 #endif // EXCEPTIONS_H

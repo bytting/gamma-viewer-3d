@@ -15,6 +15,7 @@
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "spectrum.h"
+#include "detector.h"
 #include <QFile>
 #include <QJsonDocument>
 #include <QJsonObject>
@@ -30,7 +31,7 @@ Spectrum::Spectrum(QString filename)
 int Spectrum::channel(ChanListSize index) const
 {
     if(index >= mChannels.size())
-        throw GA::IndexOutOfBounds("Spectrum::channel");
+        throw IndexOutOfBounds("Spectrum::channel");
 
     return mChannels[index];
 }
@@ -39,7 +40,7 @@ void Spectrum::loadFile(QString filename)
 {
     QFile jsonFile(filename);
     if(!jsonFile.open(QFile::ReadOnly))
-        throw GA::UnableToLoadFile(filename);
+        throw UnableToLoadFile(filename);
 
     auto doc = QJsonDocument().fromJson(jsonFile.readAll());
     if(!doc.isObject())
@@ -113,24 +114,24 @@ static double GEValue(lua_State* L, double energy)
     return ge;
 }
 
-void Spectrum::calculateDoserate(const Detector &det, lua_State* L)
+void Spectrum::calculateDoserate(const Detector &detector, lua_State* L)
 {
     mDoserate = 0.0;
 
     // Trim off discriminators
-    int startChan = (int)((double)det.numChannels() *
-                          ((double)det.LLD() / 100.0));
-    int endChan = (int)((double)det.numChannels() *
-                        ((double)det.ULD() / 100.0));
-    if(endChan > det.numChannels()) // FIXME: Can not exceed 100% atm
-        endChan = det.numChannels();
+    int startChan = (int)((double)detector.numChannels() *
+                          ((double)detector.LLD() / 100.0));
+    int endChan = (int)((double)detector.numChannels() *
+                        ((double)detector.ULD() / 100.0));
+    if(endChan > detector.numChannels()) // FIXME: Can not exceed 100% atm
+        endChan = detector.numChannels();
 
     // Accumulate doserates from each channel
     for (int i = startChan; i < endChan; i++)
     {
         double sec = (double)mLivetime / 1000000.0;
         double cps = mChannels[i] / sec;
-        double E = det.getEnergy(i);
+        double E = detector.getEnergy(i);
         if (E < 0.05) // Energies below 0.05 are invalid
             continue;
         double GE = GEValue(L, E / 1000.0);

@@ -17,13 +17,18 @@
 #ifndef SCENE_H
 #define SCENE_H
 
-#include "session.h"
-#include "selectionentity.h"
 #include <QColor>
 #include <Qt3DExtras/Qt3DWindow>
 #include <Qt3DRender/QCamera>
 #include <Qt3DExtras/QOrbitCameraController>
 #include <Qt3DCore/QEntity>
+
+namespace Gamma
+{
+class Session;
+}
+
+class SelectionEntity;
 
 struct Scene
 {

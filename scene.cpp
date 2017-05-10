@@ -15,6 +15,8 @@
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "scene.h"
+#include "session.h"
+#include "selectionentity.h"
 #include <QVector3D>
 #include <Qt3DRender/QCameraLens>
 #include <Qt3DExtras/QForwardRenderer>

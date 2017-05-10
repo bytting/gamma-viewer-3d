@@ -17,12 +17,13 @@
 #ifndef SELECTIONENTITY_H
 #define SELECTIONENTITY_H
 
-#include "spectrumentity.h"
 #include <QColor>
 #include <Qt3DCore/QEntity>
 #include <Qt3DRender/QMesh>
 #include <Qt3DExtras/QPhongMaterial>
 #include <Qt3DCore/QTransform>
+
+class SpectrumEntity;
 
 class SelectionEntity : public Qt3DCore::QEntity
 {

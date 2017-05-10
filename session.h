@@ -20,7 +20,6 @@
 #include "exceptions.h"
 #include "detectortype.h"
 #include "detector.h"
-#include "spectrum.h"
 #include "geo.h"
 #include <vector>
 #include <QString>
@@ -36,6 +35,8 @@ extern "C"
 
 namespace Gamma
 {
+
+class Spectrum;
 
 typedef std::vector<Spectrum*> SpecList;
 typedef SpecList::size_type SpecListSize;
@@ -74,28 +75,28 @@ public:
     QColor makeDoserateColor(double doserate) const;
     QColor makeDoserateColor(const Spectrum *spec) const;
 
-    struct UnableToCreateLuaState : public GA::Exception
+    struct UnableToCreateLuaState : public Exception
     {
         explicit UnableToCreateLuaState(QString source) noexcept
-            : GA::Exception("Unable to create Lua state: " + source) {}
+            : Exception("Unable to create Lua state: " + source) {}
     };
 
-    struct DirIsNotASession : public GA::Exception
+    struct DirIsNotASession : public Exception
     {
         explicit DirIsNotASession(QString dir) noexcept
-            : GA::Exception("Directory is not a valid session: " + dir) {}
+            : Exception("Directory is not a valid session: " + dir) {}
     };
 
-    struct InvalidSessionFile : public GA::Exception
+    struct InvalidSessionFile : public Exception
     {
         explicit InvalidSessionFile(QString filename) noexcept
-            : GA::Exception("Invalid session file: " + filename) {}
+            : Exception("Invalid session file: " + filename) {}
     };
 
-    struct LoadDoserateScriptFailed : public GA::Exception
+    struct LoadDoserateScriptFailed : public Exception
     {
         explicit LoadDoserateScriptFailed(QString filename) noexcept
-            : GA::Exception("Loading doserate script failed: " + filename) {}
+            : Exception("Loading doserate script failed: " + filename) {}
     };
 
 private:

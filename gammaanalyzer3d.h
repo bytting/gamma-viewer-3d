@@ -25,11 +25,13 @@
 #include <map>
 #include "exceptions.h"
 #include "scene.h"
-#include "spectrumentity.h"
 
-namespace Ui {
+namespace Ui
+{
 class GammaAnalyzer3D;
 }
+
+class SpectrumEntity;
 
 class GammaAnalyzer3D : public QMainWindow
 {
@@ -59,10 +61,10 @@ private:
     void handleSelectSpectrum(SpectrumEntity *entity);
     void handleMarkSpectrum(SpectrumEntity *entity);
 
-    struct NoSceneFoundForEntity : public GA::Exception
+    struct NoSceneFoundForEntity : public Exception
     {
         explicit NoSceneFoundForEntity(QString source) noexcept
-            : GA::Exception("No scene found for entity: " + source) {}
+            : Exception("No scene found for entity: " + source) {}
     };
 
 private slots:
