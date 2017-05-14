@@ -32,16 +32,12 @@ class CompassEntity : public Qt3DCore::QEntity
 
 public:
 
-    CompassEntity(
-            const QColor &color,
-            const QVector3D &center,
-            const QVector3D &north,
-            Qt3DCore::QEntity *parent);
+    CompassEntity(const QColor &color,
+                  const QVector3D &center,
+                  const QVector3D &north,
+                  Qt3DCore::QEntity *parent);
 
     ~CompassEntity();
-
-    Qt3DRender::QGeometryRenderer *mesh() const { return mMesh; }
-    Qt3DExtras::QPhongMaterial *material() const { return mMaterial; }
 
 private:
 

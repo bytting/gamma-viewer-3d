@@ -16,12 +16,11 @@
 
 #include "gridentity.h"
 
-GridEntityXZ::GridEntityXZ(
-        float y,
-        unsigned int count,
-        float interval,
-        const QColor &color,
-        Qt3DCore::QEntity *parent)
+GridEntityXZ::GridEntityXZ(float y,
+                           unsigned int count,
+                           float interval,
+                           const QColor &color,
+                           Qt3DCore::QEntity *parent)
     :
       Qt3DCore::QEntity(parent),
       mMesh(new Qt3DRender::QGeometryRenderer(this)),

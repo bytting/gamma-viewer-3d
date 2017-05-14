@@ -18,10 +18,9 @@
 #include "spectrumentity.h"
 #include <QUrl>
 
-SelectionEntity::SelectionEntity(
-        const QVector3D &pos,
-        const QColor &color,
-        Qt3DCore::QEntity *parent)
+SelectionEntity::SelectionEntity(const QVector3D &pos,
+                                 const QColor &color,
+                                 Qt3DCore::QEntity *parent)
     :
       Qt3DCore::QEntity(parent),
       mMesh(new Qt3DRender::QMesh(this)),
@@ -66,7 +65,7 @@ SelectionEntity::~SelectionEntity()
 
 void SelectionEntity::setTarget(SpectrumEntity *target)
 {
-    QVector3D pos(target->transform()->translation());
+    QVector3D pos(target->getTranslation());
     pos.setY(pos.y() + 1.8);
     mTransform->setTranslation(pos);
     mTarget = target;

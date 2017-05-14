@@ -35,20 +35,16 @@ class SpectrumEntity : public Qt3DCore::QEntity
 
 public:
 
-    SpectrumEntity(
-            const QVector3D &position,
-            const QColor &color,
-            Gamma::Spectrum *spec,
-            Qt3DCore::QEntity *parent);
+    SpectrumEntity(const QVector3D &position,
+                   const QColor &color,
+                   Gamma::Spectrum *spec,
+                   Qt3DCore::QEntity *parent);
 
     ~SpectrumEntity();
 
-    Qt3DExtras::QSphereMesh *mesh() const { return mMesh; }
-    Qt3DExtras::QPhongMaterial *material() const { return mMaterial; }
-    Qt3DCore::QTransform *transform() const { return mTransform; }
-
-    Qt3DRender::QObjectPicker *picker() const { return mPicker; }
-    Gamma::Spectrum *spectrum() const { return mSpectrum; }
+    QVector3D getTranslation() const { return mTransform->translation(); }
+    const Qt3DRender::QObjectPicker *picker() const { return mPicker; }
+    const Gamma::Spectrum *spectrum() const { return mSpectrum; }
 
 private:
 

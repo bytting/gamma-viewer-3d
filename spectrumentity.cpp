@@ -17,11 +17,10 @@
 #include "spectrumentity.h"
 #include "spectrum.h"
 
-SpectrumEntity::SpectrumEntity(
-        const QVector3D &position,
-        const QColor &color,
-        Gamma::Spectrum *spec,
-        Qt3DCore::QEntity *parent)
+SpectrumEntity::SpectrumEntity(const QVector3D &position,
+                               const QColor &color,
+                               Gamma::Spectrum *spec,
+                               Qt3DCore::QEntity *parent)
     :
       Qt3DCore::QEntity(parent),
       mMesh(new Qt3DExtras::QSphereMesh(this)),

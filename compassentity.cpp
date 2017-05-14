@@ -16,11 +16,10 @@
 
 #include "compassentity.h"
 
-CompassEntity::CompassEntity(
-        const QColor &color,
-        const QVector3D &center,
-        const QVector3D &north,
-        Qt3DCore::QEntity *parent)
+CompassEntity::CompassEntity(const QColor &color,
+                             const QVector3D &center,
+                             const QVector3D &north,
+                             Qt3DCore::QEntity *parent)
     :
       Qt3DCore::QEntity(parent),
       mMesh(new Qt3DRender::QGeometryRenderer(this)),

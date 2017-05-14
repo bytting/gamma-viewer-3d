@@ -31,18 +31,13 @@ class SelectionEntity : public Qt3DCore::QEntity
 
 public:
 
-    SelectionEntity(
-            const QVector3D &pos,
-            const QColor &color,
-            Qt3DCore::QEntity *parent);
+    SelectionEntity(const QVector3D &pos,
+                    const QColor &color,
+                    Qt3DCore::QEntity *parent);
 
     ~SelectionEntity();
 
-    Qt3DRender::QMesh *mesh() const { return mMesh; }
-    Qt3DExtras::QPhongMaterial *material() const { return mMaterial; }
-    Qt3DCore::QTransform *transform() const { return mTransform; }
-
-    SpectrumEntity *target() const { return mTarget; }
+    const SpectrumEntity *target() const { return mTarget; }
     void setTarget(SpectrumEntity *target);
 
 private:

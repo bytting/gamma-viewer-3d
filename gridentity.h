@@ -31,17 +31,13 @@ class GridEntityXZ : public Qt3DCore::QEntity
 
 public:
 
-    GridEntityXZ(
-            float y,
-            unsigned int count,
-            float interval,
-            const QColor &color,
-            Qt3DCore::QEntity *parent);
+    GridEntityXZ(float y,
+                 unsigned int count,
+                 float interval,
+                 const QColor &color,
+                 Qt3DCore::QEntity *parent);
 
     ~GridEntityXZ();
-
-    Qt3DRender::QGeometryRenderer *mesh() const { return mMesh; }
-    Qt3DExtras::QPhongMaterial *material() const { return mMaterial; }
 
 private:
 
