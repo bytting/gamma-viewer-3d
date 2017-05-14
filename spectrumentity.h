@@ -42,7 +42,7 @@ public:
 
     ~SpectrumEntity();
 
-    QVector3D getTranslation() const { return mTransform->translation(); }
+    const Qt3DCore::QTransform *transform() const { return mTransform; }
     const Qt3DRender::QObjectPicker *picker() const { return mPicker; }
     const Gamma::Spectrum *spectrum() const { return mSpectrum; }
 
