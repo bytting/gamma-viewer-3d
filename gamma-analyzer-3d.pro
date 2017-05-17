@@ -101,7 +101,8 @@ HEADERS += lua/lapi.h \
     spectrumentity.h \
     gridentity.h \
     selectionentity.h \
-    compassentity.h
+    compassentity.h \
+    memutils.h
 
 FORMS += gammaanalyzer3d.ui
 

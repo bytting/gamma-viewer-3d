@@ -17,6 +17,7 @@
 #ifndef GEO_H
 #define GEO_H
 
+#include "memutils.h"
 #include <QVector3D>
 #include <QGeoCoordinate>
 
@@ -43,6 +44,9 @@ T radianToDegree(T radian)
 
 class Coordinate : public QGeoCoordinate
 {
+    // Base class destructor is not virtual, prevent heap allocation.
+    PREVENT_DYNAMIC_ALLOCATION;
+
 public:
 
     Coordinate();
@@ -56,14 +60,6 @@ public:
     void setAnglesFromCartesian(const QVector3D &position);
 
     QVector3D toCartesian() const;
-
-private:
-
-    // Base class destructor is not virtual, prevent heap allocation.
-    void *operator new(size_t);
-    void *operator new[](size_t);
-    void operator delete(void*);
-    void operator delete[](void*);
 };
 
 } // namespace Geo
