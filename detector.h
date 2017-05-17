@@ -17,9 +17,9 @@
 #ifndef DETECTOR_H
 #define DETECTOR_H
 
+#include <vector>
 #include <QString>
 #include <QJsonObject>
-#include <vector>
 
 namespace Gamma
 {

@@ -23,6 +23,8 @@
 #include "compassentity.h"
 #include "spectrumentity.h"
 #include "selectionentity.h"
+#include <exception>
+#include <algorithm>
 #include <QDebug>
 #include <QMessageBox>
 #include <QDir>
@@ -34,7 +36,6 @@
 #include <Qt3DCore/QEntity>
 #include <Qt3DRender/QCamera>
 #include <Qt3DRender/QObjectPicker>
-#include <algorithm>
 
 GammaAnalyzer3D::GammaAnalyzer3D(QWidget *parent)
     :

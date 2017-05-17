@@ -37,7 +37,7 @@ public:
                  const QColor &color,
                  Qt3DCore::QEntity *parent);
 
-    ~GridEntityXZ();
+    ~GridEntityXZ() override;
 
 private:
 

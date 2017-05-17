@@ -35,7 +35,7 @@ public:
                     const QColor &color,
                     Qt3DCore::QEntity *parent);
 
-    ~SelectionEntity();
+    ~SelectionEntity() override;
 
     const SpectrumEntity *target() const { return mTarget; }
     void setTarget(SpectrumEntity *target);

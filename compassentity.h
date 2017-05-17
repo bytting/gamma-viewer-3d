@@ -37,7 +37,7 @@ public:
                   const QVector3D &north,
                   Qt3DCore::QEntity *parent);
 
-    ~CompassEntity();
+    ~CompassEntity() override;
 
 private:
 

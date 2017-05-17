@@ -16,8 +16,8 @@
 
 #include "detector.h"
 #include "exceptions.h"
-#include <QJsonArray>
 #include <cmath>
+#include <QJsonArray>
 
 namespace Gamma
 {

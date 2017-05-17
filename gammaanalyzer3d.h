@@ -17,13 +17,13 @@
 #ifndef GAMMAANALYZER3D_H
 #define GAMMAANALYZER3D_H
 
+#include "exceptions.h"
+#include <map>
 #include <QMainWindow>
 #include <QString>
 #include <QCloseEvent>
 #include <QLabel>
 #include <Qt3DRender/QPickEvent>
-#include <map>
-#include "exceptions.h"
 
 namespace Ui
 {
@@ -40,7 +40,7 @@ class GammaAnalyzer3D : public QMainWindow
 public:
 
     explicit GammaAnalyzer3D(QWidget *parent = 0);
-    ~GammaAnalyzer3D();
+    ~GammaAnalyzer3D() override;
 
 protected:
 

@@ -40,7 +40,7 @@ public:
                    Gamma::Spectrum *spec,
                    Qt3DCore::QEntity *parent);
 
-    ~SpectrumEntity();
+    ~SpectrumEntity() override;
 
     const Qt3DCore::QTransform *transform() const { return mTransform; }
     const Qt3DRender::QObjectPicker *picker() const { return mPicker; }

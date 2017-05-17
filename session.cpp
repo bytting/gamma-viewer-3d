@@ -16,7 +16,7 @@
 
 #include "session.h"
 #include "spectrum.h"
-#include <stdexcept>
+#include <exception>
 #include <cmath>
 #include <QString>
 #include <QDir>
@@ -168,7 +168,11 @@ void Session::loadPath(QString sessionPath)
 
             mSpecList.emplace_back(spec);
         }
-        catch(const Exception& e)
+        catch(const Exception &e)
+        {
+            qDebug() << e.what();
+        }
+        catch(const std::exception &e)
         {
             qDebug() << e.what();
         }
@@ -280,24 +284,23 @@ QColor Session::makeDoserateColor(double doserate) const
     }
 
     auto f = (doserate - minVal) / (maxVal - minVal);
-
     auto a = (1.0 - f) / 0.25;	// invert and group
-    auto X = std::floor(a);	// the integer part
-    auto Y = std::floor(255.0 * (a - X)); // the fractional part from 0 to 255
+    auto x = std::floor(a);	// the integer part
+    auto y = std::floor(255.0 * (a - x)); // the fractional part from 0 to 255
 
-    switch((int)X)
+    switch((int)x)
     {
     case 0:
-        color.setRgb(255, Y, 0);
+        color.setRgb(255, y, 0);
         break;
     case 1:
-        color.setRgb(255 - Y, 255, 0);
+        color.setRgb(255 - y, 255, 0);
         break;
     case 2:
-        color.setRgb(0, 255, Y);
+        color.setRgb(0, 255, y);
         break;
     case 3:
-        color.setRgb(0, 255 - Y, 255);
+        color.setRgb(0, 255 - y, 255);
         break;
     case 4:
         color.setRgb(0, 0, 255);
