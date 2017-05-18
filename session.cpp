@@ -52,6 +52,7 @@ Session::Session()
 {
     if(!L.get())
         throw Exception_UnableToCreateLuaState("Session::Session");
+
     luaL_openlibs(L.get());
 }
 
@@ -96,16 +97,15 @@ void Session::loadPath(QString sessionPath)
     if(!QFile::exists(sessionFile))
         throw Exception_DirIsNotASession(sessionDir.absolutePath());
 
-    clear();
-
     loadSessionFile(sessionFile);
 
     const auto fileEntries = spectrumDir.entryInfoList(
                 QStringList() << "*.json",
                 QDir::NoDotAndDotDot | QDir::Files);
 
-    bool first = true;
+    clear();
 
+    bool firstIteration = true;
     for(const auto &fileEntry : fileEntries)
     {
         try
@@ -115,9 +115,9 @@ void Session::loadPath(QString sessionPath)
             if(mScriptLoaded)
                 spec->calculateDoserate(mDetector, L.get());
 
-            if(first)
+            if(firstIteration)
             {
-                first = false;
+                firstIteration = false;
                 mMinDoserate = mMaxDoserate = spec->doserate();
                 mMinX = mMaxX = spec->position.x();
                 mMinY = mMaxY = spec->position.y();
@@ -203,26 +203,22 @@ void Session::loadSessionFile(QString sessionFile)
 
     if(!root.contains("Name"))
         throw Exception_MissingJsonValue("Session:Name");
-    mName = root.value("Name").toString();
-
     if(!root.contains("Comment"))
         throw Exception_MissingJsonValue("Session:Comment");
-    mComment = root.value("Comment").toString();
-
     if(!root.contains("Livetime"))
         throw Exception_MissingJsonValue("Session:Livetime");
-    mLivetime = root.value("Livetime").toInt();
-
     if(!root.contains("Iterations"))
         throw Exception_MissingJsonValue("Session:Iterations");
-    mIterations = root.value("Iterations").toInt();
-
     if(!root.contains("DetectorType"))
         throw Exception_MissingJsonValue("Session:DetectorType");
-    mDetectorType.loadJson(root.value("DetectorType").toObject());
-
     if(!root.contains("Detector"))
         throw Exception_MissingJsonValue("Session:Detector");
+
+    mName = root.value("Name").toString();
+    mComment = root.value("Comment").toString();
+    mLivetime = root.value("Livetime").toInt();
+    mIterations = root.value("Iterations").toInt();
+    mDetectorType.loadJson(root.value("DetectorType").toObject());
     mDetector.loadJson(root.value("Detector").toObject());
 }
 
