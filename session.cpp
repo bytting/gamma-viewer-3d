@@ -16,7 +16,6 @@
 
 #include "session.h"
 #include <exception>
-#include <memory>
 #include <cmath>
 #include <QString>
 #include <QDir>
@@ -68,17 +67,17 @@ Session::~Session()
     }
 }
 
-const SpectrumList &Session::getSpectrumList() const
+const SpectrumList &Session::spectrumList() const
 {
     return mSpectrumList;
 }
 
-const SpectrumPointer &Session::getSpectrum(SpectrumListSize index) const
+const Spectrum &Session::spectrum(SpectrumListSize index) const
 {
     if(index >= mSpectrumList.size())
         throw Exception_IndexOutOfBounds("Session::getSpectrum");
 
-    return mSpectrumList[index];
+    return *mSpectrumList[index];
 }
 
 void Session::loadPath(QString sessionPath)
@@ -254,9 +253,9 @@ QVector3D Session::makeScenePosition(const QVector3D &position, double altitude)
                      -1.0 * (position.y() - mMinY - mHalfY));
 }
 
-QVector3D Session::makeScenePosition(const SpectrumPointer &spec) const
+QVector3D Session::makeScenePosition(const Spectrum &spec) const
 {
-    return makeScenePosition(spec->position, spec->coordinate.altitude());
+    return makeScenePosition(spec.position, spec.coordinate.altitude());
 }
 
 QColor Session::makeDoserateColor(double doserate) const
@@ -302,9 +301,9 @@ QColor Session::makeDoserateColor(double doserate) const
     return color;
 }
 
-QColor Session::makeDoserateColor(const SpectrumPointer &spec) const
+QColor Session::makeDoserateColor(const Spectrum &spec) const
 {
-    return makeDoserateColor(spec->doserate());
+    return makeDoserateColor(spec.doserate());
 }
 
 } // namespace Gamma

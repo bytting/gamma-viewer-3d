@@ -17,7 +17,6 @@
 #ifndef SELECTIONENTITY_H
 #define SELECTIONENTITY_H
 
-#include <memory>
 #include <QColor>
 #include <Qt3DCore/QEntity>
 #include <Qt3DRender/QMesh>

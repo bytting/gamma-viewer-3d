@@ -19,7 +19,6 @@
 
 #include "exceptions.h"
 #include "geo.h"
-#include <memory>
 #include <vector>
 #include <QString>
 #include <QDateTime>

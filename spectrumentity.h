@@ -18,7 +18,6 @@
 #define SPECTRUMENTITY_H
 
 #include "spectrum.h"
-#include <memory>
 #include <QColor>
 #include <Qt3DCore/QEntity>
 #include <Qt3DExtras/QSphereMesh>
@@ -34,7 +33,7 @@ public:
 
     SpectrumEntity(const QVector3D &position,
                    const QColor &color,
-                   const std::unique_ptr<Gamma::Spectrum> &spec,
+                   const Gamma::Spectrum &spec,
                    Qt3DCore::QEntity *parent);
 
     ~SpectrumEntity() override;

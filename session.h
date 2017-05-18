@@ -38,10 +38,6 @@ extern "C"
 namespace Gamma
 {
 
-typedef std::unique_ptr<Spectrum> SpectrumPointer;
-typedef std::vector<SpectrumPointer> SpectrumList;
-typedef SpectrumList::size_type SpectrumListSize;
-
 namespace internal
 {
     struct LuaStateDeleter
@@ -54,6 +50,8 @@ namespace internal
 } // namespace internal
 
 typedef std::unique_ptr<lua_State, internal::LuaStateDeleter> LuaStatePointer;
+typedef std::vector<std::unique_ptr<Spectrum>> SpectrumList;
+typedef SpectrumList::size_type SpectrumListSize;
 
 class Session
 {
@@ -65,9 +63,9 @@ public:
 
     Session &operator = (const Session &) = delete;
 
-    const SpectrumList &getSpectrumList() const;
-    const SpectrumPointer &getSpectrum(SpectrumListSize index) const;
+    const SpectrumList &spectrumList() const;
     SpectrumListSize spectrumCount() const { return mSpectrumList.size(); }
+    const Spectrum &spectrum(SpectrumListSize index) const;
 
     void loadPath(QString sessionPath);
     void loadDoserateScript(QString scriptFileName);
@@ -85,12 +83,12 @@ public:
     QVector3D centerPosition, northPosition;
 
     QVector3D makeScenePosition(const QVector3D &position, double altitude) const;
-    QVector3D makeScenePosition(const SpectrumPointer &spec) const;
+    QVector3D makeScenePosition(const Spectrum &spec) const;
 
     void useLogarithmicDoserateColor(bool state) { mLogarithmicColorScale = state; }
 
     QColor makeDoserateColor(double doserate) const;
-    QColor makeDoserateColor(const SpectrumPointer &spec) const;
+    QColor makeDoserateColor(const Spectrum &spec) const;
 
     struct Exception_UnableToCreateLuaState : public Exception
     {

@@ -145,12 +145,12 @@ void GammaAnalyzer3D::onOpenSession()
                         session->northPosition, session->minAltitude() - 5.0),
                     scene->root);
 
-        for(auto &spec : session->getSpectrumList())
+        for(const auto &spec : session->spectrumList())
         {
             auto entity = new SpectrumEntity(
-                        session->makeScenePosition(spec),
-                        session->makeDoserateColor(spec),
-                        spec,
+                        session->makeScenePosition(*spec),
+                        session->makeDoserateColor(*spec),
+                        *spec,
                         scene->root);
 
             QObject::connect(
@@ -226,7 +226,7 @@ void GammaAnalyzer3D::onSpectrumPicked(Qt3DRender::QPickEvent *event)
     }
 }
 
-const std::unique_ptr<Scene> &GammaAnalyzer3D::sceneFromEntity(SpectrumEntity *entity) const
+const Scene &GammaAnalyzer3D::sceneFromEntity(SpectrumEntity *entity) const
 {
     auto it = std::find_if(scenes.begin(), scenes.end(), [&](auto &p){
         return p.second->hasChildEntity(entity);
@@ -235,7 +235,7 @@ const std::unique_ptr<Scene> &GammaAnalyzer3D::sceneFromEntity(SpectrumEntity *e
     if(it == scenes.end())
         throw Exception_NoSceneFoundForEntity("GammaAnalyzer3D::sceneFromEntity");
 
-    return it->second;
+    return *it->second;
 }
 
 void GammaAnalyzer3D::handleSelectSpectrum(SpectrumEntity *entity)
@@ -250,8 +250,8 @@ void GammaAnalyzer3D::handleSelectSpectrum(SpectrumEntity *entity)
     auto &scene = sceneFromEntity(entity);
 
     // Enable current selection arrow
-    scene->selected->setTarget(entity);
-    scene->selected->setEnabled(true);
+    scene.selected->setTarget(entity);
+    scene.selected->setEnabled(true);
 
     // Populate UI fields with information about selected spectrum
     auto &spec = entity->spectrum();
@@ -284,16 +284,16 @@ void GammaAnalyzer3D::handleMarkSpectrum(SpectrumEntity *entity)
 {
     auto &scene = sceneFromEntity(entity);
 
-    if(!scene->selected->isEnabled() || !scene->selected->target() ||
-            scene->selected->target() == entity)
+    if(!scene.selected->isEnabled() || !scene.selected->target() ||
+            scene.selected->target() == entity)
         return;
 
     // Enable current marked arrow
-    scene->marked->setTarget(entity);
-    scene->marked->setEnabled(true);
+    scene.marked->setTarget(entity);
+    scene.marked->setEnabled(true);
 
     // Calculate distance and azimuth
-    auto &spec1 = scene->selected->target()->spectrum();
+    auto &spec1 = scene.selected->target()->spectrum();
     auto &spec2 = entity->spectrum();
 
     auto distance = spec1.coordinate.distanceTo(spec2.coordinate);

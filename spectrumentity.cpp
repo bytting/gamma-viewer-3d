@@ -18,7 +18,7 @@
 
 SpectrumEntity::SpectrumEntity(const QVector3D &position,
                                const QColor &color,
-                               const std::unique_ptr<Gamma::Spectrum> &spec,
+                               const Gamma::Spectrum &spec,
                                Qt3DCore::QEntity *parent)
     :
       Qt3DCore::QEntity(parent),
@@ -26,7 +26,7 @@ SpectrumEntity::SpectrumEntity(const QVector3D &position,
       mMaterial(new Qt3DExtras::QPhongMaterial(this)),
       mTransform(new Qt3DCore::QTransform(this)),
       mPicker(new Qt3DRender::QObjectPicker(this)),
-      mSpectrum(*spec.get())
+      mSpectrum(spec)
 {
     mMesh->setRadius(0.5f);
     addComponent(mMesh);

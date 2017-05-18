@@ -57,7 +57,7 @@ private:
     void setupWidgets();
     void setupSignals();
 
-    const std::unique_ptr<Scene> &sceneFromEntity(SpectrumEntity *entity) const;
+    const Scene &sceneFromEntity(SpectrumEntity *entity) const;
 
     void handleSelectSpectrum(SpectrumEntity *entity);
     void handleMarkSpectrum(SpectrumEntity *entity);
