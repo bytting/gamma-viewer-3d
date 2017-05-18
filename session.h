@@ -42,6 +42,19 @@ typedef std::unique_ptr<Spectrum> SpectrumPointer;
 typedef std::vector<SpectrumPointer> SpectrumList;
 typedef SpectrumList::size_type SpectrumListSize;
 
+namespace internal
+{
+    struct LuaStateDeleter
+    {
+        void operator () (lua_State *L) const
+        {
+            if(L) { lua_close(L); }
+        }
+    };
+} // namespace internal
+
+typedef std::unique_ptr<lua_State, internal::LuaStateDeleter> LuaStatePointer;
+
 class Session
 {
 public:
@@ -115,7 +128,7 @@ private:
 
     SpectrumList mSpectrumList;
 
-    lua_State *L;
+    LuaStatePointer L;
     bool mScriptLoaded;
 
     double mLivetime;

@@ -51,9 +51,9 @@ Session::Session()
       mMaxAltitude(0.0),
       mLogarithmicColorScale(true)
 {
-    if(!L)
+    if(!L.get())
         throw Exception_UnableToCreateLuaState("Session::Session");
-    luaL_openlibs(L);
+    luaL_openlibs(L.get());
 }
 
 Session::~Session()
@@ -61,12 +61,16 @@ Session::~Session()
     try
     {
         clear();
-        lua_close(L);
     }
     catch(const std::exception& e)
     {
         qDebug() << e.what();
     }
+}
+
+const SpectrumList &Session::getSpectrumList() const
+{
+    return mSpectrumList;
 }
 
 const SpectrumPointer &Session::getSpectrum(SpectrumListSize index) const
@@ -75,11 +79,6 @@ const SpectrumPointer &Session::getSpectrum(SpectrumListSize index) const
         throw Exception_IndexOutOfBounds("Session::getSpectrum");
 
     return mSpectrumList[index];
-}
-
-const SpectrumList& Session::getSpectrumList() const
-{
-    return mSpectrumList;
 }
 
 void Session::loadPath(QString sessionPath)
@@ -115,7 +114,7 @@ void Session::loadPath(QString sessionPath)
             auto spec = std::make_unique<Spectrum>(fileEntry.absoluteFilePath());
 
             if(mScriptLoaded)
-                spec->calculateDoserate(mDetector, L);
+                spec->calculateDoserate(mDetector, L.get());
 
             if(first)
             {
@@ -230,7 +229,7 @@ void Session::loadSessionFile(QString sessionFile)
 
 void Session::loadDoserateScript(QString scriptFileName)
 {
-    if(luaL_dofile(L, scriptFileName.toStdString().c_str()))
+    if(luaL_dofile(L.get(), scriptFileName.toStdString().c_str()))
         throw Exception_LoadDoserateScriptFailed(scriptFileName);
     mScriptLoaded = true;
 }
