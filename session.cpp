@@ -15,8 +15,8 @@
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "session.h"
-#include "spectrum.h"
 #include <exception>
+#include <memory>
 #include <cmath>
 #include <QString>
 #include <QDir>
@@ -69,7 +69,7 @@ Session::~Session()
     }
 }
 
-const Spectrum* Session::getSpectrum(SpecListSize index) const
+const Spectrum::UniquePtr &Session::getSpectrum(SpecListSize index) const
 {
     if(index >= mSpecList.size())
         throw Exception_IndexOutOfBounds("Session::getSpectrum");
@@ -111,9 +111,8 @@ void Session::loadPath(QString sessionPath)
     for(const auto &fileEntry : fileEntries)
     {
         try
-        {
-            // FIXME: Use smart pointers
-            Spectrum* spec = new Spectrum(fileEntry.absoluteFilePath());
+        {            
+            auto spec = std::make_unique<Spectrum>(fileEntry.absoluteFilePath());
 
             if(mScriptLoaded)
                 spec->calculateDoserate(mDetector, L);
@@ -167,7 +166,7 @@ void Session::loadPath(QString sessionPath)
                     mMaxAltitude = spec->coordinate.altitude();
             }
 
-            mSpecList.emplace_back(spec);
+            mSpecList.emplace_back(std::move(spec));
         }
         catch(const Exception &e)
         {
@@ -238,9 +237,6 @@ void Session::loadDoserateScript(QString scriptFileName)
 
 void Session::clear()
 {
-    for(auto spec : mSpecList)
-        delete spec;
-
     mSpecList.clear();
 
     mName = "";
@@ -259,7 +255,7 @@ QVector3D Session::makeScenePosition(const QVector3D &position, double altitude)
                      -1.0 * (position.y() - mMinY - mHalfY));
 }
 
-QVector3D Session::makeScenePosition(const Spectrum *spec) const
+QVector3D Session::makeScenePosition(const Spectrum::UniquePtr &spec) const
 {
     return makeScenePosition(spec->position, spec->coordinate.altitude());
 }
@@ -307,7 +303,7 @@ QColor Session::makeDoserateColor(double doserate) const
     return color;
 }
 
-QColor Session::makeDoserateColor(const Spectrum *spec) const
+QColor Session::makeDoserateColor(const Spectrum::UniquePtr &spec) const
 {
     return makeDoserateColor(spec->doserate());
 }

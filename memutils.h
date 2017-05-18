@@ -19,9 +19,9 @@
 
 #include <new>
 
-#if __cplusplus <= 199711L
+#if __cplusplus < 201103L
 
-    #define PREVENT_DYNAMIC_ALLOCATION \
+    #define DISABLE_DYNAMIC_ALLOCATION \
         void *operator new(std::size_t size) throw (std::bad_alloc); \
         void *operator new(std::size_t size, const std::nothrow_t &nothrow_value) throw(); \
         void *operator new(std::size_t size, void *ptr) throw(); \
@@ -35,9 +35,9 @@
         void operator delete[](void *ptr, const std::nothrow_t &nothrow_constant) throw(); \
         void operator delete[](void *ptr, void *voidptr2) throw();
 
-#elif __cplusplus == 201103L
+#elif __cplusplus < 201402L
 
-    #define PREVENT_DYNAMIC_ALLOCATION \
+    #define DISABLE_DYNAMIC_ALLOCATION \
         void *operator new(std::size_t size) = delete; \
         void *operator new(std::size_t size, const std::nothrow_t &nothrow_value) noexcept = delete; \
         void *operator new(std::size_t size, void *ptr) noexcept = delete; \
@@ -51,9 +51,9 @@
         void operator delete[](void *ptr, const std::nothrow_t &nothrow_constant) noexcept = delete; \
         void operator delete[](void *ptr, void* voidptr2) noexcept = delete;
 
-#elif __cplusplus >= 201402L
+#else
 
-    #define PREVENT_DYNAMIC_ALLOCATION \
+    #define DISABLE_DYNAMIC_ALLOCATION \
         void *operator new(std::size_t size) = delete; \
         void *operator new(std::size_t size, const std::nothrow_t &nothrow_value) noexcept = delete; \
         void *operator new(std::size_t size, void *ptr) noexcept = delete; \
@@ -70,10 +70,6 @@
         void operator delete[](void *ptr, void *voidptr2) noexcept = delete; \
         void operator delete[](void *ptr, std::size_t size) noexcept = delete; \
         void operator delete[](void *ptr, std::size_t size, const std::nothrow_t &nothrow_constant) noexcept = delete;
-
-#else
-
-    #error C++ compiler version not recognized
 
 #endif
 

@@ -17,17 +17,14 @@
 #ifndef SPECTRUMENTITY_H
 #define SPECTRUMENTITY_H
 
+#include "spectrum.h"
+#include <memory>
 #include <QColor>
 #include <Qt3DCore/QEntity>
 #include <Qt3DExtras/QSphereMesh>
 #include <Qt3DCore/QTransform>
 #include <Qt3DExtras/QPhongMaterial>
 #include <Qt3DRender/QObjectPicker>
-
-namespace Gamma
-{
-class Spectrum;
-}
 
 class SpectrumEntity : public Qt3DCore::QEntity
 {
@@ -37,7 +34,7 @@ public:
 
     SpectrumEntity(const QVector3D &position,
                    const QColor &color,
-                   Gamma::Spectrum *spec,
+                   const Gamma::Spectrum::UniquePtr &spec,
                    Qt3DCore::QEntity *parent);
 
     ~SpectrumEntity() override;
@@ -53,7 +50,7 @@ private:
     Qt3DCore::QTransform *mTransform;
 
     Qt3DRender::QObjectPicker *mPicker;
-    Gamma::Spectrum *mSpectrum;
+    Gamma::Spectrum *mSpectrum; // FIXME: Use weak_ptr ?
 };
 
 #endif // SPECTRUMENTITY_H

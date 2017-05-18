@@ -45,7 +45,7 @@ T radianToDegree(T radian)
 class Coordinate : public QGeoCoordinate
 {
     // Base class destructor is not virtual, prevent heap allocation
-    PREVENT_DYNAMIC_ALLOCATION
+    DISABLE_DYNAMIC_ALLOCATION
 
 public:
 

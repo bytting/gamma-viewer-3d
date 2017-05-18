@@ -20,7 +20,9 @@
 #include "exceptions.h"
 #include "detectortype.h"
 #include "detector.h"
+#include "spectrum.h"
 #include "geo.h"
+#include <memory>
 #include <vector>
 #include <QString>
 #include <QVector3D>
@@ -36,9 +38,7 @@ extern "C"
 namespace Gamma
 {
 
-class Spectrum;
-
-typedef std::vector<Spectrum*> SpecList;
+typedef std::vector<Spectrum::UniquePtr> SpecList;
 typedef SpecList::size_type SpecListSize;
 
 class Session
@@ -48,8 +48,8 @@ public:
     Session();
     ~Session();
 
-    const SpecList& getSpectrumList() const;
-    const Spectrum* getSpectrum(SpecListSize index) const;
+    const SpecList &getSpectrumList() const;
+    const Spectrum::UniquePtr &getSpectrum(SpecListSize index) const;
     SpecListSize spectrumCount() const { return mSpecList.size(); }
 
     void loadPath(QString sessionPath);
@@ -68,12 +68,12 @@ public:
     QVector3D centerPosition, northPosition;
 
     QVector3D makeScenePosition(const QVector3D &position, double altitude) const;
-    QVector3D makeScenePosition(const Spectrum *spec) const;
+    QVector3D makeScenePosition(const Spectrum::UniquePtr &spec) const;
 
     void useLogarithmicDoserateColor(bool state) { mLogarithmicColorScale = state; }
 
     QColor makeDoserateColor(double doserate) const;
-    QColor makeDoserateColor(const Spectrum *spec) const;
+    QColor makeDoserateColor(const Spectrum::UniquePtr &spec) const;
 
     struct Exception_UnableToCreateLuaState : public Exception
     {

@@ -19,6 +19,7 @@
 
 #include "exceptions.h"
 #include "geo.h"
+#include <memory>
 #include <vector>
 #include <QString>
 #include <QDateTime>
@@ -40,10 +41,18 @@ class Spectrum
 {
 public:
 
+    typedef std::unique_ptr<Spectrum> UniquePtr;
+    typedef std::weak_ptr<Spectrum> WeakPtr;
+
     typedef std::vector<int> ChanList;
     typedef ChanList::size_type ChanListSize;
 
+    Spectrum() : mSessionIndex(0), mRealtime(0), mLivetime(0), mDoserate(0.0) {}
     explicit Spectrum(QString filename);
+    Spectrum(const Spectrum& rhs) = delete;
+    ~Spectrum() = default;
+
+    Spectrum &operator = (const Spectrum&) = delete;
 
     QString sessionName() const { return mSessionName; }
     int sessionIndex() const { return mSessionIndex; }

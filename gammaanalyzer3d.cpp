@@ -90,7 +90,7 @@ void GammaAnalyzer3D::onActionExit()
 {
     try
     {
-        for(auto p : scenes)
+        for(auto &p : scenes)
             delete p.second;
 
         scenes.clear();
@@ -149,7 +149,7 @@ void GammaAnalyzer3D::onOpenSession()
                         session->northPosition, session->minAltitude() - 5.0),
                     scene->root);
 
-        for(auto spec : session->getSpectrumList())
+        for(auto &spec : session->getSpectrumList())
         {
             auto entity = new SpectrumEntity(
                         session->makeScenePosition(spec),
@@ -245,7 +245,7 @@ Scene *GammaAnalyzer3D::sceneFromEntity(SpectrumEntity *entity) const
 void GammaAnalyzer3D::handleSelectSpectrum(SpectrumEntity *entity)
 {
     // Disable selected and marked arrows for all scenes
-    for(auto p : scenes)
+    for(auto &p : scenes)
     {
         p.second->selected->setEnabled(false);
         p.second->marked->setEnabled(false);
