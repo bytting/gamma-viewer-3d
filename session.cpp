@@ -76,7 +76,7 @@ const SpectrumList &Session::spectrumList() const
 const Spectrum &Session::spectrum(SpectrumListSize index) const
 {
     if(index >= mSpectrumList.size())
-        throw Exception_IndexOutOfBounds("Session::getSpectrum");
+        throw Exception_IndexOutOfBounds("Session::spectrum");
 
     return *mSpectrumList[index];
 }
