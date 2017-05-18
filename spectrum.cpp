@@ -60,43 +60,44 @@ void Spectrum::loadFile(QString filename)
 
     auto args = obj.value("arguments").toObject();
 
+    if(!args.contains("session_name"))
+        throw Exception_MissingJsonValue("Spectrum:session_name");
+    if(!args.contains("session_index"))
+        throw Exception_MissingJsonValue("Spectrum:session_index");
+    if(!args.contains("realtime"))
+        throw Exception_MissingJsonValue("Spectrum:realtime");
+    if(!args.contains("livetime"))
+        throw Exception_MissingJsonValue("Spectrum:livetime");
+    if(!args.contains("latitude_start"))
+        throw Exception_MissingJsonValue("Spectrum:latitude_start");
+    if(!args.contains("longitude_start"))
+        throw Exception_MissingJsonValue("Spectrum:longitude_start");
+    if(!args.contains("altitude_start"))
+        throw Exception_MissingJsonValue("Spectrum:altitude_start");
+    if(!args.contains("gps_time_start"))
+        throw Exception_MissingJsonValue("Spectrum:gps_time_start");
+    if(!args.contains("channels"))
+        throw Exception_MissingJsonValue("Spectrum:channels");
+
+    mSessionName = args.value("session_name").toString();
+    mSessionIndex = args.value("session_index").toInt();
+    mRealtime = args.value("realtime").toInt();
+    mLivetime = args.value("livetime").toInt();
+    coordinate.setLatitude(args.value("latitude_start").toDouble());
+    coordinate.setLongitude(args.value("longitude_start").toDouble());
+    coordinate.setAltitude(args.value("altitude_start").toDouble());
+    mGpsTimeStart = QDateTime::fromString(
+                args.value("gps_time_start").toString(),
+                Qt::DateFormat::ISODate);
+
+    auto strChans = args.value("channels").toString();
+    auto strChanList = strChans.split(
+                ' ', QString::SplitBehavior::SkipEmptyParts);
+
     mChannels.clear();
 
-    if(args.contains("session_name"))
-        mSessionName = args.value("session_name").toString();
-
-    if(args.contains("session_index"))
-        mSessionIndex = args.value("session_index").toInt();
-
-    if(args.contains("realtime"))
-        mRealtime = args.value("realtime").toInt();
-
-    if(args.contains("livetime"))
-        mLivetime = args.value("livetime").toInt();
-
-    if(args.contains("latitude_start"))
-        coordinate.setLatitude(args.value("latitude_start").toDouble());
-
-    if(args.contains("longitude_start"))
-        coordinate.setLongitude(args.value("longitude_start").toDouble());
-
-    if(args.contains("altitude_start"))
-        coordinate.setAltitude(args.value("altitude_start").toDouble());
-
-    if(args.contains("gps_time_start"))
-        mGpsTimeStart = QDateTime::fromString(
-                    args.value("gps_time_start").toString(),
-                    Qt::DateFormat::ISODate);
-
-    if(args.contains("channels"))
-    {
-        auto strChans = args.value("channels").toString();
-        auto strChanList = strChans.split(' ',
-                    QString::SplitBehavior::SkipEmptyParts);
-
-        for(auto chan : strChanList)
-            mChannels.emplace_back(chan.toInt());
-    }
+    for(const auto &chan : strChanList)
+        mChannels.emplace_back(chan.toInt());
 
     position = coordinate.toCartesian();
 }
