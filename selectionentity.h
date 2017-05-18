@@ -32,8 +32,6 @@ class SelectionEntity : public Qt3DCore::QEntity
 
 public:
 
-    typedef std::unique_ptr<SelectionEntity> Pointer;
-
     SelectionEntity(const QVector3D &pos,
                     const QColor &color,
                     Qt3DCore::QEntity *parent);

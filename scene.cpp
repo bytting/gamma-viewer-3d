@@ -15,7 +15,6 @@
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "scene.h"
-//#include "selectionentity.h"
 #include <memory>
 #include <QVector3D>
 #include <Qt3DRender/QCameraLens>
@@ -67,7 +66,7 @@ Scene::~Scene()
     camera = nullptr;
     window->disconnect();
     window->destroy();
-    window->deleteLater();    
+    window->deleteLater();
 }
 
 bool Scene::hasChildEntity(Qt3DCore::QEntity *entity) const

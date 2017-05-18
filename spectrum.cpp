@@ -28,7 +28,7 @@ Spectrum::Spectrum(QString filename)
     loadFile(filename);
 }
 
-int Spectrum::channel(ChanListSize index) const
+int Spectrum::channel(ChannelListSize index) const
 {
     if(index >= mChannels.size())
         throw Exception_IndexOutOfBounds("Spectrum::channel");

@@ -18,7 +18,7 @@
 
 SpectrumEntity::SpectrumEntity(const QVector3D &position,
                                const QColor &color,
-                               const Gamma::Spectrum::Pointer &spec,
+                               const std::unique_ptr<Gamma::Spectrum> &spec,
                                Qt3DCore::QEntity *parent)
     :
       Qt3DCore::QEntity(parent),

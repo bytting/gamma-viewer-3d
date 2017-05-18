@@ -30,11 +30,11 @@ class SpectrumEntity : public Qt3DCore::QEntity
 {
     Q_OBJECT
 
-public:    
+public:
 
     SpectrumEntity(const QVector3D &position,
                    const QColor &color,
-                   const Gamma::Spectrum::Pointer &spec,
+                   const std::unique_ptr<Gamma::Spectrum> &spec,
                    Qt3DCore::QEntity *parent);
 
     ~SpectrumEntity() override;

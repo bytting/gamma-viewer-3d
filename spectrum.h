@@ -41,17 +41,15 @@ class Spectrum
 {
 public:
 
-    typedef std::unique_ptr<Spectrum> Pointer;
-
-    typedef std::vector<int> ChanList;
-    typedef ChanList::size_type ChanListSize;
+    typedef std::vector<int> ChannelList;
+    typedef ChannelList::size_type ChannelListSize;
 
     Spectrum() : mSessionIndex(0), mRealtime(0), mLivetime(0), mDoserate(0.0) {}
     explicit Spectrum(QString filename);
-    Spectrum(const Spectrum& rhs) = delete;
+    Spectrum(const Spectrum &rhs) = delete;
     ~Spectrum() = default;
 
-    Spectrum &operator = (const Spectrum&) = delete;
+    Spectrum &operator = (const Spectrum &) = delete;
 
     QString sessionName() const { return mSessionName; }
     int sessionIndex() const { return mSessionIndex; }
@@ -60,9 +58,9 @@ public:
     int realtime() const { return mRealtime; }
     int livetime() const { return mLivetime; }
 
-    ChanListSize numChannels() const { return mChannels.size(); }
-    const ChanList& channels() const { return mChannels; }
-    int channel(ChanListSize index) const;
+    ChannelListSize numChannels() const { return mChannels.size(); }
+    const ChannelList &channels() const { return mChannels; }
+    int channel(ChannelListSize index) const;
 
     void calculateDoserate(const Detector &detector, lua_State* L);
     double doserate() const { return mDoserate; }
@@ -85,7 +83,7 @@ private:
     QDateTime mGpsTimeStart;
     int mRealtime;
     int mLivetime;
-    ChanList mChannels;
+    ChannelList mChannels;
     double mDoserate = 0.0;
 };
 

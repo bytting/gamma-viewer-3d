@@ -69,17 +69,17 @@ Session::~Session()
     }
 }
 
-const Spectrum::Pointer &Session::getSpectrum(SpecListSize index) const
+const SpectrumPointer &Session::getSpectrum(SpectrumListSize index) const
 {
-    if(index >= mSpecList.size())
+    if(index >= mSpectrumList.size())
         throw Exception_IndexOutOfBounds("Session::getSpectrum");
 
-    return mSpecList[index];
+    return mSpectrumList[index];
 }
 
-const SpecList& Session::getSpectrumList() const
+const SpectrumList& Session::getSpectrumList() const
 {
-    return mSpecList;
+    return mSpectrumList;
 }
 
 void Session::loadPath(QString sessionPath)
@@ -111,7 +111,7 @@ void Session::loadPath(QString sessionPath)
     for(const auto &fileEntry : fileEntries)
     {
         try
-        {            
+        {
             auto spec = std::make_unique<Spectrum>(fileEntry.absoluteFilePath());
 
             if(mScriptLoaded)
@@ -166,7 +166,7 @@ void Session::loadPath(QString sessionPath)
                     mMaxAltitude = spec->coordinate.altitude();
             }
 
-            mSpecList.emplace_back(std::move(spec));
+            mSpectrumList.emplace_back(std::move(spec));
         }
         catch(const Exception &e)
         {
@@ -237,7 +237,7 @@ void Session::loadDoserateScript(QString scriptFileName)
 
 void Session::clear()
 {
-    mSpecList.clear();
+    mSpectrumList.clear();
 
     mName = "";
     mIterations = 0;
@@ -255,7 +255,7 @@ QVector3D Session::makeScenePosition(const QVector3D &position, double altitude)
                      -1.0 * (position.y() - mMinY - mHalfY));
 }
 
-QVector3D Session::makeScenePosition(const Spectrum::Pointer &spec) const
+QVector3D Session::makeScenePosition(const SpectrumPointer &spec) const
 {
     return makeScenePosition(spec->position, spec->coordinate.altitude());
 }
@@ -303,7 +303,7 @@ QColor Session::makeDoserateColor(double doserate) const
     return color;
 }
 
-QColor Session::makeDoserateColor(const Spectrum::Pointer &spec) const
+QColor Session::makeDoserateColor(const SpectrumPointer &spec) const
 {
     return makeDoserateColor(spec->doserate());
 }

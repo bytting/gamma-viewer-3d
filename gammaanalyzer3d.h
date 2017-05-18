@@ -19,6 +19,7 @@
 
 #include "exceptions.h"
 #include <map>
+#include <memory>
 #include <QMainWindow>
 #include <QString>
 #include <QCloseEvent>
@@ -50,13 +51,13 @@ private:
 
     Ui::GammaAnalyzer3D *ui;
     QLabel *labelStatus;
-    std::map<QString, Scene*> scenes;
+    std::map<QString, std::unique_ptr<Scene>> scenes;
     QString doserateScript;
 
     void setupWidgets();
     void setupSignals();
 
-    Scene *sceneFromEntity(SpectrumEntity *entity) const;
+    const std::unique_ptr<Scene> &sceneFromEntity(SpectrumEntity *entity) const;
 
     void handleSelectSpectrum(SpectrumEntity *entity);
     void handleMarkSpectrum(SpectrumEntity *entity);

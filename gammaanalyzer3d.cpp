@@ -90,11 +90,7 @@ void GammaAnalyzer3D::onActionExit()
 {
     try
     {
-        for(auto &p : scenes)
-            delete p.second;
-
         scenes.clear();
-
         QApplication::exit();
     }
     catch(const std::exception &e)
@@ -121,7 +117,7 @@ void GammaAnalyzer3D::onOpenSession()
         if(it != scenes.end())
         {
             // Scene has been open before, just show it
-            auto scene = it->second;
+            auto &scene = it->second;
             scene->camera->setUpVector(QVector3D(0.0, 1.0, 0.0));
             scene->camera->setPosition(QVector3D(0, 20, 100.0f));
             scene->camera->setViewCenter(QVector3D(0, 0, 0));
@@ -131,7 +127,7 @@ void GammaAnalyzer3D::onOpenSession()
             return;
         }
 
-        auto scene = new Scene(QColor(32, 53, 53));
+        auto scene = std::make_unique<Scene>(QColor(32, 53, 53));
         auto &session = scene->session;
 
         if(QFile::exists(doserateScript))
@@ -171,7 +167,7 @@ void GammaAnalyzer3D::onOpenSession()
         scene->window->setIcon(QIcon(":/images/crash.ico"));
         scene->window->show();
 
-        scenes[sessionDir] = scene;
+        scenes[sessionDir] = std::move(scene);
         labelStatus->setText("Session " + sessionDir + " loaded");
     }
     catch(const Exception &e)
@@ -230,7 +226,7 @@ void GammaAnalyzer3D::onSpectrumPicked(Qt3DRender::QPickEvent *event)
     }
 }
 
-Scene *GammaAnalyzer3D::sceneFromEntity(SpectrumEntity *entity) const
+const std::unique_ptr<Scene> &GammaAnalyzer3D::sceneFromEntity(SpectrumEntity *entity) const
 {
     auto it = std::find_if(scenes.begin(), scenes.end(), [&](auto &p){
         return p.second->hasChildEntity(entity);
@@ -251,7 +247,7 @@ void GammaAnalyzer3D::handleSelectSpectrum(SpectrumEntity *entity)
         p.second->marked->setEnabled(false);
     }
 
-    auto scene = sceneFromEntity(entity);
+    auto &scene = sceneFromEntity(entity);
 
     // Enable current selection arrow
     scene->selected->setTarget(entity);
@@ -286,7 +282,7 @@ void GammaAnalyzer3D::handleSelectSpectrum(SpectrumEntity *entity)
 
 void GammaAnalyzer3D::handleMarkSpectrum(SpectrumEntity *entity)
 {
-    auto scene = sceneFromEntity(entity);
+    auto &scene = sceneFromEntity(entity);
 
     if(!scene->selected->isEnabled() || !scene->selected->target() ||
             scene->selected->target() == entity)

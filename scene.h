@@ -19,6 +19,7 @@
 
 #include "session.h"
 #include "selectionentity.h"
+#include <memory>
 #include <QColor>
 #include <Qt3DExtras/Qt3DWindow>
 #include <Qt3DRender/QCamera>
@@ -28,14 +29,17 @@
 struct Scene
 {
     explicit Scene(const QColor &clearColor);
+    Scene(const Scene &rhs) = delete;
     ~Scene();
 
-    const Gamma::Session::Pointer session;
+    Scene &operator = (const Scene &) = delete;
+
+    std::unique_ptr<Gamma::Session> session;
     Qt3DExtras::Qt3DWindow *window;
     Qt3DCore::QEntity *root;
     Qt3DRender::QCamera *camera;
     Qt3DExtras::QOrbitCameraController *cameraController;
-    SelectionEntity::Pointer selected, marked;
+    std::unique_ptr<SelectionEntity> selected, marked;
 
     bool hasChildEntity(Qt3DCore::QEntity *entity) const;
 };
