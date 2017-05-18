@@ -25,8 +25,6 @@
 #include <Qt3DExtras/QOrbitCameraController>
 #include <Qt3DCore/QEntity>
 
-//class SelectionEntity;
-
 struct Scene
 {
     explicit Scene(const QColor &clearColor);
