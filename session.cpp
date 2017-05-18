@@ -93,7 +93,7 @@ void Session::loadPath(QString sessionPath)
     if (!spectrumDir.exists())
         throw Exception_DirIsNotASession(spectrumDir.absolutePath());
 
-    const auto sessionFile = sessionPath + QDir::separator() +
+    const QString sessionFile = sessionPath + QDir::separator() +
             QStringLiteral("session.json");
     if(!QFile::exists(sessionFile))
         throw Exception_DirIsNotASession(sessionDir.absolutePath());
@@ -108,17 +108,19 @@ void Session::loadPath(QString sessionPath)
 
     bool first = true;
 
-    for(const auto& fileEntry : fileEntries)
+    for(const auto &fileEntry : fileEntries)
     {
         try
         {
-            auto spec = new Spectrum(fileEntry.absoluteFilePath());
+            // FIXME: Use smart pointers
+            Spectrum* spec = new Spectrum(fileEntry.absoluteFilePath());
 
             if(mScriptLoaded)
                 spec->calculateDoserate(mDetector, L);
 
             if(first)
             {
+                first = false;
                 mMinDoserate = mMaxDoserate = spec->doserate();
                 mMinX = mMaxX = spec->position.x();
                 mMinY = mMaxY = spec->position.y();
@@ -126,7 +128,6 @@ void Session::loadPath(QString sessionPath)
                 mMinLatitude = mMaxLatitude = spec->coordinate.latitude();
                 mMinLongitude = mMaxLongitude = spec->coordinate.longitude();
                 mMinAltitude = mMaxAltitude = spec->coordinate.altitude();
-                first = false;
             }
             else
             {
@@ -253,13 +254,9 @@ void Session::clear()
 
 QVector3D Session::makeScenePosition(const QVector3D &position, double altitude) const
 {
-    QVector3D p;
-
-    p.setX(position.x() - mMinX - mHalfX);
-    p.setY(altitude - mMinAltitude);
-    p.setZ(-1.0 * (position.y() - mMinY - mHalfY));
-
-    return p;
+    return QVector3D(position.x() - mMinX - mHalfX,
+                     altitude - mMinAltitude,
+                     -1.0 * (position.y() - mMinY - mHalfY));
 }
 
 QVector3D Session::makeScenePosition(const Spectrum *spec) const
