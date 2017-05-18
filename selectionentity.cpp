@@ -48,7 +48,7 @@ SelectionEntity::SelectionEntity(const QVector3D &pos,
 
 SelectionEntity::~SelectionEntity()
 {
-    for(auto node : childNodes())
+    for(auto *node : childNodes())
     {
         if(auto entity = qobject_cast<Qt3DCore::QEntity*>(node))
         {

@@ -90,7 +90,7 @@ GridEntityXZ::GridEntityXZ(float y,
 
 GridEntityXZ::~GridEntityXZ()
 {
-    for(auto node : childNodes())
+    for(auto *node : childNodes())
     {
         if(auto entity = qobject_cast<Qt3DCore::QEntity*>(node))
         {

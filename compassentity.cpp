@@ -64,7 +64,7 @@ CompassEntity::CompassEntity(const QColor &color,
 
 CompassEntity::~CompassEntity()
 {
-    for(auto node : childNodes())
+    for(auto *node : childNodes())
     {
         if(auto entity = qobject_cast<Qt3DCore::QEntity*>(node))
         {

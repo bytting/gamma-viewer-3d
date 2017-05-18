@@ -33,10 +33,9 @@ SpectrumEntity::SpectrumEntity(const QVector3D &position,
 
     mMaterial->setDiffuse(color);
     mMaterial->setSpecular(QColor(20, 20, 20));
-    QColor ambientColor(
-                color.red() - color.red() / 10,
-                color.green() - color.green() / 10,
-                color.blue() - color.blue() / 10);
+    QColor ambientColor(color.red() - color.red() / 10,
+                        color.green() - color.green() / 10,
+                        color.blue() - color.blue() / 10);
     mMaterial->setAmbient(ambientColor);
     mMaterial->setShininess(3.0f);
     addComponent(mMaterial);
@@ -51,7 +50,7 @@ SpectrumEntity::SpectrumEntity(const QVector3D &position,
 
 SpectrumEntity::~SpectrumEntity()
 {
-    for(auto node : childNodes())
+    for(auto *node : childNodes())
     {
         if(auto entity = qobject_cast<Qt3DCore::QEntity*>(node))
         {
