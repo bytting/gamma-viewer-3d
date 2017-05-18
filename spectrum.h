@@ -41,8 +41,7 @@ class Spectrum
 {
 public:
 
-    typedef std::unique_ptr<Spectrum> UniquePtr;
-    typedef std::weak_ptr<Spectrum> WeakPtr;
+    typedef std::unique_ptr<Spectrum> Pointer;
 
     typedef std::vector<int> ChanList;
     typedef ChanList::size_type ChanListSize;

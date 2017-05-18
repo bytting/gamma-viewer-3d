@@ -17,6 +17,7 @@
 #ifndef SELECTIONENTITY_H
 #define SELECTIONENTITY_H
 
+#include <memory>
 #include <QColor>
 #include <Qt3DCore/QEntity>
 #include <Qt3DRender/QMesh>
@@ -30,6 +31,8 @@ class SelectionEntity : public Qt3DCore::QEntity
     Q_OBJECT
 
 public:
+
+    typedef std::unique_ptr<SelectionEntity> Pointer;
 
     SelectionEntity(const QVector3D &pos,
                     const QColor &color,

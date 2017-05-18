@@ -69,7 +69,7 @@ Session::~Session()
     }
 }
 
-const Spectrum::UniquePtr &Session::getSpectrum(SpecListSize index) const
+const Spectrum::Pointer &Session::getSpectrum(SpecListSize index) const
 {
     if(index >= mSpecList.size())
         throw Exception_IndexOutOfBounds("Session::getSpectrum");
@@ -255,7 +255,7 @@ QVector3D Session::makeScenePosition(const QVector3D &position, double altitude)
                      -1.0 * (position.y() - mMinY - mHalfY));
 }
 
-QVector3D Session::makeScenePosition(const Spectrum::UniquePtr &spec) const
+QVector3D Session::makeScenePosition(const Spectrum::Pointer &spec) const
 {
     return makeScenePosition(spec->position, spec->coordinate.altitude());
 }
@@ -303,7 +303,7 @@ QColor Session::makeDoserateColor(double doserate) const
     return color;
 }
 
-QColor Session::makeDoserateColor(const Spectrum::UniquePtr &spec) const
+QColor Session::makeDoserateColor(const Spectrum::Pointer &spec) const
 {
     return makeDoserateColor(spec->doserate());
 }

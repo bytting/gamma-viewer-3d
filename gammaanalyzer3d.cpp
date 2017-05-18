@@ -132,7 +132,7 @@ void GammaAnalyzer3D::onOpenSession()
         }
 
         auto scene = new Scene(QColor(32, 53, 53));
-        auto session = scene->session;
+        auto &session = scene->session;
 
         if(QFile::exists(doserateScript))
             session->loadDoserateScript(doserateScript);
@@ -258,28 +258,28 @@ void GammaAnalyzer3D::handleSelectSpectrum(SpectrumEntity *entity)
     scene->selected->setEnabled(true);
 
     // Populate UI fields with information about selected spectrum
-    auto spec = entity->spectrum();
+    auto &spec = entity->spectrum();
 
     ui->lblSessionSpectrum->setText(
                 QStringLiteral("Session / Spectrum: ") +
-                spec->sessionName() + " / " +
-                QString::number(spec->sessionIndex()));
+                spec.sessionName() + " / " +
+                QString::number(spec.sessionIndex()));
     ui->lblCoordinates->setText(
                 QStringLiteral("Coordinates: ") +
-                spec->coordinate.toString(QGeoCoordinate::Degrees));
+                spec.coordinate.toString(QGeoCoordinate::Degrees));
     ui->lblLivetimeRealtime->setText(
                 QStringLiteral("Livetime / Realtime: ") +
-                QString::number(spec->livetime() / 1000000.0) +
+                QString::number(spec.livetime() / 1000000.0) +
                 QStringLiteral("s / ") +
-                QString::number(spec->realtime() / 1000000.0) +
+                QString::number(spec.realtime() / 1000000.0) +
                 QStringLiteral("s"));
     ui->lblDoserate->setText(
                 QStringLiteral("Doserate: ") +
-                QString::number(spec->doserate(), 'E') +
+                QString::number(spec.doserate(), 'E') +
                 QStringLiteral(" μSv"));
     ui->lblDate->setText(
                 QStringLiteral("Date: ") +
-                spec->gpsTimeStart().toLocalTime().
+                spec.gpsTimeStart().toLocalTime().
                 toString("yyyy-MM-dd hh:mm:ss"));
     ui->lblDistance->setText("");
 }
@@ -297,17 +297,17 @@ void GammaAnalyzer3D::handleMarkSpectrum(SpectrumEntity *entity)
     scene->marked->setEnabled(true);
 
     // Calculate distance and azimuth
-    auto spec1 = scene->selected->target()->spectrum();
-    auto spec2 = entity->spectrum();
+    auto &spec1 = scene->selected->target()->spectrum();
+    auto &spec2 = entity->spectrum();
 
-    auto distance = spec1->coordinate.distanceTo(spec2->coordinate);
-    auto azimuth = spec1->coordinate.azimuthTo(spec2->coordinate);
+    auto distance = spec1.coordinate.distanceTo(spec2.coordinate);
+    auto azimuth = spec1.coordinate.azimuthTo(spec2.coordinate);
 
     ui->lblDistance->setText(
                 QStringLiteral("Distance / Azimuth from ") +
-                QString::number(spec1->sessionIndex()) +
+                QString::number(spec1.sessionIndex()) +
                 QStringLiteral(" to ") +
-                QString::number(spec2->sessionIndex()) +
+                QString::number(spec2.sessionIndex()) +
                 QStringLiteral(": ") +
                 QString::number(distance, 'f', 2) +
                 QStringLiteral("m / ") +

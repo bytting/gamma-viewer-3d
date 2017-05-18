@@ -17,31 +17,27 @@
 #ifndef SCENE_H
 #define SCENE_H
 
+#include "session.h"
+#include "selectionentity.h"
 #include <QColor>
 #include <Qt3DExtras/Qt3DWindow>
 #include <Qt3DRender/QCamera>
 #include <Qt3DExtras/QOrbitCameraController>
 #include <Qt3DCore/QEntity>
 
-namespace Gamma
-{
-class Session;
-}
-
-class SelectionEntity;
+//class SelectionEntity;
 
 struct Scene
 {
     explicit Scene(const QColor &clearColor);
     ~Scene();
 
-    Gamma::Session *session;
+    const Gamma::Session::Pointer session;
     Qt3DExtras::Qt3DWindow *window;
     Qt3DCore::QEntity *root;
     Qt3DRender::QCamera *camera;
     Qt3DExtras::QOrbitCameraController *cameraController;
-    SelectionEntity *selected;
-    SelectionEntity *marked;
+    SelectionEntity::Pointer selected, marked;
 
     bool hasChildEntity(Qt3DCore::QEntity *entity) const;
 };

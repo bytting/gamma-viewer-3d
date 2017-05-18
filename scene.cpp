@@ -15,21 +15,21 @@
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "scene.h"
-#include "session.h"
-#include "selectionentity.h"
+//#include "selectionentity.h"
+#include <memory>
 #include <QVector3D>
 #include <Qt3DRender/QCameraLens>
 #include <Qt3DExtras/QForwardRenderer>
 
 Scene::Scene(const QColor &clearColor)
     :
-      session(new Gamma::Session()),
+      session(std::make_unique<Gamma::Session>()),
       window(new Qt3DExtras::Qt3DWindow),
       root(new Qt3DCore::QEntity),
       camera(nullptr),
       cameraController(new Qt3DExtras::QOrbitCameraController(root)),
-      selected(new SelectionEntity(QVector3D(0.0, 0.0, 0.0), QColor(255, 0, 255), root)),
-      marked(new SelectionEntity(QVector3D(0.0, 0.0, 0.0), QColor(255, 255, 255), root))
+      selected(std::make_unique<SelectionEntity>(QVector3D(0.0, 0.0, 0.0), QColor(255, 0, 255), root)),
+      marked(std::make_unique<SelectionEntity>(QVector3D(0.0, 0.0, 0.0), QColor(255, 255, 255), root))
 {
     window->defaultFrameGraph()->setClearColor(clearColor);
 
@@ -67,8 +67,7 @@ Scene::~Scene()
     camera = nullptr;
     window->disconnect();
     window->destroy();
-    window->deleteLater();
-    delete session;
+    window->deleteLater();    
 }
 
 bool Scene::hasChildEntity(Qt3DCore::QEntity *entity) const

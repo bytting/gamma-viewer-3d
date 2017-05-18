@@ -38,18 +38,20 @@ extern "C"
 namespace Gamma
 {
 
-typedef std::vector<Spectrum::UniquePtr> SpecList;
+typedef std::vector<Spectrum::Pointer> SpecList;
 typedef SpecList::size_type SpecListSize;
 
 class Session
 {
 public:
 
+    typedef std::unique_ptr<Session> Pointer;
+
     Session();
     ~Session();
 
     const SpecList &getSpectrumList() const;
-    const Spectrum::UniquePtr &getSpectrum(SpecListSize index) const;
+    const Spectrum::Pointer &getSpectrum(SpecListSize index) const;
     SpecListSize spectrumCount() const { return mSpecList.size(); }
 
     void loadPath(QString sessionPath);
@@ -68,12 +70,12 @@ public:
     QVector3D centerPosition, northPosition;
 
     QVector3D makeScenePosition(const QVector3D &position, double altitude) const;
-    QVector3D makeScenePosition(const Spectrum::UniquePtr &spec) const;
+    QVector3D makeScenePosition(const Spectrum::Pointer &spec) const;
 
     void useLogarithmicDoserateColor(bool state) { mLogarithmicColorScale = state; }
 
     QColor makeDoserateColor(double doserate) const;
-    QColor makeDoserateColor(const Spectrum::UniquePtr &spec) const;
+    QColor makeDoserateColor(const Spectrum::Pointer &spec) const;
 
     struct Exception_UnableToCreateLuaState : public Exception
     {
