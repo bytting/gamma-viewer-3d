@@ -15,6 +15,7 @@
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "selectionentity.h"
+#include "exceptions.h"
 #include "spectrumentity.h"
 #include <QUrl>
 
@@ -65,8 +66,11 @@ SelectionEntity::~SelectionEntity()
 
 void SelectionEntity::setTarget(SpectrumEntity *target)
 {
-    QVector3D pos(target->transform()->translation());
-    pos.setY(pos.y() + 1.8);
-    mTransform->setTranslation(pos);
+    if(!target)
+        throw Exception_InvalidPointer("SelectionEntity::setTarget: target");
+
+    QVector3D position(target->transform()->translation());
+    position.setY(position.y() + 1.6);
+    mTransform->setTranslation(position);
     mTarget = target;
 }

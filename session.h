@@ -38,18 +38,15 @@ extern "C"
 namespace Gamma
 {
 
-namespace internal
+struct LuaStateDeleter
 {
-    struct LuaStateDeleter
+    void operator () (lua_State *L) const
     {
-        void operator () (lua_State *L) const
-        {
-            if(L) { lua_close(L); }
-        }
-    };
-} // namespace internal
+        if(L) { lua_close(L); }
+    }
+};
 
-typedef std::unique_ptr<lua_State, internal::LuaStateDeleter> LuaStatePointer;
+typedef std::unique_ptr<lua_State, LuaStateDeleter> LuaStatePointer;
 typedef std::vector<std::unique_ptr<Spectrum>> SpectrumList;
 typedef SpectrumList::size_type SpectrumListSize;
 

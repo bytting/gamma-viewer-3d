@@ -102,7 +102,7 @@ void Spectrum::loadFile(QString filename)
     position = coordinate.toCartesian();
 }
 
-static double GEValue(lua_State* L, double energy)
+static double GEValue(lua_State *L, double energy)
 {
     double ge;
 
@@ -115,8 +115,8 @@ static double GEValue(lua_State* L, double energy)
     return ge;
 }
 
-void Spectrum::calculateDoserate(const Detector &detector, lua_State* L)
-{
+void Spectrum::calculateDoserate(const Detector &detector, lua_State *L)
+{    
     mDoserate = 0.0;
 
     // Trim off discriminators

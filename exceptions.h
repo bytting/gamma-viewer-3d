@@ -38,6 +38,12 @@ struct Exception_NumericRangeError : public Exception
         : Exception("Numeric range error: " + source) {}
 };
 
+struct Exception_InvalidPointer : public Exception
+{
+    explicit Exception_InvalidPointer(QString source) noexcept
+        : Exception("Invalid pointer: " + source) {}
+};
+
 struct Exception_DirDoesNotExist : public Exception
 {
     explicit Exception_DirDoesNotExist(QString dir) noexcept

@@ -61,7 +61,7 @@ public:
     const ChannelList &channels() const { return mChannels; }
     int channel(ChannelListSize index) const;
 
-    void calculateDoserate(const Detector &detector, lua_State* L);
+    void calculateDoserate(const Detector &detector, lua_State *L);
     double doserate() const { return mDoserate; }
 
     Geo::Coordinate coordinate;

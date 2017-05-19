@@ -62,7 +62,7 @@ Session::~Session()
     {
         clear();
     }
-    catch(const std::exception& e)
+    catch(const std::exception &e)
     {
         qDebug() << e.what();
     }
@@ -88,7 +88,7 @@ void Session::loadPath(QString sessionPath)
         throw Exception_DirDoesNotExist(sessionDir.absolutePath());
 
     const QDir spectrumDir(sessionPath + QDir::separator() +
-                     QStringLiteral("json"));
+                           QStringLiteral("json"));
     if (!spectrumDir.exists())
         throw Exception_DirIsNotASession(spectrumDir.absolutePath());
 

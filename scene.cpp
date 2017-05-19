@@ -50,7 +50,7 @@ Scene::Scene(const QColor &clearColor)
 
 Scene::~Scene()
 {
-    for(auto node : root->childNodes())
+    for(auto *node : root->childNodes())
     {
         if(auto entity = qobject_cast<Qt3DCore::QEntity*>(node))
         {
