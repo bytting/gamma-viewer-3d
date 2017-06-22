@@ -27,6 +27,7 @@
 #include <QString>
 #include <QVector3D>
 #include <QColor>
+#include <QtSql>
 
 extern "C"
 {
@@ -64,7 +65,7 @@ public:
     SpectrumListSize spectrumCount() const { return mSpectrumList.size(); }
     const Spectrum &spectrum(SpectrumListSize index) const;
 
-    void loadPath(QString sessionPath);
+    void loadDatabase(QString databaseFile);
     void loadDoserateScript(QString scriptFileName);
 
     void clear();
@@ -113,7 +114,7 @@ public:
 
 private:
 
-    void loadSessionFile(QString sessionFile);
+    void loadSessionQuery(QSqlQuery &query);
 
     QString mName;
     QString mComment;
@@ -127,7 +128,6 @@ private:
     bool mScriptLoaded;
 
     double mLivetime;
-    int mIterations;
     double mMinDoserate, mMaxDoserate;
     double mMinX, mMaxX, mMinY, mMaxY, mMinZ, mMaxZ;
     double mHalfX, mHalfY, mHalfZ;

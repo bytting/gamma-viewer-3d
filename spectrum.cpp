@@ -16,16 +16,13 @@
 
 #include "spectrum.h"
 #include "detector.h"
-#include <QFile>
-#include <QJsonDocument>
-#include <QJsonObject>
 
 namespace Gamma
 {
 
-Spectrum::Spectrum(QString filename)
+Spectrum::Spectrum(const QSqlQuery &query)
 {
-    loadFile(filename);
+    loadQuery(query);
 }
 
 int Spectrum::channel(ChannelListSize index) const
@@ -36,61 +33,30 @@ int Spectrum::channel(ChannelListSize index) const
     return mChannels[index];
 }
 
-void Spectrum::loadFile(QString filename)
+void Spectrum::loadQuery(const QSqlQuery &query)
 {
-    QFile jsonFile(filename);
-    if(!jsonFile.open(QFile::ReadOnly))
-        throw Exception_UnableToLoadFile(filename);
+    int idSessionName = query.record().indexOf("session_name");
+    int idSessionIndex = query.record().indexOf("session_index");
+    int idRealtime = query.record().indexOf("realtime");
+    int idLivetime = query.record().indexOf("livetime");
+    int idLatitude = query.record().indexOf("latitude");
+    int idLongitude = query.record().indexOf("longitude");
+    int idAltitude = query.record().indexOf("altitude");
+    int idStartTime = query.record().indexOf("start_time");
+    int idChannels = query.record().indexOf("channels");
 
-    auto doc = QJsonDocument().fromJson(jsonFile.readAll());
-    if(!doc.isObject())
-        throw Exception_InvalidSpectrumFile(filename);
-
-    auto obj = doc.object();
-    if(!obj.contains("command"))
-        throw Exception_InvalidSpectrumFile(filename);
-
-    auto cmd = obj.value("command").toString();
-
-    if(cmd != QStringLiteral("spectrum"))
-        throw Exception_InvalidSpectrumFile(filename);
-
-    if(!obj.contains("arguments"))
-        throw Exception_InvalidSpectrumFile(filename);
-
-    auto args = obj.value("arguments").toObject();
-
-    if(!args.contains("session_name"))
-        throw Exception_MissingJsonValue("Spectrum:session_name");
-    if(!args.contains("session_index"))
-        throw Exception_MissingJsonValue("Spectrum:session_index");
-    if(!args.contains("realtime"))
-        throw Exception_MissingJsonValue("Spectrum:realtime");
-    if(!args.contains("livetime"))
-        throw Exception_MissingJsonValue("Spectrum:livetime");
-    if(!args.contains("latitude_start"))
-        throw Exception_MissingJsonValue("Spectrum:latitude_start");
-    if(!args.contains("longitude_start"))
-        throw Exception_MissingJsonValue("Spectrum:longitude_start");
-    if(!args.contains("altitude_start"))
-        throw Exception_MissingJsonValue("Spectrum:altitude_start");
-    if(!args.contains("gps_time_start"))
-        throw Exception_MissingJsonValue("Spectrum:gps_time_start");
-    if(!args.contains("channels"))
-        throw Exception_MissingJsonValue("Spectrum:channels");
-
-    mSessionName = args.value("session_name").toString();
-    mSessionIndex = args.value("session_index").toInt();
-    mRealtime = args.value("realtime").toInt();
-    mLivetime = args.value("livetime").toInt();
-    coordinate.setLatitude(args.value("latitude_start").toDouble());
-    coordinate.setLongitude(args.value("longitude_start").toDouble());
-    coordinate.setAltitude(args.value("altitude_start").toDouble());
+    mSessionName = query.value(idSessionName).toString();
+    mSessionIndex = query.value(idSessionIndex).toInt();
+    mRealtime = query.value(idRealtime).toInt();
+    mLivetime = query.value(idLivetime).toInt();
+    coordinate.setLatitude(query.value(idLatitude).toDouble());
+    coordinate.setLongitude(query.value(idLongitude).toDouble());
+    coordinate.setAltitude(query.value(idAltitude).toDouble());
     mGpsTimeStart = QDateTime::fromString(
-                args.value("gps_time_start").toString(),
+                query.value(idStartTime).toString(),
                 Qt::DateFormat::ISODate);
 
-    auto strChans = args.value("channels").toString();
+    auto strChans = query.value(idChannels).toString();
     auto strChanList = strChans.split(
                 ' ', QString::SplitBehavior::SkipEmptyParts);
 
@@ -116,7 +82,7 @@ static double GEValue(lua_State *L, double energy)
 }
 
 void Spectrum::calculateDoserate(const Detector &detector, lua_State *L)
-{    
+{
     mDoserate = 0.0;
 
     // Trim off discriminators

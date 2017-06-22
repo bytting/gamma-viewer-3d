@@ -23,6 +23,7 @@
 #include <QString>
 #include <QDateTime>
 #include <QVector3D>
+#include <QtSql>
 
 extern "C"
 {
@@ -44,7 +45,7 @@ public:
     typedef ChannelList::size_type ChannelListSize;
 
     Spectrum() : mSessionIndex(0), mRealtime(0), mLivetime(0), mDoserate(0.0) {}
-    explicit Spectrum(QString filename);
+    explicit Spectrum(const QSqlQuery &query);
     Spectrum(const Spectrum &rhs) = delete;
     ~Spectrum() = default;
 
@@ -75,7 +76,7 @@ public:
 
 private:
 
-    void loadFile(QString filename);
+    void loadQuery(const QSqlQuery &query);
 
     QString mSessionName;
     int mSessionIndex;

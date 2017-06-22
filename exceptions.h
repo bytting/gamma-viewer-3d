@@ -62,6 +62,12 @@ struct Exception_UnableToLoadFile : public Exception
         : Exception("Unable to load file: " + filename) {}
 };
 
+struct Exception_UnableToOpenDatabase : public Exception
+{
+    explicit Exception_UnableToOpenDatabase(QString dbname) noexcept
+        : Exception("Unable to open database: " + dbname) {}
+};
+
 struct Exception_MissingJsonValue : public Exception
 {
     explicit Exception_MissingJsonValue(QString source) noexcept

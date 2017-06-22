@@ -33,7 +33,6 @@ Session::Session()
       L(luaL_newstate()),
       mScriptLoaded(false),
       mLivetime(0.0),
-      mIterations(0),
       mMinDoserate(0.0),
       mMaxDoserate(0.0),
       mMinX(0.0),
@@ -81,99 +80,78 @@ const Spectrum &Session::spectrum(SpectrumListSize index) const
     return *mSpectrumList[index];
 }
 
-void Session::loadPath(QString sessionPath)
+void Session::loadDatabase(QString databaseFile)
 {
-    const QDir sessionDir(sessionPath);
-    if(!sessionDir.exists())
-        throw Exception_DirDoesNotExist(sessionDir.absolutePath());
+    QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE");
+    db.setDatabaseName(databaseFile);
+    if(!db.open())
+        throw Exception_UnableToOpenDatabase(databaseFile);
 
-    const QDir spectrumDir(sessionPath + QDir::separator() +
-                           QStringLiteral("json"));
-    if (!spectrumDir.exists())
-        throw Exception_DirIsNotASession(spectrumDir.absolutePath());
-
-    const QString sessionFile = sessionPath + QDir::separator() +
-            QStringLiteral("session.json");
-    if(!QFile::exists(sessionFile))
-        throw Exception_DirIsNotASession(sessionDir.absolutePath());
-
-    loadSessionFile(sessionFile);
-
-    const auto fileEntries = spectrumDir.entryInfoList(
-                QStringList() << "*.json",
-                QDir::NoDotAndDotDot | QDir::Files);
+    QSqlQuery sessionQuery("SELECT * FROM session");
+    sessionQuery.next();
+    loadSessionQuery(sessionQuery);
 
     clear();
 
     bool firstIteration = true;
-    for(const auto &fileEntry : fileEntries)
+    QSqlQuery spectrumQuery("SELECT * FROM spectrum");
+    while(spectrumQuery.next())
     {
-        try
+        auto spec = std::make_unique<Spectrum>(spectrumQuery);
+
+        if(mScriptLoaded)
+            spec->calculateDoserate(mDetector, L.get());
+
+        if(firstIteration)
         {
-            auto spec = std::make_unique<Spectrum>(fileEntry.absoluteFilePath());
-
-            if(mScriptLoaded)
-                spec->calculateDoserate(mDetector, L.get());
-
-            if(firstIteration)
-            {
-                firstIteration = false;
-                mMinDoserate = mMaxDoserate = spec->doserate();
-                mMinX = mMaxX = spec->position.x();
-                mMinY = mMaxY = spec->position.y();
-                mMinZ = mMaxZ = spec->position.z();
-                mMinLatitude = mMaxLatitude = spec->coordinate.latitude();
-                mMinLongitude = mMaxLongitude = spec->coordinate.longitude();
-                mMinAltitude = mMaxAltitude = spec->coordinate.altitude();
-            }
-            else
-            {
-                if(mMinDoserate > spec->doserate())
-                    mMinDoserate = spec->doserate();
-                if(mMaxDoserate < spec->doserate())
-                    mMaxDoserate = spec->doserate();
-
-                if(mMinX > spec->position.x())
-                    mMinX = spec->position.x();
-                if(mMaxX < spec->position.x())
-                    mMaxX = spec->position.x();
-
-                if(mMinY > spec->position.y())
-                    mMinY = spec->position.y();
-                if(mMaxY < spec->position.y())
-                    mMaxY = spec->position.y();
-
-                if(mMinZ > spec->position.z())
-                    mMinZ = spec->position.z();
-                if(mMaxZ < spec->position.z())
-                    mMaxZ = spec->position.z();
-
-                if(mMinLatitude > spec->coordinate.latitude())
-                    mMinLatitude = spec->coordinate.latitude();
-                if(mMaxLatitude < spec->coordinate.latitude())
-                    mMaxLatitude = spec->coordinate.latitude();
-
-                if(mMinLongitude > spec->coordinate.longitude())
-                    mMinLongitude = spec->coordinate.longitude();
-                if(mMaxLongitude < spec->coordinate.longitude())
-                    mMaxLongitude = spec->coordinate.longitude();
-
-                if(mMinAltitude > spec->coordinate.altitude())
-                    mMinAltitude = spec->coordinate.altitude();
-                if(mMaxAltitude < spec->coordinate.altitude())
-                    mMaxAltitude = spec->coordinate.altitude();
-            }
-
-            mSpectrumList.emplace_back(std::move(spec));
+            firstIteration = false;
+            mMinDoserate = mMaxDoserate = spec->doserate();
+            mMinX = mMaxX = spec->position.x();
+            mMinY = mMaxY = spec->position.y();
+            mMinZ = mMaxZ = spec->position.z();
+            mMinLatitude = mMaxLatitude = spec->coordinate.latitude();
+            mMinLongitude = mMaxLongitude = spec->coordinate.longitude();
+            mMinAltitude = mMaxAltitude = spec->coordinate.altitude();
         }
-        catch(const Exception &e)
+        else
         {
-            qDebug() << e.what();
+            if(mMinDoserate > spec->doserate())
+                mMinDoserate = spec->doserate();
+            if(mMaxDoserate < spec->doserate())
+                mMaxDoserate = spec->doserate();
+
+            if(mMinX > spec->position.x())
+                mMinX = spec->position.x();
+            if(mMaxX < spec->position.x())
+                mMaxX = spec->position.x();
+
+            if(mMinY > spec->position.y())
+                mMinY = spec->position.y();
+            if(mMaxY < spec->position.y())
+                mMaxY = spec->position.y();
+
+            if(mMinZ > spec->position.z())
+                mMinZ = spec->position.z();
+            if(mMaxZ < spec->position.z())
+                mMaxZ = spec->position.z();
+
+            if(mMinLatitude > spec->coordinate.latitude())
+                mMinLatitude = spec->coordinate.latitude();
+            if(mMaxLatitude < spec->coordinate.latitude())
+                mMaxLatitude = spec->coordinate.latitude();
+
+            if(mMinLongitude > spec->coordinate.longitude())
+                mMinLongitude = spec->coordinate.longitude();
+            if(mMaxLongitude < spec->coordinate.longitude())
+                mMaxLongitude = spec->coordinate.longitude();
+
+            if(mMinAltitude > spec->coordinate.altitude())
+                mMinAltitude = spec->coordinate.altitude();
+            if(mMaxAltitude < spec->coordinate.altitude())
+                mMaxAltitude = spec->coordinate.altitude();
         }
-        catch(const std::exception &e)
-        {
-            qDebug() << e.what();
-        }
+
+        mSpectrumList.emplace_back(std::move(spec));
     }
 
     mHalfX = (mMaxX - mMinX) / 2.0;
@@ -187,39 +165,29 @@ void Session::loadPath(QString sessionPath)
 
     northCoordinate = centerCoordinate.atDistanceAndAzimuth(50.0, 0.0);
     northPosition = northCoordinate.toCartesian();
+
+    db.close();
 }
 
-void Session::loadSessionFile(QString sessionFile)
+void Session::loadSessionQuery(QSqlQuery &query)
 {
-    QFile jsonFile(sessionFile);
-    if(!jsonFile.open(QFile::ReadOnly))
-        throw Exception_UnableToLoadFile(sessionFile);
+    int idName = query.record().indexOf("name");
+    int idComment = query.record().indexOf("comment");
+    int idLivetime = query.record().indexOf("livetime");
+    int idDetectorData = query.record().indexOf("detector_data");
+    int idDetectorTypeData = query.record().indexOf("detector_type_data");
 
-    auto doc = QJsonDocument().fromJson(jsonFile.readAll());
-    if(!doc.isObject())
-        throw Exception_InvalidSessionFile(sessionFile);
+    mName = query.value(idName).toString();
+    mComment = query.value(idComment).toString();
+    mLivetime = query.value(idLivetime).toInt();
 
-    auto root = doc.object();
+    QJsonDocument doc = QJsonDocument::fromJson(query.value(idDetectorData).toString().toUtf8());
+    QJsonObject obj = doc.object();
+    mDetector.loadJson(obj);
 
-    if(!root.contains("Name"))
-        throw Exception_MissingJsonValue("Session:Name");
-    if(!root.contains("Comment"))
-        throw Exception_MissingJsonValue("Session:Comment");
-    if(!root.contains("Livetime"))
-        throw Exception_MissingJsonValue("Session:Livetime");
-    if(!root.contains("Iterations"))
-        throw Exception_MissingJsonValue("Session:Iterations");
-    if(!root.contains("DetectorType"))
-        throw Exception_MissingJsonValue("Session:DetectorType");
-    if(!root.contains("Detector"))
-        throw Exception_MissingJsonValue("Session:Detector");
-
-    mName = root.value("Name").toString();
-    mComment = root.value("Comment").toString();
-    mLivetime = root.value("Livetime").toInt();
-    mIterations = root.value("Iterations").toInt();
-    mDetectorType.loadJson(root.value("DetectorType").toObject());
-    mDetector.loadJson(root.value("Detector").toObject());
+    doc = QJsonDocument::fromJson(query.value(idDetectorTypeData).toString().toUtf8());
+    obj = doc.object();
+    mDetectorType.loadJson(obj);
 }
 
 void Session::loadDoserateScript(QString scriptFileName)
@@ -234,7 +202,6 @@ void Session::clear()
     mSpectrumList.clear();
 
     mName = "";
-    mIterations = 0;
     mLivetime = mMinDoserate = mMaxDoserate = 0.0;
     mMinX = mMaxX = mMinY = mMaxY = mMinZ = mMaxZ = 0.0;
     mMinLatitude = mMaxLatitude = 0.0;

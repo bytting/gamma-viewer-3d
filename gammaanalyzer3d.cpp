@@ -103,17 +103,17 @@ void GammaAnalyzer3D::onOpenSession()
 {
     try
     {
-        auto sessionDir = QFileDialog::getExistingDirectory(
+        auto sessionFile = QFileDialog::getOpenFileName(
                     this,
-                    tr("Open session directory"),
+                    tr("Open session database"),
                     QDir::homePath(),
-                    QFileDialog::ShowDirsOnly | QFileDialog::DontResolveSymlinks);
-        if(sessionDir.isEmpty())
+                    tr("SQLite DB (*.db);; All files (*.*)"));
+        if(sessionFile.isEmpty())
             return;
 
-        sessionDir = QDir::toNativeSeparators(sessionDir);
+        sessionFile = QDir::toNativeSeparators(sessionFile);
 
-        auto it = scenes.find(sessionDir);
+        auto it = scenes.find(sessionFile);
         if(it != scenes.end())
         {
             // Scene has been open before, just show it
@@ -132,7 +132,7 @@ void GammaAnalyzer3D::onOpenSession()
 
         if(QFile::exists(doserateScript))
             session->loadDoserateScript(doserateScript);
-        session->loadPath(sessionDir);
+        session->loadDatabase(sessionFile);
         scene->window->setTitle(session->name());
 
         new GridEntityXZ(-1.0f, 10, 10.0f, QColor(255, 255, 255), scene->root);
@@ -167,8 +167,8 @@ void GammaAnalyzer3D::onOpenSession()
         scene->window->setIcon(QIcon(":/images/crash.ico"));
         scene->window->show();
 
-        scenes[sessionDir] = std::move(scene);
-        labelStatus->setText("Session " + sessionDir + " loaded");
+        scenes[sessionFile] = std::move(scene);
+        labelStatus->setText("Session " + sessionFile + " loaded");
     }
     catch(const Exception &e)
     {
