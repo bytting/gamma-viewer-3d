@@ -182,12 +182,10 @@ void Session::loadSessionQuery(QSqlQuery &query)
     mLivetime = query.value(idLivetime).toInt();
 
     QJsonDocument doc = QJsonDocument::fromJson(query.value(idDetectorData).toString().toUtf8());
-    QJsonObject obj = doc.object();
-    mDetector.loadJson(obj);
+    mDetector.loadJson(doc.object());
 
     doc = QJsonDocument::fromJson(query.value(idDetectorTypeData).toString().toUtf8());
-    obj = doc.object();
-    mDetectorType.loadJson(obj);
+    mDetectorType.loadJson(doc.object());
 }
 
 void Session::loadDoserateScript(QString scriptFileName)
