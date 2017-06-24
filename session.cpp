@@ -87,11 +87,11 @@ void Session::loadDatabase(QString databaseFile)
     if(!db.open())
         throw Exception_UnableToOpenDatabase(databaseFile);
 
+    clear();
+
     QSqlQuery sessionQuery("SELECT * FROM session");
     sessionQuery.next();
     loadSessionQuery(sessionQuery);
-
-    clear();
 
     bool firstIteration = true;
     QSqlQuery spectrumQuery("SELECT * FROM spectrum");

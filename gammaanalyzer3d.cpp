@@ -116,15 +116,9 @@ void GammaAnalyzer3D::onOpenSession()
         auto it = scenes.find(sessionFile);
         if(it != scenes.end())
         {
-            // Scene has been open before, just show it
-            auto &scene = it->second;
-            scene->camera->setUpVector(QVector3D(0.0, 1.0, 0.0));
-            scene->camera->setPosition(QVector3D(0, 20, 100.0f));
-            scene->camera->setViewCenter(QVector3D(0, 0, 0));
-            scene->window->show();
-            scene->window->raise();
-            scene->window->requestActivate();
-            return;
+            // This scene has been open before, delete and remove first
+            it->second.reset();
+            scenes.erase(it);
         }
 
         auto scene = std::make_unique<Scene>(QColor(32, 53, 53));
