@@ -117,7 +117,6 @@ void GammaAnalyzer3D::onOpenSession()
         if(it != scenes.end())
         {
             // This scene has been open before, delete and remove first
-            it->second.reset();
             scenes.erase(it);
         }
 
