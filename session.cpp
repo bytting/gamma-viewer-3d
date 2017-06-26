@@ -154,6 +154,8 @@ void Session::loadDatabase(QString databaseFile)
         mSpectrumList.emplace_back(std::move(spec));
     }
 
+    db.close();
+
     mHalfX = (mMaxX - mMinX) / 2.0;
     mHalfY = (mMaxY - mMinY) / 2.0;
     mHalfZ = (mMaxZ - mMinZ) / 2.0;
@@ -165,8 +167,6 @@ void Session::loadDatabase(QString databaseFile)
 
     northCoordinate = centerCoordinate.atDistanceAndAzimuth(50.0, 0.0);
     northPosition = northCoordinate.toCartesian();
-
-    db.close();
 }
 
 void Session::loadSessionQuery(QSqlQuery &query)
