@@ -99,6 +99,18 @@ void GammaAnalyzer3D::onActionExit()
     }
 }
 
+static QVector3D makeScenePosition(const Gamma::Session &session, const QVector3D &position, double altitude)
+{
+    return QVector3D(position.x() - session.minX() - session.halfX(),
+                     altitude - session.minAltitude(),
+                     -1.0 * (position.y() - session.minY() - session.halfY()));
+}
+
+static QVector3D makeScenePosition(const Gamma::Session &session, const Gamma::Spectrum &spec)
+{
+    return makeScenePosition(session, spec.position, spec.coordinate.altitude());
+}
+
 void GammaAnalyzer3D::onOpenSession()
 {
     try
@@ -132,16 +144,14 @@ void GammaAnalyzer3D::onOpenSession()
 
         new CompassEntity(
                     QColor(255, 0, 0),
-                    session->makeScenePosition(
-                        session->centerPosition, session->minAltitude() - 5.0),
-                    session->makeScenePosition(
-                        session->northPosition, session->minAltitude() - 5.0),
+                    makeScenePosition(*session, session->centerPosition, session->minAltitude() - 5.0),
+                    makeScenePosition(*session, session->northPosition, session->minAltitude() - 5.0),
                     scene->root);
 
         for(const auto &spec : session->spectrumList())
         {
             auto entity = new SpectrumEntity(
-                        session->makeScenePosition(*spec),
+                        makeScenePosition(*session, *spec),
                         session->makeDoserateColor(*spec),
                         *spec,
                         scene->root);

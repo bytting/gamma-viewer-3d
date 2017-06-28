@@ -207,18 +207,6 @@ void Session::clear()
     mMinAltitude = mMaxAltitude = 0.0;
 }
 
-QVector3D Session::makeScenePosition(const QVector3D &position, double altitude) const
-{
-    return QVector3D(position.x() - mMinX - mHalfX,
-                     altitude - mMinAltitude,
-                     -1.0 * (position.y() - mMinY - mHalfY));
-}
-
-QVector3D Session::makeScenePosition(const Spectrum &spec) const
-{
-    return makeScenePosition(spec.position, spec.coordinate.altitude());
-}
-
 QColor Session::makeDoserateColor(double doserate) const
 {
     if(doserate == 0.0)

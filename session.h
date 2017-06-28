@@ -74,14 +74,22 @@ public:
     double minDoserate() const { return mMinDoserate; }
     double maxDoserate() const { return mMaxDoserate; }
 
+    double minX() const { return mMinX; }
+    double maxX() const { return mMaxX; }
+    double minY() const { return mMinY; }
+    double maxY() const { return mMaxY; }
+    double minZ() const { return mMinZ; }
+    double maxZ() const { return mMaxZ; }
+
+    double halfX() const { return mHalfX; }
+    double halfY() const { return mHalfY; }
+    double halfZ() const { return mHalfZ; }
+
     double minAltitude() const { return mMinAltitude; }
     double maxAltitude() const { return mMaxAltitude; }
 
     Geo::Coordinate centerCoordinate, northCoordinate;
     QVector3D centerPosition, northPosition;
-
-    QVector3D makeScenePosition(const QVector3D &position, double altitude) const;
-    QVector3D makeScenePosition(const Spectrum &spec) const;
 
     void useLogarithmicDoserateColor(bool state) { mLogarithmicColorScale = state; }
 
