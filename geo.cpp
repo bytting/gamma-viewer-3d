@@ -20,30 +20,6 @@
 namespace Geo
 {
 
-Coordinate::Coordinate()
-{
-}
-
-Coordinate::Coordinate(double latitude, double longitude)
-    : QGeoCoordinate(latitude, longitude)
-{
-}
-
-Coordinate::Coordinate(double latitude, double longitude, double altitude)
-    : QGeoCoordinate(latitude, longitude, altitude)
-{
-}
-
-Coordinate::Coordinate(const Coordinate &rhs)
-    : QGeoCoordinate(rhs)
-{
-}
-
-Coordinate::Coordinate(const QGeoCoordinate &rhs)
-    : QGeoCoordinate(rhs)
-{
-}
-
 void Coordinate::setAngles(double latitude, double longitude)
 {
     setLatitude(latitude);

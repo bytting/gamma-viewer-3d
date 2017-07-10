@@ -43,16 +43,20 @@ T radianToDegree(T radian)
 }
 
 class Coordinate : public QGeoCoordinate
-{    
+{
     DISABLE_DYNAMIC_ALLOCATION // Base destructor is not virtual, prevent heap allocation
 
 public:
 
-    Coordinate();
-    Coordinate(double latitude, double longitude);
-    Coordinate(double latitude, double longitude, double altitude);
-    Coordinate(const Coordinate &rhs);
-    Coordinate(const QGeoCoordinate &rhs);
+    using QGeoCoordinate::QGeoCoordinate;
+    Coordinate(double latitude, double longitude)
+        : QGeoCoordinate(latitude, longitude) {}
+    Coordinate(double latitude, double longitude, double altitude)
+        : QGeoCoordinate(latitude, longitude, altitude) {}
+    Coordinate(const Coordinate &rhs)
+        : QGeoCoordinate(rhs) {}
+    Coordinate(const QGeoCoordinate &rhs)
+        : QGeoCoordinate(rhs) {}
 
     void setAngles(double latitude, double longitude);
     void setAngles(double latitude, double longitude, double altitude);
