@@ -102,18 +102,6 @@ public:
             : Exception("Unable to create Lua state: " + source) {}
     };
 
-    struct Exception_DirIsNotASession : public Exception
-    {
-        explicit Exception_DirIsNotASession(QString dir) noexcept
-            : Exception("Directory is not a valid session: " + dir) {}
-    };
-
-    struct Exception_InvalidSessionFile : public Exception
-    {
-        explicit Exception_InvalidSessionFile(QString filename) noexcept
-            : Exception("Invalid session file: " + filename) {}
-    };
-
     struct Exception_LoadDoserateScriptFailed : public Exception
     {
         explicit Exception_LoadDoserateScriptFailed(QString filename) noexcept
