@@ -48,7 +48,7 @@ class Coordinate : public QGeoCoordinate
 
 public:
 
-    using QGeoCoordinate::QGeoCoordinate;
+    Coordinate() {}
     Coordinate(double latitude, double longitude)
         : QGeoCoordinate(latitude, longitude) {}
     Coordinate(double latitude, double longitude, double altitude)

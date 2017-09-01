@@ -58,7 +58,6 @@ SOURCES += lua/lapi.c \
     spectrum.cpp \
     geo.cpp \
     detector.cpp \
-    detectortype.cpp \
     scene.cpp \
     spectrumentity.cpp \
     gridentity.cpp \
@@ -95,7 +94,6 @@ HEADERS += lua/lapi.h \
     spectrum.h \
     geo.h \
     detector.h \
-    detectortype.h \
     exceptions.h \
     scene.h \
     spectrumentity.h \

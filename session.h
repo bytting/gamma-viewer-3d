@@ -18,7 +18,6 @@
 #define SESSION_H
 
 #include "exceptions.h"
-#include "detectortype.h"
 #include "detector.h"
 #include "spectrum.h"
 #include "geo.h"
@@ -115,7 +114,6 @@ private:
     QString mName;
     QString mComment;
 
-    DetectorType mDetectorType;
     Detector mDetector;
 
     SpectrumList mSpectrumList;

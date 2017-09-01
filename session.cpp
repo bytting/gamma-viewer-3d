@@ -175,7 +175,6 @@ void Session::loadSessionQuery(QSqlQuery &query)
     int idComment = query.record().indexOf("comment");
     int idLivetime = query.record().indexOf("livetime");
     int idDetectorData = query.record().indexOf("detector_data");
-    int idDetectorTypeData = query.record().indexOf("detector_type_data");
 
     mName = query.value(idName).toString();
     mComment = query.value(idComment).toString();
@@ -183,9 +182,6 @@ void Session::loadSessionQuery(QSqlQuery &query)
 
     QJsonDocument doc = QJsonDocument::fromJson(query.value(idDetectorData).toString().toUtf8());
     mDetector.loadJson(doc.object());
-
-    doc = QJsonDocument::fromJson(query.value(idDetectorTypeData).toString().toUtf8());
-    mDetectorType.loadJson(doc.object());
 }
 
 void Session::loadDoserateScript(QString scriptFileName)

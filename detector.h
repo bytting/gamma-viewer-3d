@@ -35,14 +35,19 @@ public:
     explicit Detector(const QJsonObject &obj);
 
     QString typeName() const { return mTypeName; }
-    int HV() const { return mHV; }
+    QString GEScript() const { return mGEScript; }
+    int Voltage() const { return mVoltage; }
+    int MinVoltage() const { return mMinVoltage; }
+    int MaxVoltage() const { return mMaxVoltage; }
     int numChannels() const { return mNumChannels; }
+    int maxNumChannels() const { return mMaxNumChannels; }
     QString serialnumber() const { return mSerialnumber; }
     double coarseGain() const { return mCoarseGain; }
     double fineGain() const { return mFineGain; }
     int livetime() const { return mLivetime; }
     int LLD() const { return mLLD; }
     int ULD() const { return mULD; }
+    QString pluginName() const { return mPluginName; }
     const CoefficientList& energyCurveCoefficients() const
     {
         return mEnergyCurveCoefficients;
@@ -54,13 +59,14 @@ public:
 
 private:
 
-    QString mTypeName;
-    int mHV;
-    int mNumChannels;
+    QString mTypeName, mGEScript;
+    int mVoltage, mMinVoltage, mMaxVoltage;
+    int mNumChannels, mMaxNumChannels;
     QString mSerialnumber;
     double mCoarseGain, mFineGain;
     int mLivetime;
     int mLLD, mULD;
+    QString mPluginName;
     CoefficientList mEnergyCurveCoefficients;
 };
 

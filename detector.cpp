@@ -29,45 +29,65 @@ Detector::Detector(const QJsonObject &obj)
 
 void Detector::loadJson(const QJsonObject &obj)
 {
-    if(!obj.contains("TypeName"))
+    if(!obj.contains("type_name"))
         throw Exception_MissingJsonValue("Detector:TypeName");
-    mTypeName = obj.value("TypeName").toString();
+    mTypeName = obj.value("type_name").toString();
 
-    if(!obj.contains("CurrentHV"))
-        throw Exception_MissingJsonValue("Detector:CurrentHV");
-    mHV = obj.value("CurrentHV").toInt();
+    if(!obj.contains("ge_script"))
+        throw Exception_MissingJsonValue("Detector:GEScript");
+    mGEScript = obj.value("ge_script").toString();
 
-    if(!obj.contains("CurrentNumChannels"))
-        throw Exception_MissingJsonValue("Detector:CurrentNumChannels");
-    mNumChannels = obj.value("CurrentNumChannels").toInt();
+    if(!obj.contains("voltage"))
+        throw Exception_MissingJsonValue("Detector:Voltage");
+    mVoltage = obj.value("voltage").toInt();
 
-    if(!obj.contains("Serialnumber"))
+    if(!obj.contains("min_voltage"))
+        throw Exception_MissingJsonValue("Detector:MinVoltage");
+    mMinVoltage = obj.value("min_voltage").toInt();
+
+    if(!obj.contains("max_voltage"))
+        throw Exception_MissingJsonValue("Detector:MaxVoltage");
+    mMaxVoltage = obj.value("max_voltage").toInt();
+
+    if(!obj.contains("num_channels"))
+        throw Exception_MissingJsonValue("Detector:NumChannels");
+    mNumChannels = obj.value("num_channels").toInt();
+
+    if(!obj.contains("max_num_channels"))
+        throw Exception_MissingJsonValue("Detector:MaxNumChannels");
+    mMaxNumChannels = obj.value("max_num_channels").toInt();
+
+    if(!obj.contains("serialnumber"))
         throw Exception_MissingJsonValue("Detector:Serialnumber");
-    mSerialnumber = obj.value("Serialnumber").toString();
+    mSerialnumber = obj.value("serialnumber").toString();
 
-    if(!obj.contains("CurrentCoarseGain"))
-        throw Exception_MissingJsonValue("Detector:CurrentCoarseGain");
-    mCoarseGain = obj.value("CurrentCoarseGain").toDouble();
+    if(!obj.contains("coarse_gain"))
+        throw Exception_MissingJsonValue("Detector:CoarseGain");
+    mCoarseGain = obj.value("coarse_gain").toDouble();
 
-    if(!obj.contains("CurrentFineGain"))
-        throw Exception_MissingJsonValue("Detector:CurrentFineGain");
-    mFineGain = obj.value("CurrentFineGain").toDouble();
+    if(!obj.contains("fine_gain"))
+        throw Exception_MissingJsonValue("Detector:FineGain");
+    mFineGain = obj.value("fine_gain").toDouble();
 
-    if(!obj.contains("CurrentLivetime"))
-        throw Exception_MissingJsonValue("Detector:CurrentLivetime");
-    mLivetime = obj.value("CurrentLivetime").toInt();
+    if(!obj.contains("livetime"))
+        throw Exception_MissingJsonValue("Detector:Livetime");
+    mLivetime = obj.value("livetime").toInt();
 
-    if(!obj.contains("CurrentLLD"))
-        throw Exception_MissingJsonValue("Detector:CurrentLLD");
-    mLLD = obj.value("CurrentLLD").toInt();
+    if(!obj.contains("lld"))
+        throw Exception_MissingJsonValue("Detector:LLD");
+    mLLD = obj.value("lld").toInt();
 
-    if(!obj.contains("CurrentULD"))
-        throw Exception_MissingJsonValue("Detector:CurrentULD");
-    mULD = obj.value("CurrentULD").toInt();
+    if(!obj.contains("uld"))
+        throw Exception_MissingJsonValue("Detector:ULD");
+    mULD = obj.value("uld").toInt();
 
-    if(!obj.contains("EnergyCurveCoefficients"))
+    if(!obj.contains("plugin_name"))
+        throw Exception_MissingJsonValue("Detector:PluginName");
+    mPluginName = obj.value("plugin_name").toString();
+
+    if(!obj.contains("energy_curve_coefficients"))
         throw Exception_MissingJsonValue("Detector:EnergyCurveCoefficients");
-    QJsonArray coeffs = obj.value("EnergyCurveCoefficients").toArray();
+    QJsonArray coeffs = obj.value("energy_curve_coefficients").toArray();
 
     mEnergyCurveCoefficients.clear();
     for(auto c : coeffs)
