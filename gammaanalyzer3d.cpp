@@ -99,16 +99,23 @@ void GammaAnalyzer3D::onActionExit()
     }
 }
 
-static QVector3D makeScenePosition(const Gamma::Session &session, const QVector3D &position, double altitude)
+static QVector3D makeScenePosition(const Gamma::Session &session,
+                                   const QVector3D &position,
+                                   double altitude)
 {
-    return QVector3D(position.x() - session.minX() - session.halfX(),
-                     altitude - session.minAltitude(),
-                     -1.0 * (position.y() - session.minY() - session.halfY()));
+    return QVector3D(
+                position.x() - session.minX() - session.halfX(),
+                altitude - session.minAltitude(),
+                -(position.y() - session.minY() - session.halfY()));
 }
 
-static QVector3D makeScenePosition(const Gamma::Session &session, const Gamma::Spectrum &spec)
+static QVector3D makeScenePosition(const Gamma::Session &session,
+                                   const Gamma::Spectrum &spec)
 {
-    return makeScenePosition(session, spec.position, spec.coordinate.altitude());
+    return makeScenePosition(
+                session,
+                spec.position,
+                spec.coordinate.altitude());
 }
 
 void GammaAnalyzer3D::onOpenSession()
@@ -172,10 +179,6 @@ void GammaAnalyzer3D::onOpenSession()
 
         scenes[sessionFile] = std::move(scene);
         labelStatus->setText("Session " + sessionFile + " loaded");
-    }
-    catch(const Exception &e)
-    {
-        QMessageBox::warning(this, "Warning", e.what());
     }
     catch(const std::exception &e)
     {
