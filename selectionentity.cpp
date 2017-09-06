@@ -34,10 +34,9 @@ SelectionEntity::SelectionEntity(const QVector3D &pos,
 
     mMaterial->setDiffuse(color);
     mMaterial->setSpecular(QColor(20, 20, 20));
-    QColor ambientColor(
-                color.red() - color.red() / 10,
-                color.green() - color.green() / 10,
-                color.blue() - color.blue() / 10);
+    QColor ambientColor(color.red() - color.red() / 10,
+                        color.green() - color.green() / 10,
+                        color.blue() - color.blue() / 10);
     mMaterial->setAmbient(ambientColor);
     mMaterial->setShininess(3.0f);
     addComponent(mMaterial);
@@ -51,7 +50,7 @@ SelectionEntity::~SelectionEntity()
 {
     for(auto *node : childNodes())
     {
-        if(auto entity = qobject_cast<Qt3DCore::QEntity*>(node))
+        if(auto entity = qobject_cast<Qt3DCore::QEntity *>(node))
         {
             entity->components().clear();
             entity->deleteLater();

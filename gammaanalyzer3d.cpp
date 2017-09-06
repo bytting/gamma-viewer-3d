@@ -67,23 +67,20 @@ void GammaAnalyzer3D::setupWidgets()
 
 void GammaAnalyzer3D::setupSignals()
 {
-    QObject::connect(
-                ui->actionExit,
-                &QAction::triggered,
-                this,
-                &GammaAnalyzer3D::onActionExit);
+    QObject::connect(ui->actionExit,
+                     &QAction::triggered,
+                     this,
+                     &GammaAnalyzer3D::onActionExit);
 
-    QObject::connect(
-                ui->actionLoadDoserateScript,
-                &QAction::triggered,
-                this,
-                &GammaAnalyzer3D::onLoadDoserateScript);
+    QObject::connect(ui->actionLoadDoserateScript,
+                     &QAction::triggered,
+                     this,
+                     &GammaAnalyzer3D::onLoadDoserateScript);
 
-    QObject::connect(
-                ui->actionOpenSession,
-                &QAction::triggered,
-                this,
-                &GammaAnalyzer3D::onOpenSession);
+    QObject::connect(ui->actionOpenSession,
+                     &QAction::triggered,
+                     this,
+                     &GammaAnalyzer3D::onOpenSession);
 }
 
 void GammaAnalyzer3D::onActionExit()
@@ -103,19 +100,17 @@ static QVector3D makeScenePosition(const Gamma::Session &session,
                                    const QVector3D &position,
                                    double altitude)
 {
-    return QVector3D(
-                position.x() - session.minX() - session.halfX(),
-                altitude - session.minAltitude(),
-                -(position.y() - session.minY() - session.halfY()));
+    return QVector3D(position.x() - session.minX() - session.halfX(),
+                     altitude - session.minAltitude(),
+                     -(position.y() - session.minY() - session.halfY()));
 }
 
 static QVector3D makeScenePosition(const Gamma::Session &session,
                                    const Gamma::Spectrum &spec)
 {
-    return makeScenePosition(
-                session,
-                spec.position,
-                spec.coordinate.altitude());
+    return makeScenePosition(session,
+                             spec.position,
+                             spec.coordinate.altitude());
 }
 
 void GammaAnalyzer3D::onOpenSession()
@@ -149,25 +144,22 @@ void GammaAnalyzer3D::onOpenSession()
 
         new GridEntityXZ(-1.0f, 10, 10.0f, QColor(255, 255, 255), scene->root);
 
-        new CompassEntity(
-                    QColor(255, 0, 0),
-                    makeScenePosition(*session, session->centerPosition, session->minAltitude() - 5.0),
-                    makeScenePosition(*session, session->northPosition, session->minAltitude() - 5.0),
-                    scene->root);
+        new CompassEntity(QColor(255, 0, 0),
+                          makeScenePosition(*session, session->centerPosition, session->minAltitude() - 5.0),
+                          makeScenePosition(*session, session->northPosition, session->minAltitude() - 5.0),
+                          scene->root);
 
         for(const auto &spec : session->spectrumList())
         {
-            auto entity = new SpectrumEntity(
-                        makeScenePosition(*session, *spec),
-                        session->makeDoserateColor(*spec),
-                        *spec,
-                        scene->root);
+            auto entity = new SpectrumEntity(makeScenePosition(*session, *spec),
+                                             session->makeDoserateColor(*spec),
+                                             *spec,
+                                             scene->root);
 
-            QObject::connect(
-                        entity->picker(),
-                        &Qt3DRender::QObjectPicker::pressed,
-                        this,
-                        &GammaAnalyzer3D::onSpectrumPicked);
+            QObject::connect(entity->picker(),
+                             &Qt3DRender::QObjectPicker::pressed,
+                             this,
+                             &GammaAnalyzer3D::onSpectrumPicked);
         }
 
         scene->camera->setUpVector(QVector3D(0.0, 1.0, 0.0));
@@ -199,8 +191,7 @@ void GammaAnalyzer3D::onLoadDoserateScript()
         doserateScript = QDir::toNativeSeparators(scriptFileName);
 
         ui->lblDoserateScript->setText(
-                    QStringLiteral("Loaded doserate script: ") +
-                    doserateScript);
+                    QStringLiteral("Loaded doserate script: ") + doserateScript);
     }
     catch(const std::exception &e)
     {

@@ -52,7 +52,7 @@ SpectrumEntity::~SpectrumEntity()
 {
     for(auto *node : childNodes())
     {
-        if(auto entity = qobject_cast<Qt3DCore::QEntity*>(node))
+        if(auto entity = qobject_cast<Qt3DCore::QEntity *>(node))
         {
             entity->components().clear();
             entity->deleteLater();

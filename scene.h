@@ -32,7 +32,7 @@ struct Scene
     Scene(const Scene &rhs) = delete;
     ~Scene();
 
-    Scene& operator = (const Scene&) = delete;
+    Scene &operator = (const Scene &) = delete;
 
     std::unique_ptr<Gamma::Session> session;
     Qt3DExtras::Qt3DWindow *window;

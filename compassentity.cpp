@@ -30,7 +30,7 @@ CompassEntity::CompassEntity(const QColor &color,
 {
     QByteArray vertexBuffer;
     vertexBuffer.resize(2 * 3 * sizeof(float));
-    float *ptr = reinterpret_cast<float*>(vertexBuffer.data());
+    float *ptr = reinterpret_cast<float *>(vertexBuffer.data());
 
     ptr[0] = center.x();
     ptr[1] = center.y();
@@ -66,7 +66,7 @@ CompassEntity::~CompassEntity()
 {
     for(auto *node : childNodes())
     {
-        if(auto entity = qobject_cast<Qt3DCore::QEntity*>(node))
+        if(auto entity = qobject_cast<Qt3DCore::QEntity *>(node))
         {
             entity->components().clear();
             entity->deleteLater();
