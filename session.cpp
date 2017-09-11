@@ -55,6 +55,29 @@ Session::Session()
     luaL_openlibs(L.get());
 }
 
+Session::Session(Gamma::Session &&rhs)
+    :
+      L(std::move(rhs.L)),
+      mScriptLoaded(rhs.mScriptLoaded),
+      mLivetime(rhs.mLivetime),
+      mMinDoserate(rhs.mMinDoserate),
+      mMaxDoserate(rhs.mMaxDoserate),
+      mMinX(rhs.mMinX),
+      mMaxX(rhs.mMaxX),
+      mMinY(rhs.mMinY),
+      mMaxY(rhs.mMaxY),
+      mMinZ(rhs.mMinZ),
+      mMaxZ(rhs.mMaxZ),
+      mMinLatitude(rhs.mMinLatitude),
+      mMaxLatitude(rhs.mMaxLatitude),
+      mMinLongitude(rhs.mMinLongitude),
+      mMaxLongitude(rhs.mMaxLongitude),
+      mMinAltitude(rhs.mMinAltitude),
+      mMaxAltitude(rhs.mMaxAltitude),
+      mLogarithmicColorScale(rhs.mLogarithmicColorScale)
+{
+}
+
 Session::~Session()
 {
     try
@@ -82,7 +105,13 @@ const Spectrum &Session::spectrum(SpectrumListSize index) const
 
 void Session::loadDatabase(QString databaseFile)
 {
-    QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE");
+    QSqlDatabase db;
+
+    if (QSqlDatabase::contains())
+        db = QSqlDatabase::database(QLatin1String(QSqlDatabase::defaultConnection), false);
+    else
+        db = QSqlDatabase::addDatabase("QSQLITE");
+
     db.setDatabaseName(databaseFile);
     if(!db.open())
         throw Exception_UnableToOpenDatabase(databaseFile);

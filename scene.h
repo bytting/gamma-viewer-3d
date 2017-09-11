@@ -28,7 +28,7 @@
 
 struct Scene
 {
-    explicit Scene(const QColor &clearColor);
+    Scene(const QColor &clearColor, std::unique_ptr<Gamma::Session> sess);
     Scene(const Scene &rhs) = delete;
     ~Scene();
 

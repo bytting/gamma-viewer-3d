@@ -15,14 +15,13 @@
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "scene.h"
-#include <memory>
 #include <QVector3D>
 #include <Qt3DRender/QCameraLens>
 #include <Qt3DExtras/QForwardRenderer>
 
-Scene::Scene(const QColor &clearColor)
+Scene::Scene(const QColor &clearColor, std::unique_ptr<Gamma::Session> sess)
     :
-      session(std::make_unique<Gamma::Session>()),
+      session(std::move(sess)),
       window(new Qt3DExtras::Qt3DWindow),
       root(new Qt3DCore::QEntity),
       camera(nullptr),

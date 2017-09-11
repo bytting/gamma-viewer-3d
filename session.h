@@ -56,6 +56,7 @@ public:
 
     Session();
     Session(const Session &rhs) = delete;
+    Session(Session &&rhs);
     ~Session();
 
     Session &operator = (const Session &) = delete;

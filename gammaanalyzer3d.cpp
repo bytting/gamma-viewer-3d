@@ -134,8 +134,8 @@ void GammaAnalyzer3D::onOpenSession()
             scenes.erase(it);
         }
 
-        auto scene = std::make_unique<Scene>(QColor(32, 53, 53));
-        auto &session = scene->session;
+        Gamma::Session *session = new Gamma::Session();
+        auto scene = std::make_unique<Scene>(QColor(32, 53, 53), std::unique_ptr<Gamma::Session>{session});
 
         if(QFile::exists(doserateScript))
             session->loadDoserateScript(doserateScript);
