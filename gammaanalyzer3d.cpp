@@ -135,11 +135,12 @@ void GammaAnalyzer3D::onOpenSession()
         }
 
         Gamma::Session *session = new Gamma::Session();
-        auto scene = std::make_unique<Scene>(QColor(32, 53, 53), std::unique_ptr<Gamma::Session>{session});
 
         if(QFile::exists(doserateScript))
             session->loadDoserateScript(doserateScript);
         session->loadDatabase(sessionFile);
+
+        auto scene = std::make_unique<Scene>(QColor(32, 53, 53), std::unique_ptr<Gamma::Session>{session});
         scene->window->setTitle(session->name());
 
         new GridEntityXZ(-1.0f, 10, 10.0f, QColor(255, 255, 255), scene->root);
