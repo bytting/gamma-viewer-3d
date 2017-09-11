@@ -134,27 +134,24 @@ void GammaAnalyzer3D::onOpenSession()
             scenes.erase(it);
         }
 
-        Gamma::Session *session = new Gamma::Session();
+        auto scene = std::make_unique<Scene>(QColor(32, 53, 53), sessionFile, doserateScript);
 
-        if(QFile::exists(doserateScript))
-            session->loadDoserateScript(doserateScript);
-        session->loadDatabase(sessionFile);
-
-        auto scene = std::make_unique<Scene>(QColor(32, 53, 53), std::unique_ptr<Gamma::Session>{session});
-        scene->window->setTitle(session->name());
+        const Gamma::Session &session = *scene->session;
 
         new GridEntityXZ(-1.0f, 10, 10.0f, QColor(255, 255, 255), scene->root);
 
         new CompassEntity(QColor(255, 0, 0),
-                          makeScenePosition(*session, session->centerPosition, session->minAltitude() - 5.0),
-                          makeScenePosition(*session, session->northPosition, session->minAltitude() - 5.0),
+                          makeScenePosition(session, session.centerPosition, session.minAltitude() - 5.0),
+                          makeScenePosition(session, session.northPosition, session.minAltitude() - 5.0),
                           scene->root);
 
-        for(const auto &spec : session->spectrumList())
+        for(const auto &spec : session.spectrumList())
         {
-            auto entity = new SpectrumEntity(makeScenePosition(*session, *spec),
-                                             session->makeDoserateColor(*spec),
-                                             *spec,
+            const Gamma::Spectrum &spectrum = *spec;
+
+            auto entity = new SpectrumEntity(makeScenePosition(session, spectrum),
+                                             session.makeDoserateColor(spectrum),
+                                             spectrum,
                                              scene->root);
 
             QObject::connect(entity->picker(),
@@ -167,7 +164,6 @@ void GammaAnalyzer3D::onOpenSession()
         scene->camera->setPosition(QVector3D(0, 20, 100.0f));
         scene->camera->setViewCenter(QVector3D(0, 0, 0));
 
-        scene->window->setIcon(QIcon(":/images/crash.ico"));
         scene->window->show();
 
         scenes[sessionFile] = std::move(scene);

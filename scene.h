@@ -28,7 +28,7 @@
 
 struct Scene
 {
-    Scene(const QColor &clearColor, std::unique_ptr<Gamma::Session> sess);
+    Scene(const QColor &clearColor, QString sessionFile, QString doserateScript);
     Scene(const Scene &rhs) = delete;
     ~Scene();
 

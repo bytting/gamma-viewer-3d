@@ -54,9 +54,8 @@ class Session
 {
 public:
 
-    Session();
+    Session(QString sessionFile, QString doserateScript);
     Session(const Session &rhs) = delete;
-    Session(Session &&rhs);
     ~Session();
 
     Session &operator = (const Session &) = delete;
@@ -65,7 +64,6 @@ public:
     SpectrumListSize spectrumCount() const { return mSpectrumList.size(); }
     const Spectrum &spectrum(SpectrumListSize index) const;
 
-    void loadDatabase(QString databaseFile);
     void loadDoserateScript(QString scriptFileName);
 
     void clear();
@@ -110,6 +108,7 @@ public:
 
 private:
 
+    void loadDatabase(QString databaseFile);
     void loadSessionQuery(QSqlQuery &query);
 
     QString mName;

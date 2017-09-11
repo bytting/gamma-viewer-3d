@@ -28,7 +28,7 @@
 namespace Gamma
 {
 
-Session::Session()
+Session::Session(QString sessionFile, QString doserateScript)
     :
       L(luaL_newstate()),
       mScriptLoaded(false),
@@ -53,29 +53,11 @@ Session::Session()
         throw Exception_UnableToCreateLuaState("Session::Session");
 
     luaL_openlibs(L.get());
-}
 
-Session::Session(Gamma::Session &&rhs)
-    :
-      L(std::move(rhs.L)),
-      mScriptLoaded(rhs.mScriptLoaded),
-      mLivetime(rhs.mLivetime),
-      mMinDoserate(rhs.mMinDoserate),
-      mMaxDoserate(rhs.mMaxDoserate),
-      mMinX(rhs.mMinX),
-      mMaxX(rhs.mMaxX),
-      mMinY(rhs.mMinY),
-      mMaxY(rhs.mMaxY),
-      mMinZ(rhs.mMinZ),
-      mMaxZ(rhs.mMaxZ),
-      mMinLatitude(rhs.mMinLatitude),
-      mMaxLatitude(rhs.mMaxLatitude),
-      mMinLongitude(rhs.mMinLongitude),
-      mMaxLongitude(rhs.mMaxLongitude),
-      mMinAltitude(rhs.mMinAltitude),
-      mMaxAltitude(rhs.mMaxAltitude),
-      mLogarithmicColorScale(rhs.mLogarithmicColorScale)
-{
+    if(QFile::exists(doserateScript))
+        loadDoserateScript(doserateScript);
+
+    loadDatabase(sessionFile);
 }
 
 Session::~Session()

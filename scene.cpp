@@ -19,9 +19,9 @@
 #include <Qt3DRender/QCameraLens>
 #include <Qt3DExtras/QForwardRenderer>
 
-Scene::Scene(const QColor &clearColor, std::unique_ptr<Gamma::Session> sess)
+Scene::Scene(const QColor &clearColor, QString sessionFile, QString doserateScript)
     :
-      session(std::move(sess)),
+      session(std::make_unique<Gamma::Session>(sessionFile, doserateScript)),
       window(new Qt3DExtras::Qt3DWindow),
       root(new Qt3DCore::QEntity),
       camera(nullptr),
@@ -30,6 +30,8 @@ Scene::Scene(const QColor &clearColor, std::unique_ptr<Gamma::Session> sess)
       marked(std::make_unique<SelectionEntity>(QVector3D(0.0, 0.0, 0.0), QColor(255, 255, 255), root))
 {
     window->defaultFrameGraph()->setClearColor(clearColor);
+    window->setIcon(QIcon(":/images/crash.ico"));
+    window->setTitle(session->name());
 
     camera = window->camera();
     camera->lens()->setPerspectiveProjection(45.0f, 16.0f / 9.0f, 0.1f, 10000.0f);
