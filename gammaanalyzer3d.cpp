@@ -117,24 +117,24 @@ void GammaAnalyzer3D::onOpenSession()
 {
     try
     {
-        auto sessionFile = QFileDialog::getOpenFileName(
+        auto sessionFileName = QFileDialog::getOpenFileName(
                     this,
                     tr("Open session database"),
                     QDir::homePath(),
                     tr("SQLite DB (*.db);; All files (*.*)"));
-        if(sessionFile.isEmpty())
+        if(sessionFileName.isEmpty())
             return;
 
-        sessionFile = QDir::toNativeSeparators(sessionFile);
+        sessionFileName = QDir::toNativeSeparators(sessionFileName);
 
-        auto it = scenes.find(sessionFile);
+        auto it = scenes.find(sessionFileName);
         if(it != scenes.end())
         {
             // This scene has been open before, delete and remove first
             scenes.erase(it);
         }
 
-        auto scene = std::make_unique<Scene>(QColor(32, 53, 53), sessionFile, doserateScript);
+        auto scene = std::make_unique<Scene>(QColor(32, 53, 53), sessionFileName, doserateScript);
 
         const Gamma::Session &session = *scene->session;
 
@@ -166,8 +166,8 @@ void GammaAnalyzer3D::onOpenSession()
 
         scene->window->show();
 
-        scenes[sessionFile] = std::move(scene);
-        labelStatus->setText("Session " + sessionFile + " loaded");
+        scenes[sessionFileName] = std::move(scene);
+        labelStatus->setText("Session " + sessionFileName + " loaded");
     }
     catch(const std::exception &e)
     {

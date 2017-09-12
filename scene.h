@@ -28,7 +28,7 @@
 
 struct Scene
 {
-    Scene(const QColor &clearColor, QString sessionFile, QString doserateScript);
+    Scene(const QColor &clearColor, QString sessionFileName, QString doserateScriptFileName);
     Scene(const Scene &rhs) = delete;
     ~Scene();
 

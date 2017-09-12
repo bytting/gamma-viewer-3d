@@ -19,9 +19,9 @@
 #include <Qt3DRender/QCameraLens>
 #include <Qt3DExtras/QForwardRenderer>
 
-Scene::Scene(const QColor &clearColor, QString sessionFile, QString doserateScript)
+Scene::Scene(const QColor &clearColor, QString sessionFileName, QString doserateScriptFileName)
     :
-      session(std::make_unique<Gamma::Session>(sessionFile, doserateScript)),
+      session(std::make_unique<Gamma::Session>(sessionFileName, doserateScriptFileName)),
       window(new Qt3DExtras::Qt3DWindow),
       root(new Qt3DCore::QEntity),
       camera(nullptr),

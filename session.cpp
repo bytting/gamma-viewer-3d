@@ -28,7 +28,7 @@
 namespace Gamma
 {
 
-Session::Session(QString sessionFile, QString doserateScript)
+Session::Session(QString sessionFileName, QString doserateScriptFileName)
     :
       L(luaL_newstate()),
       mScriptLoaded(false),
@@ -54,10 +54,10 @@ Session::Session(QString sessionFile, QString doserateScript)
 
     luaL_openlibs(L.get());
 
-    if(QFile::exists(doserateScript))
-        loadDoserateScript(doserateScript);
+    if(!doserateScriptFileName.isEmpty() && QFile::exists(doserateScriptFileName))
+        loadDoserateScript(doserateScriptFileName);
 
-    loadDatabase(sessionFile);
+    loadDatabaseFile(sessionFileName);
 }
 
 Session::~Session()
@@ -85,7 +85,14 @@ const Spectrum &Session::spectrum(SpectrumListSize index) const
     return *mSpectrumList[index];
 }
 
-void Session::loadDatabase(QString databaseFile)
+void Session::loadDoserateScript(QString scriptFileName)
+{
+    if(luaL_dofile(L.get(), scriptFileName.toStdString().c_str()))
+        throw Exception_LoadDoserateScriptFailed(scriptFileName);
+    mScriptLoaded = true;
+}
+
+void Session::loadDatabaseFile(QString databaseFileName)
 {
     QSqlDatabase db;
 
@@ -94,9 +101,9 @@ void Session::loadDatabase(QString databaseFile)
     else
         db = QSqlDatabase::addDatabase("QSQLITE");
 
-    db.setDatabaseName(databaseFile);
+    db.setDatabaseName(databaseFileName);
     if(!db.open())
-        throw Exception_UnableToOpenDatabase(databaseFile);
+        throw Exception_UnableToOpenDatabase(databaseFileName);
 
     clear();
 
@@ -193,13 +200,6 @@ void Session::loadSessionQuery(QSqlQuery &query)
 
     QJsonDocument doc = QJsonDocument::fromJson(query.value(idDetectorData).toString().toUtf8());
     mDetector.loadJson(doc.object());
-}
-
-void Session::loadDoserateScript(QString scriptFileName)
-{
-    if(luaL_dofile(L.get(), scriptFileName.toStdString().c_str()))
-        throw Exception_LoadDoserateScriptFailed(scriptFileName);
-    mScriptLoaded = true;
 }
 
 void Session::clear()

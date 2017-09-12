@@ -54,7 +54,7 @@ class Session
 {
 public:
 
-    Session(QString sessionFile, QString doserateScript);
+    Session(QString sessionFileName, QString doserateScriptFileName);
     Session(const Session &rhs) = delete;
     ~Session();
 
@@ -65,8 +65,8 @@ public:
     const Spectrum &spectrum(SpectrumListSize index) const;
 
     void loadDoserateScript(QString scriptFileName);
+    void loadDatabaseFile(QString databaseFileName);
 
-    void clear();
     QString name() const { return mName; }
 
     double minDoserate() const { return mMinDoserate; }
@@ -86,10 +86,12 @@ public:
     double minAltitude() const { return mMinAltitude; }
     double maxAltitude() const { return mMaxAltitude; }
 
+    void useLogarithmicDoserateColor(bool state) { mLogarithmicColorScale = state; }
+
     Geo::Coordinate centerCoordinate, northCoordinate;
     QVector3D centerPosition, northPosition;
 
-    void useLogarithmicDoserateColor(bool state) { mLogarithmicColorScale = state; }
+    void clear();
 
     QColor makeDoserateColor(double doserate) const;
     QColor makeDoserateColor(const Spectrum &spec) const;
@@ -108,7 +110,6 @@ public:
 
 private:
 
-    void loadDatabase(QString databaseFile);
     void loadSessionQuery(QSqlQuery &query);
 
     QString mName;
