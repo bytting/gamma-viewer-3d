@@ -14,8 +14,8 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-#include "gammaanalyzer3d.h"
-#include "ui_gammaanalyzer3d.h"
+#include "gammaviewer3d.h"
+#include "ui_gammaviewer3d.h"
 #include "session.h"
 #include "spectrum.h"
 #include "scene.h"
@@ -37,10 +37,10 @@
 #include <Qt3DRender/QCamera>
 #include <Qt3DRender/QObjectPicker>
 
-GammaAnalyzer3D::GammaAnalyzer3D(QWidget *parent)
+GammaViewer3D::GammaViewer3D(QWidget *parent)
     :
       QMainWindow(parent),
-      ui(new Ui::GammaAnalyzer3D)
+      ui(new Ui::GammaViewer3D)
 {
     ui->setupUi(this);
     setAttribute(Qt::WA_DeleteOnClose);
@@ -48,42 +48,42 @@ GammaAnalyzer3D::GammaAnalyzer3D(QWidget *parent)
     setupSignals();
 }
 
-GammaAnalyzer3D::~GammaAnalyzer3D()
+GammaViewer3D::~GammaViewer3D()
 {
     delete ui;
 }
 
-void GammaAnalyzer3D::closeEvent(QCloseEvent *event)
+void GammaViewer3D::closeEvent(QCloseEvent *event)
 {
     event->ignore();
     onActionExit();
 }
 
-void GammaAnalyzer3D::setupWidgets()
+void GammaViewer3D::setupWidgets()
 {
     labelStatus = new QLabel(statusBar());
     statusBar()->addWidget(labelStatus);
 }
 
-void GammaAnalyzer3D::setupSignals()
+void GammaViewer3D::setupSignals()
 {
     QObject::connect(ui->actionExit,
                      &QAction::triggered,
                      this,
-                     &GammaAnalyzer3D::onActionExit);
+                     &GammaViewer3D::onActionExit);
 
     QObject::connect(ui->actionLoadDoserateScript,
                      &QAction::triggered,
                      this,
-                     &GammaAnalyzer3D::onLoadDoserateScript);
+                     &GammaViewer3D::onLoadDoserateScript);
 
     QObject::connect(ui->actionOpenSession,
                      &QAction::triggered,
                      this,
-                     &GammaAnalyzer3D::onOpenSession);
+                     &GammaViewer3D::onOpenSession);
 }
 
-void GammaAnalyzer3D::onActionExit()
+void GammaViewer3D::onActionExit()
 {
     try
     {
@@ -113,7 +113,7 @@ static QVector3D makeScenePosition(const Gamma::Session &session,
                              spec.coordinate.altitude());
 }
 
-void GammaAnalyzer3D::onOpenSession()
+void GammaViewer3D::onOpenSession()
 {
     try
     {
@@ -157,7 +157,7 @@ void GammaAnalyzer3D::onOpenSession()
             QObject::connect(entity->picker(),
                              &Qt3DRender::QObjectPicker::pressed,
                              this,
-                             &GammaAnalyzer3D::onSpectrumPicked);
+                             &GammaViewer3D::onSpectrumPicked);
         }
 
         scene->camera->setUpVector(QVector3D(0.0, 1.0, 0.0));
@@ -175,7 +175,7 @@ void GammaAnalyzer3D::onOpenSession()
     }
 }
 
-void GammaAnalyzer3D::onLoadDoserateScript()
+void GammaViewer3D::onLoadDoserateScript()
 {
     try
     {
@@ -196,7 +196,7 @@ void GammaAnalyzer3D::onLoadDoserateScript()
     }
 }
 
-void GammaAnalyzer3D::onSpectrumPicked(Qt3DRender::QPickEvent *event)
+void GammaViewer3D::onSpectrumPicked(Qt3DRender::QPickEvent *event)
 {
     try
     {
@@ -220,7 +220,7 @@ void GammaAnalyzer3D::onSpectrumPicked(Qt3DRender::QPickEvent *event)
     }
 }
 
-const Scene &GammaAnalyzer3D::sceneFromEntity(SpectrumEntity *entity) const
+const Scene &GammaViewer3D::sceneFromEntity(SpectrumEntity *entity) const
 {
     auto it = std::find_if(scenes.begin(), scenes.end(), [&](auto &p){
         return p.second->hasChildEntity(entity);
@@ -232,7 +232,7 @@ const Scene &GammaAnalyzer3D::sceneFromEntity(SpectrumEntity *entity) const
     return *it->second;
 }
 
-void GammaAnalyzer3D::handleSelectSpectrum(SpectrumEntity *entity)
+void GammaViewer3D::handleSelectSpectrum(SpectrumEntity *entity)
 {
     // Disable selected and marked arrows for all scenes
     for(auto &p : scenes)
@@ -274,7 +274,7 @@ void GammaAnalyzer3D::handleSelectSpectrum(SpectrumEntity *entity)
     ui->lblDistance->setText("");
 }
 
-void GammaAnalyzer3D::handleMarkSpectrum(SpectrumEntity *entity)
+void GammaViewer3D::handleMarkSpectrum(SpectrumEntity *entity)
 {
     auto &scene = sceneFromEntity(entity);
 

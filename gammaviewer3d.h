@@ -14,8 +14,8 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef GAMMAANALYZER3D_H
-#define GAMMAANALYZER3D_H
+#ifndef GAMMAVIEWER3D_H
+#define GAMMAVIEWER3D_H
 
 #include "exceptions.h"
 #include <map>
@@ -28,20 +28,20 @@
 
 namespace Ui
 {
-class GammaAnalyzer3D;
+class GammaViewer3D;
 }
 
 class Scene;
 class SpectrumEntity;
 
-class GammaAnalyzer3D : public QMainWindow
+class GammaViewer3D : public QMainWindow
 {
     Q_OBJECT
 
 public:
 
-    explicit GammaAnalyzer3D(QWidget *parent = 0);
-    ~GammaAnalyzer3D() override;
+    explicit GammaViewer3D(QWidget *parent = 0);
+    ~GammaViewer3D() override;
 
 protected:
 
@@ -49,7 +49,7 @@ protected:
 
 private:
 
-    Ui::GammaAnalyzer3D *ui;
+    Ui::GammaViewer3D *ui;
     QLabel *labelStatus;
     std::map<QString, std::unique_ptr<Scene>> scenes;
     QString doserateScript;
@@ -76,4 +76,4 @@ private slots:
     void onSpectrumPicked(Qt3DRender::QPickEvent *event);
 };
 
-#endif // GAMMAANALYZER3D_H
+#endif // GAMMAVIEWER3D_H

@@ -3,7 +3,7 @@ QT += core gui 3dcore 3drender 3dextras positioning sql
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
-TARGET = gamma-analyzer-3d
+TARGET = gamma-viewer-3d
 TEMPLATE = app
 
 CONFIG += c++14
@@ -53,7 +53,6 @@ SOURCES += lua/lapi.c \
     lua/lvm.c \
     lua/lzio.c \
     main.cpp \
-    gammaanalyzer3d.cpp \
     session.cpp \
     spectrum.cpp \
     geo.cpp \
@@ -62,7 +61,8 @@ SOURCES += lua/lapi.c \
     spectrumentity.cpp \
     gridentity.cpp \
     selectionentity.cpp \
-    compassentity.cpp
+    compassentity.cpp \
+    gammaviewer3d.cpp
 
 HEADERS += lua/lapi.h \
     lua/lauxlib.h \
@@ -89,7 +89,6 @@ HEADERS += lua/lapi.h \
     lua/lundump.h \
     lua/lvm.h \
     lua/lzio.h \
-    gammaanalyzer3d.h \
     session.h \
     spectrum.h \
     geo.h \
@@ -100,9 +99,11 @@ HEADERS += lua/lapi.h \
     gridentity.h \
     selectionentity.h \
     compassentity.h \
-    memutils.h
+    memutils.h \
+    gammaviewer3d.h
 
-FORMS += gammaanalyzer3d.ui
+FORMS += \
+    gammaviewer3d.ui
 
 DISTFILES +=
 

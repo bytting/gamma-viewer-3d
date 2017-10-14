@@ -14,13 +14,13 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-#include "gammaanalyzer3d.h"
+#include "gammaviewer3d.h"
 #include <QApplication>
 
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
-    GammaAnalyzer3D w;
+    GammaViewer3D w;
     w.show();
 
     return a.exec();

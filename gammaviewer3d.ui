@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>GammaAnalyzer3D</class>
- <widget class="QMainWindow" name="GammaAnalyzer3D">
+ <class>GammaViewer3D</class>
+ <widget class="QMainWindow" name="GammaViewer3D">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Gamma Analyzer 3D</string>
+   <string>Gamma Viewer 3D</string>
   </property>
   <property name="windowIcon">
    <iconset resource="resources.qrc">
