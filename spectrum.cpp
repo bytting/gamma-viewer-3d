@@ -65,7 +65,7 @@ void Spectrum::loadQuery(const QSqlQuery &query)
     for(const auto &chan : strChanList)
         mChannels.emplace_back(chan.toInt());
 
-    position = Geo::cartesianFromAngles(coordinate);
+    position = Geo::cartesianFromGeodetic(coordinate);
 }
 
 static double GEValue(lua_State *L, double energy)
