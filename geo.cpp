@@ -20,7 +20,7 @@
 namespace Geo
 {
 
-QGeoCoordinate geodeticFromCartesian(const QVector3D &position)
+QGeoCoordinate cartesianToGeodetic(const QVector3D &position)
 {
     // Simplified conversion from cartesian to geodetic coordinates
 
@@ -34,7 +34,7 @@ QGeoCoordinate geodeticFromCartesian(const QVector3D &position)
     return c;
 }
 
-QVector3D cartesianFromGeodetic(const QGeoCoordinate &angles)
+QVector3D geodeticToCartesian(const QGeoCoordinate &angles)
 {
     // Simplified conversion from geodetic to cartesian coordinates
 

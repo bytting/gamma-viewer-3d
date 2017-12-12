@@ -41,9 +41,9 @@ T radianToDegree(T radian)
     return radian * (static_cast<T>(180) / PI<T>);
 }
 
-QGeoCoordinate geodeticFromCartesian(const QVector3D &position);
+QGeoCoordinate cartesianToGeodetic(const QVector3D &position);
 
-QVector3D cartesianFromGeodetic(const QGeoCoordinate &angles);
+QVector3D geodeticToCartesian(const QGeoCoordinate &angles);
 
 } // namespace Geo
 

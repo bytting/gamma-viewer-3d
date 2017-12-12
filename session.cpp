@@ -181,10 +181,10 @@ void Session::loadDatabaseFile(QString databaseFileName)
     centerPosition.setX(mMinX + mHalfX);
     centerPosition.setY(mMinY + mHalfY);
     centerPosition.setZ(mMinZ + mHalfZ);
-    centerCoordinate = Geo::geodeticFromCartesian(centerPosition);
+    centerCoordinate = Geo::cartesianToGeodetic(centerPosition);
 
     northCoordinate = centerCoordinate.atDistanceAndAzimuth(50.0, 0.0);
-    northPosition = Geo::cartesianFromGeodetic(northCoordinate);
+    northPosition = Geo::geodeticToCartesian(northCoordinate);
 }
 
 void Session::loadSessionQuery(QSqlQuery &query)
