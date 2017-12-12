@@ -99,7 +99,6 @@ HEADERS += lua/lapi.h \
     gridentity.h \
     selectionentity.h \
     compassentity.h \
-    memutils.h \
     gammaviewer3d.h
 
 FORMS += \

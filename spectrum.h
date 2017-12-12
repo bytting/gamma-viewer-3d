@@ -65,7 +65,7 @@ public:
     void calculateDoserate(const Detector &detector, lua_State *L);
     double doserate() const { return mDoserate; }
 
-    Geo::Coordinate coordinate;
+    QGeoCoordinate coordinate;
     QVector3D position;
 
 private:

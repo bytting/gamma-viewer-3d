@@ -17,7 +17,6 @@
 #ifndef GEO_H
 #define GEO_H
 
-#include "memutils.h"
 #include <QVector3D>
 #include <QGeoCoordinate>
 
@@ -42,28 +41,9 @@ T radianToDegree(T radian)
     return radian * (static_cast<T>(180) / PI<T>);
 }
 
-class Coordinate : public QGeoCoordinate
-{
-    DISABLE_DYNAMIC_ALLOCATION // Base destructor is not virtual, prevent heap allocation
+QGeoCoordinate anglesFromCartesian(const QVector3D &position);
 
-public:
-
-    Coordinate() {}
-    Coordinate(double latitude, double longitude)
-        : QGeoCoordinate(latitude, longitude) {}
-    Coordinate(double latitude, double longitude, double altitude)
-        : QGeoCoordinate(latitude, longitude, altitude) {}
-    Coordinate(const Coordinate &rhs)
-        : QGeoCoordinate(rhs) {}
-    Coordinate(const QGeoCoordinate &rhs)
-        : QGeoCoordinate(rhs) {}
-
-    void setAngles(double latitude, double longitude);
-    void setAngles(double latitude, double longitude, double altitude);
-    void setAnglesFromCartesian(const QVector3D &position);
-
-    QVector3D toCartesian() const;
-};
+QVector3D cartesianFromAngles(const QGeoCoordinate &angles);
 
 } // namespace Geo
 

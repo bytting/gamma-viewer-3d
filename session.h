@@ -88,7 +88,7 @@ public:
 
     void useLogarithmicDoserateColor(bool state) { mLogarithmicColorScale = state; }
 
-    Geo::Coordinate centerCoordinate, northCoordinate;
+    QGeoCoordinate centerCoordinate, northCoordinate;
     QVector3D centerPosition, northPosition;
 
     void clear();
